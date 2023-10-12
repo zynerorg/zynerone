@@ -1,6 +1,6 @@
 FROM clamav/clamav:1.0.3_base
 
-LABEL maintainer "The Infrastructure Company GmbH <info@servercow.de>"
+LABEL maintainer "Zyner <contact@zyner.net>"
 
 RUN apk upgrade --no-cache \
   && apk add --update --no-cache \
