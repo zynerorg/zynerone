@@ -527,11 +527,11 @@ phpfpm_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/php-fpm-mailcow; echo "$(tail -50 /tmp/php-fpm-mailcow)" > /tmp/php-fpm-mailcow
-    host_ip=$(get_container_ip php-fpm-mailcow)
+    touch /tmp/php-fpm-zynerone; echo "$(tail -50 /tmp/php-fpm-zynerone)" > /tmp/php-fpm-zynerone
+    host_ip=$(get_container_ip php-fpm-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>> /tmp/php-fpm-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>> /tmp/php-fpm-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "PHP-FPM" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -820,7 +820,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! phpfpm_checks; then
     log_msg "PHP-FPM hit error limit"
-    echo php-fpm-mailcow > /tmp/com_pipe
+    echo php-fpm-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -1073,14 +1073,14 @@ while true; do
     sleep 10
     CONTAINER_ID=$(curl --silent --insecure https://dockerapi/containers/json | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring | contains(\"${com_pipe_answer}\")) | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id")
     if [[ ! -z ${CONTAINER_ID} ]]; then
-      if [[ "${com_pipe_answer}" == "php-fpm-mailcow" ]]; then
+      if [[ "${com_pipe_answer}" == "php-fpm-zynerone" ]]; then
         HAS_INITDB=$(curl --silent --insecure -XPOST https://dockerapi/containers/${CONTAINER_ID}/top | jq '.msg.Processes[] | contains(["php -c /usr/local/etc/php -f /web/inc/init_db.inc.php"])' | grep true)
       fi
       S_RUNNING=$(($(date +%s) - $(curl --silent --insecure https://dockerapi/containers/${CONTAINER_ID}/json | jq .State.StartedAt | xargs -n1 date +%s -d)))
       if [ ${S_RUNNING} -lt 360 ]; then
         log_msg "Container is running for less than 360 seconds, skipping action..."
       elif [[ ! -z ${HAS_INITDB} ]]; then
-        log_msg "Database is being initialized by php-fpm-mailcow, not restarting but delaying checks for a minute..."
+        log_msg "Database is being initialized by php-fpm-zynerone, not restarting but delaying checks for a minute..."
         sleep 60
       else
         log_msg "Sending restart command to ${CONTAINER_ID}..."

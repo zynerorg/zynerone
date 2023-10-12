@@ -106,7 +106,7 @@ services:
           aliases:
             - rspamd
 
-    php-fpm-mailcow:
+    php-fpm-zynerone:
       image: zyner/phpfpm:1.85
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
@@ -350,7 +350,7 @@ services:
     nginx-mailcow:
       depends_on:
         - sogo-mailcow
-        - php-fpm-mailcow
+        - php-fpm-zynerone
         - redis-zynerone
       image: nginx:mainline-alpine
       dns:
@@ -440,7 +440,7 @@ services:
         - dovecot-mailcow
         - postfix-mailcow
         - sogo-mailcow
-        - php-fpm-mailcow
+        - php-fpm-zynerone
         - redis-zynerone
       restart: always
       privileged: true
@@ -605,7 +605,7 @@ services:
         - redis-zynerone
         - clamd-zynerone
         - rspamd-zynerone
-        - php-fpm-mailcow
+        - php-fpm-zynerone
         - sogo-mailcow
         - dovecot-mailcow
         - postfix-mailcow
