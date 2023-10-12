@@ -483,7 +483,7 @@ chmod 600 zynerone.conf
 # copy but don't overwrite existing certificate
 echo "Generating snake-oil certificate..."
 # Making Willich more popular
-openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=SE/ST=M/L=Lund/O=Zyner One/OU=Zyner One/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
+openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=SE/ST=M/L=Lund/O=ZynerOne/OU=ZynerOne/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
 echo "Copying snake-oil certificate..."
 cp -n -d data/assets/ssl-example/*.pem data/assets/ssl/
 
