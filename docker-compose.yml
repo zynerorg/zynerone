@@ -57,7 +57,7 @@ services:
           aliases:
             - redis
 
-    clamd-mailcow:
+    clamd-zynerone:
       image: zyner/clamd:1.63
       restart: always
       depends_on:
@@ -603,7 +603,7 @@ services:
         - unbound-zynerone
         - mariadb-zynerone
         - redis-zynerone
-        - clamd-mailcow
+        - clamd-zynerone
         - rspamd-mailcow
         - php-fpm-mailcow
         - sogo-mailcow

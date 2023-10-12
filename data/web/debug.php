@@ -24,7 +24,7 @@ $vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-mailcow', '
 
 // containers
 $containers = (array) docker('info');
-if ($clamd_status === false) unset($containers['clamd-mailcow']);
+if ($clamd_status === false) unset($containers['clamd-zynerone']);
 if ($solr_status === false) unset($containers['solr-mailcow']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
