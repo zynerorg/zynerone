@@ -527,7 +527,7 @@ ratelimit_checks() {
     if [[ ${RL_LOG_STATUS_PREV} != ${RL_LOG_STATUS} ]]; then
       err_count=$(( ${err_count} + 1 ))
       echo 'Last 10 applied ratelimits (may overlap with previous reports).' > /tmp/ratelimit
-      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within mailcow UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
+      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within Zyner One UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
       echo >> /tmp/ratelimit
       redis-cli --raw -h redis LRANGE RL_LOG 0 10 | jq . >> /tmp/ratelimit
     fi

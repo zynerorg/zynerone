@@ -138,7 +138,7 @@ $LOG_PAGINATION_SIZE = 50;
 $SESSION_LIFETIME = 10800;
 
 // Label for OTP devices
-$OTP_LABEL = "mailcow UI";
+$OTP_LABEL = "Zyner One UI";
 
 // How long to wait (in s) for cURL Docker requests
 $DOCKER_TIMEOUT = 60;
@@ -164,7 +164,7 @@ $MAILBOX_DEFAULT_ATTRIBUTES['tls_enforce_in'] = false;
 // Force outgoing TLS for new mailboxes by default
 $MAILBOX_DEFAULT_ATTRIBUTES['tls_enforce_out'] = false;
 
-// Force password change on next login (only allows login to mailcow UI)
+// Force password change on next login (only allows login to Zyner One UI)
 $MAILBOX_DEFAULT_ATTRIBUTES['force_pw_update'] = false;
 
 // Enable SOGo access (set to false to disable access by default)
@@ -213,7 +213,7 @@ $FIDO2_USER_PRESENT_FLAG = true;
 $FIDO2_FORMATS = array('apple', 'android-key', 'android-safetynet', 'fido-u2f', 'none', 'packed', 'tpm');
 
 
-// Set visible Rspamd maps in mailcow UI, do not change unless you know what you are doing
+// Set visible Rspamd maps in Zyner One UI, do not change unless you know what you are doing
 $RSPAMD_MAPS = array(
   'regex' => array(
     'Header-From: Blacklist' => 'global_mime_from_blacklist.map',
