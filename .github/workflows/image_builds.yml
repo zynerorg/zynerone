@@ -44,6 +44,6 @@ jobs:
       - name: Build Docker Images
         run: |
           docker compose build ${image}
-          docker compose push
+          docker compose push ${image}
         env:
           image: ${{ matrix.images }}
