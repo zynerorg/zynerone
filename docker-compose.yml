@@ -560,7 +560,7 @@ services:
           aliases:
             - solr
 
-    olefy-mailcow:
+    olefy-zynerone:
       image: zyner/olefy:1.11
       restart: always
       environment:
