@@ -32,7 +32,7 @@ body:
   - type: textarea
     attributes:
       label: "Logs:"
-      description: "Please take a look at the [official documentation](https://docs.mailcow.email/troubleshooting/debug-logs/) and post the last few lines of logs, when the error occurs. For example, docker container logs of affected containers. This will be automatically formatted into code, so no need for backticks."
+      description: "Please take a look at the [official documentation](https://docs.zyner.one/troubleshooting/debug-logs/) and post the last few lines of logs, when the error occurs. For example, docker container logs of affected containers. This will be automatically formatted into code, so no need for backticks."
       render: plain text
     validations:
       required: true
