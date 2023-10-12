@@ -337,7 +337,7 @@ services:
           aliases:
             - postfix
 
-    memcached-mailcow:
+    memcached-zynerone:
       image: memcached:alpine
       restart: always
       environment:
@@ -609,7 +609,7 @@ services:
         - sogo-zynerone
         - dovecot-zynerone
         - postfix-zynerone
-        - memcached-mailcow
+        - memcached-zynerone
         - nginx-mailcow
         - acme-mailcow
         - netfilter-mailcow
