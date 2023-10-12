@@ -1,4 +1,4 @@
-name: Build mailcow backup image
+name: Build zynerone backup image
 
 on:
   schedule:
@@ -32,4 +32,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           file: data/Dockerfiles/backup/Dockerfile
           push: true
-          tags: mailcow/backup:latest
+          tags: zyner/backup:latest
