@@ -12,7 +12,7 @@ echo
 function docker_garbage() {
   IMGS_TO_DELETE=()
 
-  for container in $(grep -oP "image: \Kmailcow.+" docker-compose.yml); do
+  for container in $(grep -oP "image: \Kzynerone.+" docker-compose.yml); do
 
     REPOSITORY=${container/:*}
     TAG=${container/*:}
@@ -151,7 +151,7 @@ fi
 }
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${SCRIPT_DIR}/../mailcow.conf"
+source "${SCRIPT_DIR}/../zynerone.conf"
 COMPOSE_FILE="${SCRIPT_DIR}/../docker-compose.yml"
 CMPS_PRJ=$(echo ${COMPOSE_PROJECT_NAME} | tr -cd 'A-Za-z-_')
 SQLIMAGE=$(grep -iEo '(mysql|mariadb)\:.+' "${COMPOSE_FILE}")
@@ -160,7 +160,7 @@ preflight_local_checks
 preflight_remote_checks
 
 echo
-echo -e "\033[1mFound compose project name ${CMPS_PRJ} for ${MAILCOW_HOSTNAME}\033[0m"
+echo -e "\033[1mFound compose project name ${CMPS_PRJ} for ${ZYNERONE_HOSTNAME}\033[0m"
 echo -e "\033[1mFound SQL ${SQLIMAGE}\033[0m"
 echo
 

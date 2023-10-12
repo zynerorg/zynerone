@@ -1585,7 +1585,7 @@ if (isset($_GET['query'])) {
                 break;
                 case "version":
                   echo json_encode(array(
-                    'version' => $GLOBALS['MAILCOW_GIT_VERSION']
+                    'version' => $GLOBALS['ZYNERONE_GIT_VERSION']
                   ));
                 break;
               }

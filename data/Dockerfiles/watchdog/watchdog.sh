@@ -140,14 +140,14 @@ function mail_error() {
       --body-plain="${BODY}" \
       --add-header="X-Priority: 1" \
       --to=${rcpt} \
-      --from="watchdog@${MAILCOW_HOSTNAME}" \
-      --hello-host=${MAILCOW_HOSTNAME} \
+      --from="watchdog@${ZYNERONE_HOSTNAME}" \
+      --hello-host=${ZYNERONE_HOSTNAME} \
       --ipv4
     if [[ $? -eq 1 ]]; then # exit code 1 is fine
       log_msg "Sent notification email to ${rcpt}"
     else
       if [[ "${SMTP_VERBOSE}" == "" ]]; then
-        log_msg "Error while sending notification email to ${rcpt}. You can enable verbose logging by setting 'WATCHDOG_VERBOSE=y' in mailcow.conf."
+        log_msg "Error while sending notification email to ${rcpt}. You can enable verbose logging by setting 'WATCHDOG_VERBOSE=y' in zynerone.conf."
       else
         log_msg "Error while sending notification email to ${rcpt}."
       fi

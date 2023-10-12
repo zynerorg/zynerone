@@ -428,7 +428,7 @@ DNSBL_CONFIG=$(grep -v '^#' /opt/postfix/conf/dns_blocklists.cf | grep '\S')
 if [ ! -z "$DNSBL_CONFIG" ]; then
   echo -e "\e[33mChecking if ASN for your IP is listed for Spamhaus Bad ASN List...\e[0m"
   if [ -n "$SPAMHAUS_DQS_KEY" ]; then
-    echo -e "\e[32mDetected SPAMHAUS_DQS_KEY variable from mailcow.conf...\e[0m"
+    echo -e "\e[32mDetected SPAMHAUS_DQS_KEY variable from zynerone.conf...\e[0m"
     echo -e "\e[33mUsing DQS Blocklists from Spamhaus!\e[0m"
     SPAMHAUS_DNSBL_CONFIG=$(cat <<EOF
   ${SPAMHAUS_DQS_KEY}.zen.dq.spamhaus.net=127.0.0.[4..7]*6
@@ -487,7 +487,7 @@ fi
 echo -e "\n# User Overrides" >> /opt/postfix/conf/main.cf
 touch /opt/postfix/conf/extra.cf
 sed -i '/\$myhostname/! { /myhostname/d }' /opt/postfix/conf/extra.cf
-echo -e "myhostname = ${MAILCOW_HOSTNAME}\n$(cat /opt/postfix/conf/extra.cf)" > /opt/postfix/conf/extra.cf
+echo -e "myhostname = ${ZYNERONE_HOSTNAME}\n$(cat /opt/postfix/conf/extra.cf)" > /opt/postfix/conf/extra.cf
 cat /opt/postfix/conf/extra.cf >> /opt/postfix/conf/main.cf
 
 if [ ! -f /opt/postfix/conf/custom_transport.pcre ]; then

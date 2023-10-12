@@ -50,7 +50,7 @@ foreach ($containers as $container => $container_info) {
 }
 
 // get mailcow data
-$hostname = getenv('MAILCOW_HOSTNAME');
+$hostname = getenv('ZYNERONE_HOSTNAME');
 $timezone = getenv('TZ');
 
 $template = 'debug.twig';

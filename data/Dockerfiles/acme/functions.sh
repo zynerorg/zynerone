@@ -9,9 +9,9 @@ log_f() {
     echo "$(date) - ${1}"
   fi
   if [[ ${3} == "b64" ]]; then
-    ${REDIS_CMDLINE} LPUSH ACME_LOG "{\"time\":\"$(date +%s)\",\"message\":\"base64,$(printf '%s' "${MAILCOW_HOSTNAME} - ${1}")\"}" > /dev/null
+    ${REDIS_CMDLINE} LPUSH ACME_LOG "{\"time\":\"$(date +%s)\",\"message\":\"base64,$(printf '%s' "${ZYNERONE_HOSTNAME} - ${1}")\"}" > /dev/null
   else
-    ${REDIS_CMDLINE} LPUSH ACME_LOG "{\"time\":\"$(date +%s)\",\"message\":\"$(printf '%s' "${MAILCOW_HOSTNAME} - ${1}" | \
+    ${REDIS_CMDLINE} LPUSH ACME_LOG "{\"time\":\"$(date +%s)\",\"message\":\"$(printf '%s' "${ZYNERONE_HOSTNAME} - ${1}" | \
       tr '%&;$"[]{}-\r\n' ' ')\"}" > /dev/null
   fi
 }
@@ -69,7 +69,7 @@ check_domain(){
     DOMAIN=$1
     A_DOMAIN=$(dig A ${DOMAIN} +short | tail -n 1)
     AAAA_DOMAIN=$(dig AAAA ${DOMAIN} +short | tail -n 1)
-    # Hard-fail on CAA errors for MAILCOW_HOSTNAME
+    # Hard-fail on CAA errors for ZYNERONE_HOSTNAME
     PARENT_DOMAIN=$(echo ${DOMAIN} | cut -d. -f2-)
     CAAS=( $(dig CAA ${PARENT_DOMAIN} +short | sed -n 's/\d issue "\(.*\)"/\1/p') )
     if [[ ! -z ${CAAS} ]]; then

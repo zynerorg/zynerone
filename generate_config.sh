@@ -64,17 +64,17 @@ detect_bad_asn() {
   if [ "$response" -eq 503 ]; then
     if [ -z "$SPAMHAUS_DQS_KEY" ]; then
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[33mmailcow did not detected a value for the variable SPAMHAUS_DQS_KEY inside mailcow.conf!\e[0m"
+      echo -e "\e[33mmailcow did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
       sleep 2
       echo ""
       echo -e "\e[33mTo use the Spamhaus DNS Blocklists again, you will need to create a FREE account for their Data Query Service (DQS) at: https://www.spamhaus.com/free-trial/sign-up-for-a-free-data-query-service-account\e[0m"
-      echo -e "\e[33mOnce done, enter your DQS API key in mailcow.conf and mailcow will do the rest for you!\e[0m"
+      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and mailcow will do the rest for you!\e[0m"
       echo ""
       sleep 2
 
     else
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[32mmailcow detected a Value for the variable SPAMHAUS_DQS_KEY inside mailcow.conf. Postfix will use DQS with the given API key...\e[0m"
+      echo -e "\e[32mmailcow detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
     fi
   elif [ "$response" -eq 200 ]; then
     echo -e "\e[33mCheck completed! Your IP is \e[32mclean\e[0m"
@@ -92,12 +92,12 @@ else
   SKIP_BRANCH=n
 fi
 
-if [ -f mailcow.conf ]; then
+if [ -f zynerone.conf ]; then
   read -r -p "A config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
   case $response in
     [yY][eE][sS]|[yY])
-      mv mailcow.conf mailcow.conf_backup
-      chmod 600 mailcow.conf_backup
+      mv zynerone.conf zynerone.conf_backup
+      chmod 600 zynerone.conf_backup
       ;;
     *)
       exit 1
@@ -106,19 +106,19 @@ if [ -f mailcow.conf ]; then
 fi
 
 echo "Press enter to confirm the detected value '[value]' where applicable or enter a custom value."
-while [ -z "${MAILCOW_HOSTNAME}" ]; do
-  read -p "Mail server hostname (FQDN) - this is not your mail domain, but your mail servers hostname: " -e MAILCOW_HOSTNAME
-  DOTS=${MAILCOW_HOSTNAME//[^.]};
+while [ -z "${ZYNERONE_HOSTNAME}" ]; do
+  read -p "Mail server hostname (FQDN) - this is not your mail domain, but your mail servers hostname: " -e ZYNERONE_HOSTNAME
+  DOTS=${ZYNERONE_HOSTNAME//[^.]};
   if [ ${#DOTS} -lt 1 ]; then
-    echo -e "\e[31mMAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) is not a FQDN!\e[0m"
+    echo -e "\e[31mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is not a FQDN!\e[0m"
     sleep 1
     echo "Please change it to a FQDN and redeploy the stack with docker(-)compose up -d"
     exit 1
-  elif [[ "${MAILCOW_HOSTNAME: -1}" == "." ]]; then
-    echo "MAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) is ending with a dot. This is not a valid FQDN!"
+  elif [[ "${ZYNERONE_HOSTNAME: -1}" == "." ]]; then
+    echo "ZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is ending with a dot. This is not a valid FQDN!"
     exit 1
   elif [ ${#DOTS} -eq 1 ]; then
-    echo -e "\e[33mMAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) does not contain a Subdomain. This is not fully tested and may cause issues.\e[0m"
+    echo -e "\e[33mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) does not contain a Subdomain. This is not fully tested and may cause issues.\e[0m"
     echo "Find more information about why this message exists here: https://github.com/zynerorg/zynerone/issues/1572"
     read -r -p "Do you want to proceed anyway? [y/N] " response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
@@ -149,7 +149,7 @@ MEM_TOTAL=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 
 if [ ${MEM_TOTAL} -le "2621440" ]; then
   echo "Installed memory is <= 2.5 GiB. It is recommended to disable ClamAV to prevent out-of-memory situations."
-  echo "ClamAV can be re-enabled by setting SKIP_CLAMD=n in mailcow.conf."
+  echo "ClamAV can be re-enabled by setting SKIP_CLAMD=n in zynerone.conf."
   read -r -p  "Do you want to disable ClamAV now? [Y/n] " response
   case $response in
     [nN][oO]|[nN])
@@ -168,8 +168,8 @@ if [ ${MEM_TOTAL} -le "2097152" ]; then
   SKIP_SOLR=y
 elif [ ${MEM_TOTAL} -le "3670016" ]; then
   echo "Installed memory is <= 3.5 GiB. It is recommended to disable Solr to prevent out-of-memory situations."
-  echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in mailcow.conf according to your expected load."
-  echo "Solr can be re-enabled by setting SKIP_SOLR=n in mailcow.conf but will refuse to start with less than 2 GB total memory."
+  echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in zynerone.conf according to your expected load."
+  echo "Solr can be re-enabled by setting SKIP_SOLR=n in zynerone.conf but will refuse to start with less than 2 GB total memory."
   read -r -p  "Do you want to disable Solr now? [Y/n] " response
   case $response in
     [nN][oO]|[nN])
@@ -191,25 +191,25 @@ if [[ ${SKIP_BRANCH} != y ]]; then
   echo "- nightly branch (unstable updates, testing) | not-production ready [2]"
   sleep 1
 
-  while [ -z "${MAILCOW_BRANCH}" ]; do
+  while [ -z "${ZYNERONE_BRANCH}" ]; do
     read -r -p  "Choose the Branch with it´s number [1/2] " branch
     case $branch in
       [2])
-        MAILCOW_BRANCH="nightly"
+        ZYNERONE_BRANCH="nightly"
         ;;
       *)
-        MAILCOW_BRANCH="master"
+        ZYNERONE_BRANCH="master"
       ;;
     esac
   done
 
   git fetch --all
-  git checkout -f $MAILCOW_BRANCH
+  git checkout -f $ZYNERONE_BRANCH
 
 elif [[ ${SKIP_BRANCH} == y ]]; then
   echo -e "\033[33mEnabled Dev Mode.\033[0m"
   echo -e "\033[33mNot checking out a different branch!\033[0m"
-  MAILCOW_BRANCH=$(git rev-parse --short $(git rev-parse @{upstream}))
+  ZYNERONE_BRANCH=$(git rev-parse --short $(git rev-parse @{upstream}))
 
 else
   echo -e "\033[31mCould not determine branch input..."
@@ -217,13 +217,13 @@ else
   exit 1
 fi  
 
-if [ ! -z "${MAILCOW_BRANCH}" ]; then
-  git_branch=${MAILCOW_BRANCH}
+if [ ! -z "${ZYNERONE_BRANCH}" ]; then
+  git_branch=${ZYNERONE_BRANCH}
 fi
 
 [ ! -f ./data/conf/rspamd/override.d/worker-controller-password.inc ] && echo '# Placeholder' > ./data/conf/rspamd/override.d/worker-controller-password.inc
 
-cat << EOF > mailcow.conf
+cat << EOF > zynerone.conf
 # ------------------------------
 # mailcow web ui configuration
 # ------------------------------
@@ -231,12 +231,12 @@ cat << EOF > mailcow.conf
 # Default admin user is "admin"
 # Default password is "moohoo"
 
-MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
 
 # Password hash algorithm
 # Only certain password hash algorithm are supported. For a fully list of supported schemes,
 # see https://docs.zyner.one/models/model-passwd/
-MAILCOW_PASS_SCHEME=BLF-CRYPT
+ZYNERONE_PASS_SCHEME=BLF-CRYPT
 
 # ------------------------------
 # SQL database configuration
@@ -388,11 +388,11 @@ ALLOW_ADMIN_EMAIL_LOGIN=n
 
 USE_WATCHDOG=y
 
-# Send watchdog notifications by mail (sent from watchdog@MAILCOW_HOSTNAME)
+# Send watchdog notifications by mail (sent from watchdog@ZYNERONE_HOSTNAME)
 # CAUTION:
 # 1. You should use external recipients
 # 2. Mails are sent unsigned (no DKIM)
-# 3. If you use DMARC, create a separate DMARC policy ("v=DMARC1; p=none;" in _dmarc.MAILCOW_HOSTNAME)
+# 3. If you use DMARC, create a separate DMARC policy ("v=DMARC1; p=none;" in _dmarc.ZYNERONE_HOSTNAME)
 # Multiple rcpts allowed, NO quotation marks, NO spaces
 
 #WATCHDOG_NOTIFY_EMAIL=a@example.com,b@example.com,c@example.com
@@ -470,7 +470,7 @@ ACME_CONTACT=
 
 # WebAuthn device manufacturer verification
 # After setting WEBAUTHN_ONLY_TRUSTED_VENDORS=y only devices from trusted manufacturers are allowed
-# root certificates can be placed for validation under mailcow-dockerized/data/web/inc/lib/WebAuthn/rootCertificates
+# root certificates can be placed for validation under zynerone/data/web/inc/lib/WebAuthn/rootCertificates
 WEBAUTHN_ONLY_TRUSTED_VENDORS=n
 
 # Spamhaus Data Query Service Key
@@ -484,71 +484,71 @@ EOF
 
 mkdir -p data/assets/ssl
 
-chmod 600 mailcow.conf
+chmod 600 zynerone.conf
 
 # copy but don't overwrite existing certificate
 echo "Generating snake-oil certificate..."
 # Making Willich more popular
-openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=DE/ST=NRW/L=Willich/O=mailcow/OU=mailcow/CN=${MAILCOW_HOSTNAME}" -sha256 -nodes
+openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=DE/ST=NRW/L=Willich/O=mailcow/OU=mailcow/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
 echo "Copying snake-oil certificate..."
 cp -n -d data/assets/ssl-example/*.pem data/assets/ssl/
 
 # Set app_info.inc.php
 case ${git_branch} in
   master)
-    mailcow_git_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+    ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
     ;;
   nightly)
-    mailcow_git_version=$(git rev-parse --short $(git rev-parse @{upstream}))
-    mailcow_last_git_version=""
+    ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
+    ZYNERONE_LAST_GIT_VERSION=""
     ;;
   *)
-    mailcow_git_version=$(git rev-parse --short HEAD)
-    mailcow_last_git_version=""
+    ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
+    ZYNERONE_LAST_GIT_VERSION=""
     ;;
 esac
 # if [ ${git_branch} == "master" ]; then
-#   mailcow_git_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+#   ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
 # elif [ ${git_branch} == "nightly" ]; then
-#   mailcow_git_version=$(git rev-parse --short $(git rev-parse @{upstream}))
-#   mailcow_last_git_version=""
+#   ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
+#   ZYNERONE_LAST_GIT_VERSION=""
 # else
-#   mailcow_git_version=$(git rev-parse --short HEAD)
-#   mailcow_last_git_version=""
+#   ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
+#   ZYNERONE_LAST_GIT_VERSION=""
 # fi
 
 if [[ $SKIP_BRANCH != "y" ]]; then
-mailcow_git_commit=$(git rev-parse origin/${git_branch})
-mailcow_git_commit_date=$(git log -1 --format=%ci @{upstream} )
+ZYNERONE_GIT_commit=$(git rev-parse origin/${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
 else
-mailcow_git_commit=$(git rev-parse ${git_branch})
-mailcow_git_commit_date=$(git log -1 --format=%ci @{upstream} )
+ZYNERONE_GIT_commit=$(git rev-parse ${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
 git_branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 if [ $? -eq 0 ]; then
   echo '<?php' > data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_VERSION="'$mailcow_git_version'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT="'$mailcow_git_commit'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT_DATE="'$mailcow_git_commit_date'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="'$ZYNERONE_GIT_commit'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="'$ZYNERONE_GIT_commit_date'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
   echo '?>' >> data/web/inc/app_info.inc.php
 else
   echo '<?php' > data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_VERSION="'$mailcow_git_version'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
   echo '?>' >> data/web/inc/app_info.inc.php
   echo -e "\e[33mCannot determine current git repository version...\e[0m"
 fi

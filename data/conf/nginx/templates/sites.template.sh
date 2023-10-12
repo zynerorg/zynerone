@@ -20,7 +20,7 @@ for cert_dir in /etc/ssl/mail/*/ ; do
   domains="$(cat ${cert_dir}domains | sed -e 's/^[[:space:]]*//')"
   case "${domains}" in
     "") continue;;
-    "${MAILCOW_HOSTNAME}"*) continue;;
+    "${ZYNERONE_HOSTNAME}"*) continue;;
   esac
   echo -n '
 server {
