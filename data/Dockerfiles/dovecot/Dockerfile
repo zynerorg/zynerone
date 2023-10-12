@@ -1,5 +1,5 @@
 FROM debian:bullseye-slim
-LABEL maintainer "The Infrastructure Company GmbH <info@servercow.de>"
+LABEL maintainer "Zyner <contact@zyner.net>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 # renovate: datasource=github-tags depName=dovecot/core versioning=semver-coerced extractVersion=^v(?<version>.*)$
