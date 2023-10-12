@@ -5,7 +5,7 @@ response=${response,,}    # tolower
 if [[ "$response" =~ ^(yes|y)$ ]]; then
   echo "Working, please wait..."
   REDIS_ID=$(docker ps -qf name=redis-zynerone)
-  RSPAMD_ID=$(docker ps -qf name=rspamd-mailcow)
+  RSPAMD_ID=$(docker ps -qf name=rspamd-zynerone)
 
   if [ -z ${REDIS_ID} ] || [ -z ${RSPAMD_ID} ]; then
     echo "Cannot determine Redis or Rspamd container ID"

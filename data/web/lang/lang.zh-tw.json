@@ -295,7 +295,7 @@
         "rspamd_global_filters": "全域過濾規則",
         "rspamd_global_filters_agree": "我會小心謹慎的！",
         "rspamd_global_filters_info": "全域過濾規則包含了不同種類的全域黑名單和白名單。",
-        "rspamd_global_filters_regex": "用途如其名稱。所有內容都必須是 \"/pattern/options\" 格式的有效表達式 (如 <code>/.+@domain\\.tld/i</code>)。<br>\r\n雖然系統會對正規表示式執行初步檢查，但 Rspamd 的功能仍可能壞掉，如果他沒有運作，請再檢查正規表示式。<br>\r\n  Rspamd 會在規則更改後讀取其內容。如果你遇到了問題，<a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">重新啟動 Rspamd</a> 來強制重新載入規則。<br>黑名單中的項目會被排除在隔離系統外。",
+        "rspamd_global_filters_regex": "用途如其名稱。所有內容都必須是 \"/pattern/options\" 格式的有效表達式 (如 <code>/.+@domain\\.tld/i</code>)。<br>\r\n雖然系統會對正規表示式執行初步檢查，但 Rspamd 的功能仍可能壞掉，如果他沒有運作，請再檢查正規表示式。<br>\r\n  Rspamd 會在規則更改後讀取其內容。如果你遇到了問題，<a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">重新啟動 Rspamd</a> 來強制重新載入規則。<br>黑名單中的項目會被排除在隔離系統外。",
         "rspamd_settings_map": "Rspamd 設定規則",
         "sal_level": "Moo 等級",
         "save": "儲存更改",

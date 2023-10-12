@@ -287,7 +287,7 @@
         "rspamd_global_filters": "Globala filterregler",
         "rspamd_global_filters_agree": "Jag ska vara försiktig!",
         "rspamd_global_filters_info": "En global filterregel kan styra den globala vita- och svartlistan på denna server.",
-        "rspamd_global_filters_regex": "Formuläret måste innehålla ett giltigt regelbundet uttryck i formatet \"/pattern/options\" (ex. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Även om kontroller utförs på varje rad av regex-filtret, kan Rspamds-funktionalitet sluta fungera om den inte kan läsa syntaxen korrekt.<br>\r\n  Rspamd kommer försöka läsa innehållet när det har ändrats. Om du stöter på problem, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">starta om Rspamd</a> för att verkställa en omläsning av regelverket.<br>Svartlistade objekt undantas från karantän.",
+        "rspamd_global_filters_regex": "Formuläret måste innehålla ett giltigt regelbundet uttryck i formatet \"/pattern/options\" (ex. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Även om kontroller utförs på varje rad av regex-filtret, kan Rspamds-funktionalitet sluta fungera om den inte kan läsa syntaxen korrekt.<br>\r\n  Rspamd kommer försöka läsa innehållet när det har ändrats. Om du stöter på problem, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">starta om Rspamd</a> för att verkställa en omläsning av regelverket.<br>Svartlistade objekt undantas från karantän.",
         "rspamd_settings_map": "Regelverk för Rspamd",
         "sal_level": "Moo-nivå",
         "save": "Spara ändringar",

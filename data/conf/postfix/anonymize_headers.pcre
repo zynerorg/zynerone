@@ -7,7 +7,7 @@ if /^\s*Received: from.* \(.*dovecot-mailcow.*mailcow-network.*\).*\(Zyner One\)
 /^Received: from.* (.*|\n.*)\((.+) (.+)\)\s+by (.+) \(Zyner One\) with (.*)/
   REPLACE Received: from sieve (sieve $3) by $4 (Zyner One) with $5
 endif
-if /^\s*Received: from.* \(.*rspamd-mailcow.*mailcow-network.*\).*\(Zyner One\)/
+if /^\s*Received: from.* \(.*rspamd-zynerone.*mailcow-network.*\).*\(Zyner One\)/
 /^Received: from.* (.*|\n.*)\((.+) (.+)\)\s+by (.+) \(Zyner One\) with (.*)/
   REPLACE Received: from rspamd (rspamd $3) by $4 (Zyner One) with $5
 endif

@@ -295,7 +295,7 @@
         "rspamd_global_filters": "全局过滤规则",
         "rspamd_global_filters_agree": "我会小心谨慎的!",
         "rspamd_global_filters_info": "全局过滤规则包含了不同类型的全局黑名单和白名单。",
-        "rspamd_global_filters_regex": "它们的名字解释了它们的用途。所有内容必须包含 \"/pattern/options\" 格式的合法表达式 (例如 <code>/.+@domain\\.tld/i</code>)。<br>\r\n 因为仅对正则表达式执行了基本的检查，Rspamd 的功能仍可能因正则表达式语法问题出现错误。<br>\r\n  Rspamd 会在规则更改后读取其内容。 如果你遇到了问题，<a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">重启 Rspamd</a> 以强制重载规则。<br>黑名单中的项目会被系统排除。",
+        "rspamd_global_filters_regex": "它们的名字解释了它们的用途。所有内容必须包含 \"/pattern/options\" 格式的合法表达式 (例如 <code>/.+@domain\\.tld/i</code>)。<br>\r\n 因为仅对正则表达式执行了基本的检查，Rspamd 的功能仍可能因正则表达式语法问题出现错误。<br>\r\n  Rspamd 会在规则更改后读取其内容。 如果你遇到了问题，<a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">重启 Rspamd</a> 以强制重载规则。<br>黑名单中的项目会被系统排除。",
         "rspamd_settings_map": "Rspamd 设置",
         "sal_level": "Moo 等级",
         "save": "保存更改",

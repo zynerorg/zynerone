@@ -307,7 +307,7 @@
         "rspamd_global_filters": "Global filter maps",
         "rspamd_global_filters_agree": "I will be careful!",
         "rspamd_global_filters_info": "Global filter maps contain different kind of global black and whitelists.",
-        "rspamd_global_filters_regex": "Their names explain their purpose. All content must contain valid regular expression in the format of \"/pattern/options\" (e.g. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Although rudimentary checks are being executed on each line of regex, Rspamds functionality can be broken, if it fails to read the syntax correctly.<br>\r\n  Rspamd will try to read the map content when changed. If you experience problems, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">restart Rspamd</a> to enforce a map reload.<br>Blacklisted elements are excluded from quarantine.",
+        "rspamd_global_filters_regex": "Their names explain their purpose. All content must contain valid regular expression in the format of \"/pattern/options\" (e.g. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Although rudimentary checks are being executed on each line of regex, Rspamds functionality can be broken, if it fails to read the syntax correctly.<br>\r\n  Rspamd will try to read the map content when changed. If you experience problems, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">restart Rspamd</a> to enforce a map reload.<br>Blacklisted elements are excluded from quarantine.",
         "rspamd_settings_map": "Rspamd settings map",
         "sal_level": "Moo level",
         "save": "Save changes",

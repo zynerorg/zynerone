@@ -295,7 +295,7 @@
         "rspamd_global_filters": "Hărți cu filtru global",
         "rspamd_global_filters_agree": "Voi fi atent!",
         "rspamd_global_filters_info": "Hărțile cu filtre globale conțin diferite tipuri de liste negre și albe.",
-        "rspamd_global_filters_regex": "Numele lor explică scopul lor. Tot conținutul trebuie să conțină o expresie regulată validă în formatul \"/pattern/options\" (de ex. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Deși verificări rudimentare sunt executate pe fiecare linie de expresii regulate, funcționalitatea Rspamds poate fi stricată, dacă nu reușește să citească sintaxa corect.<br>\r\n  Rspamd va încerca să citească conținutul hărții atunci când este modificat. Dacă aveți probleme, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">reporniți Rspamd</a> pentru a forța reîncărcarea hărții.",
+        "rspamd_global_filters_regex": "Numele lor explică scopul lor. Tot conținutul trebuie să conțină o expresie regulată validă în formatul \"/pattern/options\" (de ex. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Deși verificări rudimentare sunt executate pe fiecare linie de expresii regulate, funcționalitatea Rspamds poate fi stricată, dacă nu reușește să citească sintaxa corect.<br>\r\n  Rspamd va încerca să citească conținutul hărții atunci când este modificat. Dacă aveți probleme, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">reporniți Rspamd</a> pentru a forța reîncărcarea hărții.",
         "rspamd_settings_map": "Harta setărilor Rspamd",
         "sal_level": "Nivel moo",
         "save": "Salvează modificările",

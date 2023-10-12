@@ -277,7 +277,7 @@
         "rspamd_global_filters": "Globale filterkort",
         "rspamd_global_filters_agree": "Jeg vil være forsigtig!",
         "rspamd_global_filters_info": "Global filter maps contain different kind of global black and whitelists.",
-        "rspamd_global_filters_regex": "Deres navne forklarer deres formål. Alt indhold skal indeholde gyldigt regulært udtryk i formatet \"/pattern/options\" (e.g. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Selvom der udføres rudimentære kontroller på hver linje med regex, kan Rspamds-funktionaliteten brydes, hvis den ikke læser syntaksen korrekt.<br>\r\n  Rspamd forsøger at læse kortindholdet, når det ændres. Hvis du oplever problemer, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\"  data-target=\"#RestartContainer\">genstart Rspamd</a> for at håndhæve et kortindlæsning.<br>Sortlisteelementer er udelukket fra karantæne.",
+        "rspamd_global_filters_regex": "Deres navne forklarer deres formål. Alt indhold skal indeholde gyldigt regulært udtryk i formatet \"/pattern/options\" (e.g. <code>/.+@domain\\.tld/i</code>).<br>\r\n  Selvom der udføres rudimentære kontroller på hver linje med regex, kan Rspamds-funktionaliteten brydes, hvis den ikke læser syntaksen korrekt.<br>\r\n  Rspamd forsøger at læse kortindholdet, når det ændres. Hvis du oplever problemer, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\"  data-target=\"#RestartContainer\">genstart Rspamd</a> for at håndhæve et kortindlæsning.<br>Sortlisteelementer er udelukket fra karantæne.",
         "rspamd_settings_map": "Rspamd indstillinger kort",
         "sal_level": "Moo niveau",
         "save": "Gem ændringer",

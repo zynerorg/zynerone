@@ -76,7 +76,7 @@ services:
           aliases:
             - clamd
 
-    rspamd-mailcow:
+    rspamd-zynerone:
       image: zyner/rspamd:1.92
       stop_grace_period: 30s
       depends_on:
@@ -604,7 +604,7 @@ services:
         - mariadb-zynerone
         - redis-zynerone
         - clamd-zynerone
-        - rspamd-mailcow
+        - rspamd-zynerone
         - php-fpm-mailcow
         - sogo-mailcow
         - dovecot-mailcow

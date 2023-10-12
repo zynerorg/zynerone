@@ -276,7 +276,7 @@
         "rspamd_global_filters": "Globale filters",
         "rspamd_global_filters_agree": "Ik ben me ervan bewust dat aanpassingen desastreuze gevolgen kunnen hebben",
         "rspamd_global_filters_info": "Ieder globaal filter heeft zijn eigen functie, zie de namen.",
-        "rspamd_global_filters_regex": "De velden kunnen uitsluitend regular expressions bevatten met het formaat \"/pattern/options\", bijvoorbeeld <code>/.+@domain\\.tld/i</code>.<br>Ondanks dat alle invoer wordt gecontroleerd op fouten, is het toch mogelijk dat Rspamd onbruikbaar wordt als deze de invoer niet kan lezen.<br>Als je problemen ervaart, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-mailcow\" data-target=\"#RestartContainer\">herstart Rspamd</a> dan om de filters opnieuw te laten lezen.<br>Elementen op de blacklist zijn uitgesloten van de quarantaine.",
+        "rspamd_global_filters_regex": "De velden kunnen uitsluitend regular expressions bevatten met het formaat \"/pattern/options\", bijvoorbeeld <code>/.+@domain\\.tld/i</code>.<br>Ondanks dat alle invoer wordt gecontroleerd op fouten, is het toch mogelijk dat Rspamd onbruikbaar wordt als deze de invoer niet kan lezen.<br>Als je problemen ervaart, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">herstart Rspamd</a> dan om de filters opnieuw te laten lezen.<br>Elementen op de blacklist zijn uitgesloten van de quarantaine.",
         "rspamd_settings_map": "Rspamd",
         "sal_level": "Moo-level",
         "save": "Sla wijzigingen op",
