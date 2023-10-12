@@ -299,10 +299,10 @@ redis_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/redis-mailcow; echo "$(tail -50 /tmp/redis-mailcow)" > /tmp/redis-mailcow
-    host_ip=$(get_container_ip redis-mailcow)
+    touch /tmp/redis-zynerone; echo "$(tail -50 /tmp/redis-zynerone)" > /tmp/redis-zynerone
+    host_ip=$(get_container_ip redis-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H redis-mailcow -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>> /tmp/redis-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H redis-zynerone -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>> /tmp/redis-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Redis" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -808,7 +808,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! redis_checks; then
     log_msg "Local Redis hit error limit"
-    echo redis-mailcow > /tmp/com_pipe
+    echo redis-zynerone > /tmp/com_pipe
   fi
 done
 ) &

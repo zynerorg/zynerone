@@ -166,7 +166,7 @@ async def startup_event():
   if os.environ['REDIS_SLAVEOF_IP'] != "":
     redis_client = redis = await aioredis.from_url(f"redis://{os.environ['REDIS_SLAVEOF_IP']}:{os.environ['REDIS_SLAVEOF_PORT']}/0")
   else:
-    redis_client = redis = await aioredis.from_url("redis://redis-mailcow:6379/0")
+    redis_client = redis = await aioredis.from_url("redis://redis-zynerone:6379/0")
 
   # Init docker clients
   sync_docker_client = docker.DockerClient(base_url='unix://var/run/docker.sock', version='auto')
