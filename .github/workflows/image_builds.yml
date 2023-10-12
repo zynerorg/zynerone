@@ -22,7 +22,7 @@ jobs:
           - "php-fpm-zynerone"
           - "postfix-mailcow"
           - "rspamd-zynerone"
-          - "sogo-mailcow"
+          - "sogo-zynerone"
           - "solr-mailcow"
           - "unbound-zynerone"
           - "watchdog-mailcow"

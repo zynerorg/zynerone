@@ -2335,7 +2335,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "sogo-mailcow") {
+  if ($application == "sogo-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('SOGO_LOG', $from - 1, $to - 1);
     }

@@ -81,7 +81,7 @@
         "password": "Heslo",
         "password_repeat": "Potvrdzovacie heslo (zopakovať)",
         "port": "Port",
-        "post_domain_add": "SOGo kontajner, \"sogo-mailcow\", musí byť reštartovaný po pridaní novej domény!<br><br>Okrem toho by sa mala skontrolovať konfigurácia DNS domény. Ak je konfigurácia v poriadku, reštartujte \"acme-mailcow\", aby sa automaticky vygenerovali certifikáty pre vašu novú doménu (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Tento krok je voliteľný a bude sa opakovať každých 24 hodín.",
+        "post_domain_add": "SOGo kontajner, \"sogo-zynerone\", musí byť reštartovaný po pridaní novej domény!<br><br>Okrem toho by sa mala skontrolovať konfigurácia DNS domény. Ak je konfigurácia v poriadku, reštartujte \"acme-mailcow\", aby sa automaticky vygenerovali certifikáty pre vašu novú doménu (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Tento krok je voliteľný a bude sa opakovať každých 24 hodín.",
         "private_comment": "Súkromný komentár",
         "public_comment": "Verejný komentár",
         "quota_mb": "Kvóta (MiB)",

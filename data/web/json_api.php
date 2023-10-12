@@ -922,10 +922,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('sogo-mailcow', $extra);
+                  $logs = get_logs('sogo-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('sogo-mailcow');
+                  $logs = get_logs('sogo-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;

@@ -77,7 +77,7 @@
         "password": "Wachtwoord",
         "password_repeat": "Herhaal wachtwoord",
         "port": "Poort",
-        "post_domain_add": "De SOGo-container, \"sogo-mailcow\", dient herstart te worden na het toevoegen van een nieuw domein!<br><br>Daarnaast wordt het aanbevolen om de DNS-configuratie te herzien. Nadat de DNS-configuratie juist is ingesteld, herstart je \"acme-mailcow\" om direct certificaten voor het nieuwe domein te genereren.<br>De laatste stap is optioneel, en zal elke 24 uur automatisch geprobeerd worden.",
+        "post_domain_add": "De SOGo-container, \"sogo-zynerone\", dient herstart te worden na het toevoegen van een nieuw domein!<br><br>Daarnaast wordt het aanbevolen om de DNS-configuratie te herzien. Nadat de DNS-configuratie juist is ingesteld, herstart je \"acme-mailcow\" om direct certificaten voor het nieuwe domein te genereren.<br>De laatste stap is optioneel, en zal elke 24 uur automatisch geprobeerd worden.",
         "private_comment": "Persoonlijke opmerking",
         "public_comment": "Publieke opmerking",
         "quota_mb": "Quota (MiB)",
