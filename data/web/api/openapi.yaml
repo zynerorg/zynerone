@@ -5237,8 +5237,8 @@ paths:
                       started_at: "2019-12-22T21:00:07.186717617Z"
                       state: running
                       type: info
-                    redis-mailcow:
-                      container: redis-mailcow
+                    redis-zynerone:
+                      container: redis-zynerone
                       image: "redis:5-alpine"
                       started_at: "2019-12-22T20:59:56.827166834Z"
                       state: running

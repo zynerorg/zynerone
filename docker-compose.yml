@@ -40,7 +40,7 @@ services:
           aliases:
             - mysql
 
-    redis-mailcow:
+    redis-zynerone:
       image: redis:7-alpine
       volumes:
         - redis-vol-1:/data/
@@ -110,7 +110,7 @@ services:
       image: zyner/phpfpm:1.85
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
-        - redis-mailcow
+        - redis-zynerone
       volumes:
         - ./data/hooks/phpfpm:/hooks:Z
         - ./data/web:/web:z
@@ -351,7 +351,7 @@ services:
       depends_on:
         - sogo-mailcow
         - php-fpm-mailcow
-        - redis-mailcow
+        - redis-zynerone
       image: nginx:mainline-alpine
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -441,7 +441,7 @@ services:
         - postfix-mailcow
         - sogo-mailcow
         - php-fpm-mailcow
-        - redis-mailcow
+        - redis-zynerone
       restart: always
       privileged: true
       environment:
@@ -473,7 +473,7 @@ services:
         - dovecot-mailcow
         - mariadb-zynerone
         - acme-mailcow
-        - redis-mailcow
+        - redis-zynerone
 
       environment:
         - IPV6_NETWORK=${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
@@ -602,7 +602,7 @@ services:
       depends_on:
         - unbound-zynerone
         - mariadb-zynerone
-        - redis-mailcow
+        - redis-zynerone
         - clamd-mailcow
         - rspamd-mailcow
         - php-fpm-mailcow

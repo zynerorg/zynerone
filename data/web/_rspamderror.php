@@ -5,7 +5,7 @@ try {
     $redis->connect(getenv('REDIS_SLAVEOF_IP'), getenv('REDIS_SLAVEOF_PORT'));
   }
   else {
-    $redis->connect('redis-mailcow', 6379);
+    $redis->connect('redis-zynerone', 6379);
   }
 }
 catch (Exception $e) {
