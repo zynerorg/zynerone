@@ -5201,8 +5201,8 @@ paths:
                       started_at: "2019-12-22T20:59:58.0907785Z"
                       state: running
                       type: info
-                    mysql-mailcow:
-                      container: mysql-mailcow
+                    mariadb-zynerone:
+                      container: mariadb-zynerone
                       image: "mariadb:10.3"
                       started_at: "2019-12-22T21:00:02.201937528Z"
                       state: running

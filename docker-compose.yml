@@ -16,7 +16,7 @@ services:
           aliases:
             - unbound
 
-    mysql-mailcow:
+    mariadb-zynerone:
       image: mariadb:10.5
       depends_on:
         - unbound-mailcow
@@ -220,7 +220,7 @@ services:
     dovecot-mailcow:
       image: zyner/dovecot:1.25
       depends_on:
-        - mysql-mailcow
+        - mariadb-zynerone
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       cap_add:
@@ -300,7 +300,7 @@ services:
     postfix-mailcow:
       image: zyner/postfix:1.72
       depends_on:
-        mysql-mailcow:
+        mariadb-zynerone:
           condition: service_started
         unbound-mailcow:
           condition: service_healthy
@@ -471,7 +471,7 @@ services:
       depends_on:
         - postfix-mailcow
         - dovecot-mailcow
-        - mysql-mailcow
+        - mariadb-zynerone
         - acme-mailcow
         - redis-mailcow
 
@@ -601,7 +601,7 @@ services:
     ipv6nat-mailcow:
       depends_on:
         - unbound-mailcow
-        - mysql-mailcow
+        - mariadb-zynerone
         - redis-mailcow
         - clamd-mailcow
         - rspamd-mailcow

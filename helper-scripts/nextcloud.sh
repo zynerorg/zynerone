@@ -48,21 +48,21 @@ if [[ ${NC_PURGE} == "y" ]]; then
   fi
 
   echo -e "\033[33mDetecting Database information...\033[0m"
-  if [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "Show databases" | grep "nextcloud") ]]; then
+  if [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "Show databases" | grep "nextcloud") ]]; then
     echo -e "\033[32mFound seperate Nextcloud database (newer scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "DROP DATABASE nextcloud;" > /dev/null
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "DROP USER 'nextcloud'@'%';" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP DATABASE nextcloud;" > /dev/null
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP USER 'nextcloud'@'%';" > /dev/null
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
     echo -e "\033[32mFound Nextcloud (oc) tables inside of mailcow database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e \
-     "$(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'oc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
+     "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'oc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
     echo -e "\033[32mFound Nextcloud (nc) tables inside of mailcow database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e \
-     "$(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'nc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
+     "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'nc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
   else
     echo -e "\033[31mError: No Nextcloud databases/tables found!"
     echo -e "\033[33mNot purging anything...\033[0m"
@@ -131,13 +131,13 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
   NC_DBNAME=nextcloud
 
   echo -ne "[1/3] Creating 'nextcloud' database"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "CREATE DATABASE ${NC_DBNAME};"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "CREATE DATABASE ${NC_DBNAME};"
   sleep 2
   echo -ne "\r[2/3] Creating 'nextcloud' database user"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "CREATE USER '${NC_DBUSER}'@'%' IDENTIFIED BY '${NC_DBPASS}';"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "CREATE USER '${NC_DBUSER}'@'%' IDENTIFIED BY '${NC_DBPASS}';"
   sleep 2
   echo -ne "\r[3/3] Granting 'nextcloud' user all permissions on database 'nextcloud'"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "GRANT ALL PRIVILEGES ON ${NC_DBNAME}.* TO '${NC_DBUSER}'@'%';"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "GRANT ALL PRIVILEGES ON ${NC_DBNAME}.* TO '${NC_DBUSER}'@'%';"
   sleep 2
 
   echo ""
