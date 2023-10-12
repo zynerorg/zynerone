@@ -12,14 +12,14 @@ jobs:
       - name: Send message
         uses: thollander/actions-comment-pull-request@v2.4.2
         with:
-          GITHUB_TOKEN: ${{ secrets.CHECKIFPRISSTAGING_ACTION_PAT }}
+          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
           message: |
                    Thanks for contributing!
 
                    I noticed that you didn't select `staging` as your base branch. Please change the base branch to `staging`.
                    See the attached picture on how to change the base branch to `staging`:
 
-                   ![check_prs_if_on_staging.png](https://raw.githubusercontent.com/mailcow/mailcow-dockerized/master/.github/workflows/assets/check_prs_if_on_staging.png)
+                   ![check_prs_if_on_staging.png](https://raw.githubusercontent.com/ZynerOrg/zynerone/master/.github/workflows/assets/check_prs_if_on_staging.png)
 
       - name: Fail #we want to see failed checks in the PR
         if: ${{ success() }} #set exit code to 1 even if commenting somehow failed
