@@ -5195,8 +5195,8 @@ paths:
                       started_at: "2019-12-22T21:06:37.273225445Z"
                       state: running
                       type: info
-                    memcached-mailcow:
-                      container: memcached-mailcow
+                    memcached-zynerone:
+                      container: memcached-zynerone
                       image: "memcached:alpine"
                       started_at: "2019-12-22T20:59:58.0907785Z"
                       state: running
