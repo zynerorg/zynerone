@@ -1,6 +1,6 @@
 # Security Policies and Procedures
 
-This document outlines security procedures and general policies for the _mailcow: dockerized_ project as found on [mailcow-dockerized](https://github.com/mailcow/mailcow-dockerized).
+This document outlines security procedures and general policies for the _mailcow: dockerized_ project as found on [mailcow-dockerized](https://github.com/zynerorg/zynerone).
 
   * [Reporting a Vulnerability](#reporting-a-vulnerability)
   * [Disclosure Policy](#disclosure-policy)

@@ -375,7 +375,7 @@
         "running": "Executant-se",
         "set_postfilter": "Mark as postfilter",
         "set_prefilter": "Mark as prefilter",
-        "sieve_info": "Podeu emmagatzemar diversos filtres per usuari, però només un filtre previ i un filtre posterior poden estar actius al mateix temps.<br>\r\nCada filtre es processarà en l'ordre descrit. Ni un script que falli, ni un \"keep\" emès farà que es deixin de processar els  altres scripts.<br>\r\nFiltre previ → Filtre d'usuari → Filtre posterior → <a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/sieve_after\" target=\"_blank\">Filtre global</a>",
+        "sieve_info": "Podeu emmagatzemar diversos filtres per usuari, però només un filtre previ i un filtre posterior poden estar actius al mateix temps.<br>\r\nCada filtre es processarà en l'ordre descrit. Ni un script que falli, ni un \"keep\" emès farà que es deixin de processar els  altres scripts.<br>\r\nFiltre previ → Filtre d'usuari → Filtre posterior → <a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/sieve_after\" target=\"_blank\">Filtre global</a>",
         "spam_aliases": "Temp. àlies",
         "status": "Estat",
         "sync_jobs": "Sync jobs",

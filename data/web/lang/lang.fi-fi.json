@@ -616,7 +616,7 @@
         "running": "Running",
         "set_postfilter": "Merkitse esisuodattimeksi",
         "set_prefilter": "Merkitse esisuodattimeksi",
-        "sieve_info": "Voit tallentaa useita suodattimia käyttäjää kohden, mutta vain yksi esisuodatin ja yksi postfilter voivat olla aktiivisia samanaikaisesti<br>\r\nKukin suodatin käsitellään kuvatussa järjestyksessä. Epäonnistunut komento sarja tai annettu \"Keep;\" ei lopeta muiden komento sarjojen käsittelyä.<br>\r\n<a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Yleinen sieve esisuodatin</a> → Esisuodatin → Käyttäjän komento sarjat → Postfilter → <a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Yleisset sieve postfilterit</a>",
+        "sieve_info": "Voit tallentaa useita suodattimia käyttäjää kohden, mutta vain yksi esisuodatin ja yksi postfilter voivat olla aktiivisia samanaikaisesti<br>\r\nKukin suodatin käsitellään kuvatussa järjestyksessä. Epäonnistunut komento sarja tai annettu \"Keep;\" ei lopeta muiden komento sarjojen käsittelyä.<br>\r\n<a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Yleinen sieve esisuodatin</a> → Esisuodatin → Käyttäjän komento sarjat → Postfilter → <a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Yleisset sieve postfilterit</a>",
         "sogo_visible": "Alias näkyy SOGo-kohteessa",
         "sogo_visible_n": "Piilota alias SOGo-kohteessa",
         "sogo_visible_y": "Näytä alias SOGo-kohteessa",

@@ -7,7 +7,7 @@ body:
       label: Contribution guidelines
       description: Please read the contribution guidelines before proceeding.
       options:
-      - label: I've read the [contribution guidelines](https://github.com/mailcow/mailcow-dockerized/blob/master/CONTRIBUTING.md) and wholeheartedly agree
+      - label: I've read the [contribution guidelines](https://github.com/zynerorg/zynerone/blob/master/CONTRIBUTING.md) and wholeheartedly agree
         required: true
   - type: checkboxes
     attributes:
@@ -20,7 +20,7 @@ body:
         required: true
       - label: ... I have understood that answers are voluntary and community-driven, and not commercial support.
         required: true
-      - label: ... I have verified that my issue has not been already answered in the past. I also checked previous [issues](https://github.com/mailcow/mailcow-dockerized/issues).
+      - label: ... I have verified that my issue has not been already answered in the past. I also checked previous [issues](https://github.com/zynerorg/zynerone/issues).
         required: true
   - type: textarea
     attributes:
