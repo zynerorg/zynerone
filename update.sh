@@ -343,13 +343,13 @@ while (($#)); do
   case "${1}" in
     --check|-c)
       echo "Checking remote code for updates..."
-      LATEST_REV=$(git ls-remote --exit-code --refs --quiet https://github.com/zyner/zynerone ${BRANCH} | cut -f1)
+      LATEST_REV=$(git ls-remote --exit-code --refs --quiet https://github.com/ZynerOrg/zynerone ${BRANCH} | cut -f1)
       if [ $? -ne 0 ]; then
         echo "A problem occurred while trying to fetch the latest revision from github."
         exit 99
       fi
       if [[ -z $(git log HEAD --pretty=format:"%H" | grep "${LATEST_REV}") ]]; then
-        echo -e "Updated code is available.\nThe changes can be found here: https://github.com/zyner/zynerone/commits/master"
+        echo -e "Updated code is available.\nThe changes can be found here: https://github.com/ZynerOrg/zynerone/commits/master"
         git log --date=short --pretty=format:"%ad - %s" $(git rev-parse --short HEAD)..origin/master
         exit 0
       else
@@ -428,7 +428,7 @@ elif [[ "${MAILCOW_HOSTNAME: -1}" == "." ]]; then
   exit 1
 elif [ ${#DOTS} -eq 1 ]; then
   echo -e "\e[33mMAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) does not contain a Subdomain. This is not fully tested and may cause issues.\e[0m"
-  echo "Find more information about why this message exists here: https://github.com/zyner/zynerone/issues/1572"
+  echo "Find more information about why this message exists here: https://github.com/ZynerOrg/zynerone/issues/1572"
   read -r -p "Do you want to proceed anyway? [y/N] " response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     echo "OK. Procceding."
@@ -890,9 +890,9 @@ done
 
 
 # Silently fixing remote url from andryyy to mailcow
-# git remote set-url origin https://github.com/zyner/zynerone
+# git remote set-url origin https://github.com/ZynerOrg/zynerone
 
-DEFAULT_REPO=https://github.com/zyner/zynerone
+DEFAULT_REPO=https://github.com/ZynerOrg/zynerone
 CURRENT_REPO=$(git remote get-url origin)
 if [ "$CURRENT_REPO" != "$DEFAULT_REPO" ]; then 
   echo "The Repository currently used is not the default Mailcow Repository."
@@ -995,7 +995,7 @@ if [ $? -eq 0 ]; then
   echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/zyner/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $MAILCOW_GIT_URL="https://github.com/ZynerOrg/zynerone";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_COMMIT="'$mailcow_git_commit'";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_COMMIT_DATE="'$mailcow_git_commit_date'";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_BRANCH="'$BRANCH'";' >> data/web/inc/app_info.inc.php
@@ -1007,7 +1007,7 @@ else
   echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/zyner/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $MAILCOW_GIT_URL="https://github.com/ZynerOrg/zynerone";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
   echo '  $MAILCOW_BRANCH="'$BRANCH'";' >> data/web/inc/app_info.inc.php
