@@ -188,7 +188,7 @@ if ! [[ "${DOCKER_COMPOSE_VERSION}" =~ ^(native|standalone)$ ]]; then
         echo -e "\e[33mNotice: You'll have to update this Compose Version via your Package Manager manually!\e[0m"
       else
         echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
-        echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+        echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
         exit 1
       fi
   elif docker-compose > /dev/null 2>&1; then
@@ -203,14 +203,14 @@ if ! [[ "${DOCKER_COMPOSE_VERSION}" =~ ^(native|standalone)$ ]]; then
         echo -e "\e[33mNotice: For an automatic update of docker-compose please use the update_compose.sh scripts located at the helper-scripts folder.\e[0m"
       else
         echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
-        echo -e "\e[31mPlease update/install regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+        echo -e "\e[31mPlease update/install regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
         exit 1
       fi
     fi
 
   else
     echo -e "\e[31mCannot find Docker Compose.\e[0m" 
-    echo -e "\e[31mPlease install it regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+    echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
     exit 1
   fi
 
@@ -223,7 +223,7 @@ elif [ "${DOCKER_COMPOSE_VERSION}" == "native" ]; then
     if ! $COMPOSE_COMMAND > /dev/null 2>&1 || ! $COMPOSE_COMMAND --version | grep "^2." > /dev/null 2>&1; then
       # IF it cannot find Standalone in > 2.X, then script stops
       echo -e "\e[31mCannot find Docker Compose or the Version is lower then 2.X.X.\e[0m" 
-      echo -e "\e[31mPlease install it regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+      echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
       # If it finds the standalone Plugin it will use this instead and change the mailcow.conf Variable accordingly
@@ -243,7 +243,7 @@ elif [ "${DOCKER_COMPOSE_VERSION}" == "standalone" ]; then
     if ! $COMPOSE_COMMAND > /dev/null 2>&1; then
       # IF it cannot find Native in > 2.X, then script stops
       echo -e "\e[31mCannot find Docker Compose.\e[0m" 
-      echo -e "\e[31mPlease install it regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+      echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
       # If it finds the native Plugin it will use this instead and change the mailcow.conf Variable accordingly
@@ -681,7 +681,7 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo "Adding new option \"${option}\" to mailcow.conf"
       echo '# Password hash algorithm' >> mailcow.conf
       echo '# Only certain password hash algorithm are supported. For a fully list of supported schemes,' >> mailcow.conf
-      echo '# see https://docs.mailcow.email/models/model-passwd/' >> mailcow.conf
+      echo '# see https://docs.zyner.one/models/model-passwd/' >> mailcow.conf
       echo "MAILCOW_PASS_SCHEME=BLF-CRYPT" >> mailcow.conf
     fi
   elif [[ ${option} == "ADDITIONAL_SERVER_NAMES" ]]; then
@@ -703,7 +703,7 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo '# Optional: Leave empty for none' >> mailcow.conf
       echo '# This value is only used on first order!' >> mailcow.conf
       echo '# Setting it at a later point will require the following steps:' >> mailcow.conf
-      echo '# https://docs.mailcow.email/troubleshooting/debug-reset_tls/' >> mailcow.conf
+      echo '# https://docs.zyner.one/troubleshooting/debug-reset_tls/' >> mailcow.conf
       echo 'ACME_CONTACT=' >> mailcow.conf
     fi
   elif [[ ${option} == "WEBAUTHN_ONLY_TRUSTED_VENDORS" ]]; then
