@@ -53,3 +53,5 @@ jobs:
         with:
           push: true
           tags: ${image}
+        env:
+          image: ${{ matrix.images }}
