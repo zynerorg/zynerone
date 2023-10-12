@@ -1,13 +1,14 @@
 {
   "enabled": true,
-  "timezone": "Europe/Berlin",
+  "timezone": "Europe/Stockholm",
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitBody": "Signed-off-by: milkmaker <milkmaker@mailcow.de>",
+  "commitBody": "Signed-off-by: Zyner <contact@zyner.net>",
   "rebaseWhen": "auto",
   "labels": ["renovate"],
   "assignees": [
-    "@magiccc"
+    "@VermiumSifell",
+    "@ZervoTheProtogen"
   ],
   "baseBranches": ["staging"],
   "enabledManagers": ["github-actions", "regex", "docker-compose"],
