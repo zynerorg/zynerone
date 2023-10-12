@@ -4519,7 +4519,7 @@ paths:
                   value:
                     - message: >-
                         [109]:
-                        mailcowdockerized_watchdog-zynerone_1.mailcowdockerized_mailcow-network
+                        mailcowdockerized_watchdog-zynerone_1.mailcowdockerized_zynerone-network
                         "GET /SOGo.index/ HTTP/1.1" 200 2531/0 0.005 - - 0
                       priority: notice
                       program: sogod

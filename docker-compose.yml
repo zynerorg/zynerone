@@ -11,7 +11,7 @@ services:
       restart: always
       tty: true
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.254
           aliases:
             - unbound
@@ -36,7 +36,7 @@ services:
       ports:
         - "${SQL_PORT:-127.0.0.1:13306}:3306"
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - mysql
 
@@ -52,7 +52,7 @@ services:
       sysctls:
         - net.core.somaxconn=4096
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.249
           aliases:
             - redis
@@ -72,7 +72,7 @@ services:
         - ./data/conf/clamav/:/etc/clamav/:Z
         - clamd-db-vol-1:/var/lib/clamav
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - clamd
 
@@ -102,7 +102,7 @@ services:
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - rspamd
 
@@ -166,7 +166,7 @@ services:
         - CLUSTERMODE=${CLUSTERMODE:-}
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - phpfpm
 
@@ -212,7 +212,7 @@ services:
         ofelia.job-exec.sogo_backup.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool backup /sogo_backup ALL || exit 0\""
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.248
           aliases:
             - sogo
@@ -292,7 +292,7 @@ services:
           soft: 20000
           hard: 40000
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.250
           aliases:
             - dovecot
@@ -332,7 +332,7 @@ services:
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.253
           aliases:
             - postfix
@@ -343,7 +343,7 @@ services:
       environment:
         - TZ=${TZ}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - memcached
 
@@ -388,7 +388,7 @@ services:
         - "${HTTP_BIND:-}:${HTTP_PORT:-80}:${HTTP_PORT:-80}"
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - nginx
 
@@ -429,7 +429,7 @@ services:
         - mysql-socket-vol-1:/var/run/mysqld/
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - acme
 
@@ -521,7 +521,7 @@ services:
         - MAILQ_THRESHOLD=${MAILQ_THRESHOLD:-20}
         - MAILQ_CRIT=${MAILQ_CRIT:-30}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - watchdog
 
@@ -540,7 +540,7 @@ services:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - dockerapi
 
@@ -556,7 +556,7 @@ services:
         - SOLR_HEAP=${SOLR_HEAP:-1024}
         - SKIP_SOLR=${SKIP_SOLR:-y}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - solr
 
@@ -574,7 +574,7 @@ services:
         - OLEFY_MINLENGTH=500
         - OLEFY_DEL_TMP=1
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - olefy
 
@@ -594,7 +594,7 @@ services:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - ofelia
 
@@ -629,7 +629,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
 networks:
-  mailcow-network:
+  zynerone-network:
     driver: bridge
     driver_opts:
       com.docker.network.bridge.name: br-mailcow
