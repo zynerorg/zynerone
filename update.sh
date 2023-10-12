@@ -687,10 +687,10 @@ for option in ${CONFIG_ARRAY[@]}; do
   elif [[ ${option} == "ADDITIONAL_SERVER_NAMES" ]]; then
     if ! grep -q ${option} mailcow.conf; then
       echo "Adding new option \"${option}\" to mailcow.conf"
-      echo '# Additional server names for mailcow UI' >> mailcow.conf
+      echo '# Additional server names for Zyner One UI' >> mailcow.conf
       echo '#' >> mailcow.conf
-      echo '# Specify alternative addresses for the mailcow UI to respond to' >> mailcow.conf
-      echo '# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the mailcow UI.' >> mailcow.conf
+      echo '# Specify alternative addresses for the Zyner One UI to respond to' >> mailcow.conf
+      echo '# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the Zyner One UI.' >> mailcow.conf
       echo '# If the server name does not match a known site, Nginx decides by best-guess and may redirect users to the wrong web root.' >> mailcow.conf
       echo '# You can understand this as server_name directive in Nginx.' >> mailcow.conf
       echo '# Comma separated list without spaces! Example: ADDITIONAL_SERVER_NAMES=a.b.c,d.e.f' >> mailcow.conf

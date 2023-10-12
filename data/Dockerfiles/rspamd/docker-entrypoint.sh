@@ -87,7 +87,7 @@ chown -R _rspamd:_rspamd /var/lib/rspamd \
   /etc/rspamd/plugins.d
 
 # Fix missing default global maps, if any
-# These exists in mailcow UI and should not be removed
+# These exists in Zyner One UI and should not be removed
 touch /etc/rspamd/custom/global_mime_from_blacklist.map \
   /etc/rspamd/custom/global_rcpt_blacklist.map \
   /etc/rspamd/custom/global_smtp_from_blacklist.map \

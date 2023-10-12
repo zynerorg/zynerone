@@ -336,10 +336,10 @@ MAILDIR_GC_TIME=7200
 
 ADDITIONAL_SAN=
 
-# Additional server names for mailcow UI
+# Additional server names for Zyner One UI
 #
-# Specify alternative addresses for the mailcow UI to respond to
-# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the mailcow UI.
+# Specify alternative addresses for the Zyner One UI to respond to
+# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the Zyner One UI.
 # If the server name does not match a known site, Nginx decides by best-guess and may redirect users to the wrong web root.
 # You can understand this as server_name directive in Nginx.
 # Comma separated list without spaces! Example: ADDITIONAL_SERVER_NAMES=a.b.c,d.e.f

@@ -104,7 +104,7 @@ def refreshF2bregex():
   global exit_code
   if not r.get('F2B_REGEX'):
     f2bregex = {}
-    f2bregex[1] = 'mailcow UI: Invalid password for .+ by ([0-9a-f\.:]+)'
+    f2bregex[1] = 'Zyner One UI: Invalid password for .+ by ([0-9a-f\.:]+)'
     f2bregex[2] = 'Rspamd UI: Invalid password by ([0-9a-f\.:]+)'
     f2bregex[3] = 'warning: .*\[([0-9a-f\.:]+)\]: SASL .+ authentication failed: (?!.*Connection lost to authentication server).+'
     f2bregex[4] = 'warning: non-SMTP command from .*\[([0-9a-f\.:]+)]:.+'

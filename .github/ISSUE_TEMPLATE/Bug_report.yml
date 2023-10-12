@@ -25,7 +25,7 @@ body:
   - type: textarea
     attributes:
       label: Description
-      description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in mailcow UI.
+      description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in Zyner One UI.
       render: plain text
     validations:
       required: true
