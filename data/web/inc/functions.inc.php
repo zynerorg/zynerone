@@ -2349,7 +2349,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "watchdog-mailcow") {
+  if ($application == "watchdog-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('WATCHDOG_LOG', $from - 1, $to - 1);
     }

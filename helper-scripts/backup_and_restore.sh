@@ -188,8 +188,8 @@ function restore() {
   fi
 
   echo
-  echo "Stopping watchdog-mailcow..."
-  docker stop $(docker ps -qf name=watchdog-mailcow)
+  echo "Stopping watchdog-zynerone..."
+  docker stop $(docker ps -qf name=watchdog-zynerone)
   echo
   RESTORE_LOCATION="${1}"
   shift
@@ -311,8 +311,8 @@ function restore() {
     shift
   done
   echo
-  echo "Starting watchdog-mailcow..."
-  docker start $(docker ps -aqf name=watchdog-mailcow)
+  echo "Starting watchdog-zynerone..."
+  docker start $(docker ps -aqf name=watchdog-zynerone)
 }
 
 if [[ ${1} == "backup" ]]; then

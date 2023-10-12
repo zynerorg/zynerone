@@ -4519,7 +4519,7 @@ paths:
                   value:
                     - message: >-
                         [109]:
-                        mailcowdockerized_watchdog-mailcow_1.mailcowdockerized_mailcow-network
+                        mailcowdockerized_watchdog-zynerone_1.mailcowdockerized_mailcow-network
                         "GET /SOGo.index/ HTTP/1.1" 200 2531/0 0.005 - - 0
                       priority: notice
                       program: sogod
@@ -5267,8 +5267,8 @@ paths:
                       started_at: "2019-12-22T20:59:58.760595825Z"
                       state: running
                       type: info
-                    watchdog-mailcow:
-                      container: watchdog-mailcow
+                    watchdog-zynerone:
+                      container: watchdog-zynerone
                       image: "mailcow/watchdog:1.65"
                       started_at: "2019-12-22T20:59:56.028660382Z"
                       state: running
