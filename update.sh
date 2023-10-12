@@ -17,7 +17,7 @@ prefetch_images() {
   git fetch origin #${BRANCH}
   while read image; do
     if [[ "${image}" == "robbertkl/ipv6nat" ]]; then
-      if ! grep -qi "ipv6nat-mailcow" docker-compose.yml || grep -qi "enable_ipv6: false" docker-compose.yml; then
+      if ! grep -qi "ipv6nat-zynerone" docker-compose.yml || grep -qi "enable_ipv6: false" docker-compose.yml; then
         continue
       fi
     fi
@@ -93,9 +93,9 @@ migrate_docker_nat() {
   DOCKERV_REQ=20.10.2
   # Current Docker version
   DOCKERV_CUR=$(docker version -f '{{.Server.Version}}')
-  if grep -qi "ipv6nat-mailcow" docker-compose.yml && grep -qi "enable_ipv6: true" docker-compose.yml; then
+  if grep -qi "ipv6nat-zynerone" docker-compose.yml && grep -qi "enable_ipv6: true" docker-compose.yml; then
     echo -e "\e[32mNative IPv6 implementation available.\e[0m"
-    echo "This will enable experimental features in the Docker daemon and configure Docker to do the IPv6 NATing instead of ipv6nat-mailcow."
+    echo "This will enable experimental features in the Docker daemon and configure Docker to do the IPv6 NATing instead of ipv6nat-zynerone."
     echo '!!! This step is recommended !!!'
     echo "mailcow will try to roll back the changes if starting Docker fails after modifying the daemon.json configuration file."
     read -r -p "Should we try to enable the native IPv6 implementation in Docker now (recommended)? [y/N] " dockernatresponse
@@ -137,9 +137,9 @@ migrate_docker_nat() {
       fi
     fi
     # Removing legacy container
-    sed -i '/ipv6nat-mailcow:$/,/^$/d' docker-compose.yml
+    sed -i '/ipv6nat-zynerone:$/,/^$/d' docker-compose.yml
     if [ -s docker-compose.override.yml ]; then
-        sed -i '/ipv6nat-mailcow:$/,/^$/d' docker-compose.override.yml
+        sed -i '/ipv6nat-zynerone:$/,/^$/d' docker-compose.override.yml
         if [[ "$(cat docker-compose.override.yml | sed '/^\s*$/d' | wc -l)" == "2" ]]; then
             mv docker-compose.override.yml docker-compose.override.yml_backup
         fi

@@ -5189,8 +5189,8 @@ paths:
                       started_at: "2019-12-22T21:00:08.988680259Z"
                       state: running
                       type: info
-                    ipv6nat-mailcow:
-                      container: ipv6nat-mailcow
+                    ipv6nat-zynerone:
+                      container: ipv6nat-zynerone
                       image: robbertkl/ipv6nat
                       started_at: "2019-12-22T21:06:37.273225445Z"
                       state: running

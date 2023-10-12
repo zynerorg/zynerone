@@ -598,7 +598,7 @@ services:
           aliases:
             - ofelia
 
-    ipv6nat-mailcow:
+    ipv6nat-zynerone:
       depends_on:
         - unbound-zynerone
         - mariadb-zynerone
