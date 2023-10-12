@@ -639,7 +639,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             }
           }
           if (!empty($restart_sogo)) {
-            $restart_response = json_decode(docker('post', 'sogo-mailcow', 'restart'), true);
+            $restart_response = json_decode(docker('post', 'sogo-zynerone', 'restart'), true);
             if ($restart_response['type'] == "success") {
               $_SESSION['return'][] = array(
                 'type' => 'success',

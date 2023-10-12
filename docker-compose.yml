@@ -170,7 +170,7 @@ services:
           aliases:
             - phpfpm
 
-    sogo-mailcow:
+    sogo-zynerone:
       image: zyner/sogo:1.119
       environment:
         - DBNAME=${DBNAME}
@@ -349,7 +349,7 @@ services:
 
     nginx-mailcow:
       depends_on:
-        - sogo-mailcow
+        - sogo-zynerone
         - php-fpm-zynerone
         - redis-zynerone
       image: nginx:mainline-alpine
@@ -439,7 +439,7 @@ services:
       depends_on:
         - dovecot-mailcow
         - postfix-mailcow
-        - sogo-mailcow
+        - sogo-zynerone
         - php-fpm-zynerone
         - redis-zynerone
       restart: always
@@ -585,7 +585,7 @@ services:
       environment:
         - TZ=${TZ}
       depends_on:
-        - sogo-mailcow
+        - sogo-zynerone
         - dovecot-mailcow
       labels:
         ofelia.enabled: "true"
@@ -606,7 +606,7 @@ services:
         - clamd-zynerone
         - rspamd-zynerone
         - php-fpm-zynerone
-        - sogo-mailcow
+        - sogo-zynerone
         - dovecot-mailcow
         - postfix-mailcow
         - memcached-mailcow

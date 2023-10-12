@@ -5249,8 +5249,8 @@ paths:
                       started_at: "2019-12-22T21:00:12.456075355Z"
                       state: running
                       type: info
-                    sogo-mailcow:
-                      container: sogo-mailcow
+                    sogo-zynerone:
+                      container: sogo-zynerone
                       image: "mailcow/sogo:1.65"
                       started_at: "2019-12-22T20:59:58.382274592Z"
                       state: running

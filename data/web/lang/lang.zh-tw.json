@@ -81,7 +81,7 @@
         "password": "密碼",
         "password_repeat": "密碼確認 (重復輸入)",
         "port": "通訊埠",
-        "post_domain_add": "在新增新域名後 SOGo 的容器 \"sogo-mailcow\" 需要重新啟動。<br><br>另外，請檢查域名的 DNS 設定。當 DNS 設定生效，重新啟動 \"acme-mailcow\" 容器來自動幫你的新域名生成憑證 (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;)。<br>可省略此步驟，憑證生成的機制每 24 小時會自動執行。",
+        "post_domain_add": "在新增新域名後 SOGo 的容器 \"sogo-zynerone\" 需要重新啟動。<br><br>另外，請檢查域名的 DNS 設定。當 DNS 設定生效，重新啟動 \"acme-mailcow\" 容器來自動幫你的新域名生成憑證 (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;)。<br>可省略此步驟，憑證生成的機制每 24 小時會自動執行。",
         "private_comment": "隱密備註",
         "public_comment": "公開備註",
         "quota_mb": "容量配額 (MiB)",

@@ -81,7 +81,7 @@
         "password": "Passwort",
         "password_repeat": "Passwort wiederholen",
         "port": "Port",
-        "post_domain_add": "Der SOGo-Container - \"sogo-mailcow\" - muss nach dem Hinzufügen einer Domain neugestartet werden!<br><br>Im Anschluss sollte die DNS-Konfiguration der Domain überprüft und \"acme-mailcow\" gegebenenfalls neugestartet werden, um Änderungen am Zertifikat zu übernehmen (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Dieser Schritt ist optional und wird alle 24 Stunden automatisch ausgeführt.",
+        "post_domain_add": "Der SOGo-Container - \"sogo-zynerone\" - muss nach dem Hinzufügen einer Domain neugestartet werden!<br><br>Im Anschluss sollte die DNS-Konfiguration der Domain überprüft und \"acme-mailcow\" gegebenenfalls neugestartet werden, um Änderungen am Zertifikat zu übernehmen (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Dieser Schritt ist optional und wird alle 24 Stunden automatisch ausgeführt.",
         "private_comment": "Privater Kommentar",
         "public_comment": "Öffentlicher Kommentar",
         "quota_mb": "Speicherplatz (MiB)",

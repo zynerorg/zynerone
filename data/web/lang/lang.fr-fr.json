@@ -79,7 +79,7 @@
         "password": "Mot de passe",
         "password_repeat": "Confirmation du mot de passe (répéter)",
         "port": "Port",
-        "post_domain_add": "le conteneur SOGo, \"sogo-mailcow\", doit être redémarré après l'ajout d'un nouveau domaine!<br><br>De plus, la configuration DNS doit être révisée. Lorsque la configuration DNS est approuvée, redémarrer \"acme-mailcow\" pour générer automatiquement les certificats pour votre nouveau domaine (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Cette étape est optionelle et sera réessayée toutes les 24 heures.",
+        "post_domain_add": "le conteneur SOGo, \"sogo-zynerone\", doit être redémarré après l'ajout d'un nouveau domaine!<br><br>De plus, la configuration DNS doit être révisée. Lorsque la configuration DNS est approuvée, redémarrer \"acme-mailcow\" pour générer automatiquement les certificats pour votre nouveau domaine (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Cette étape est optionelle et sera réessayée toutes les 24 heures.",
         "private_comment": "Commentaire privé",
         "public_comment": "Commentaire public",
         "quota_mb": "Quota (Mo)",
