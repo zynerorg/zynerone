@@ -241,10 +241,10 @@ nginx_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/nginx-mailcow; echo "$(tail -50 /tmp/nginx-mailcow)" > /tmp/nginx-mailcow
-    host_ip=$(get_container_ip nginx-mailcow)
+    touch /tmp/nginx-zynerone; echo "$(tail -50 /tmp/nginx-zynerone)" > /tmp/nginx-zynerone
+    host_ip=$(get_container_ip nginx-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>> /tmp/nginx-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>> /tmp/nginx-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Nginx" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -756,7 +756,7 @@ fi
 while true; do
   if ! nginx_checks; then
     log_msg "Nginx hit error limit"
-    echo nginx-mailcow > /tmp/com_pipe
+    echo nginx-zynerone > /tmp/com_pipe
   fi
 done
 ) &

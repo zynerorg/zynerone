@@ -81,7 +81,7 @@ EOF
   [[ -f ./data/conf/nginx/site.nextcloud.custom ]] && mv ./data/conf/nginx/site.nextcloud.custom ./data/conf/nginx/site.nextcloud.custom-$(date +%s).bak
   [[ -f ./data/conf/nginx/nextcloud.conf ]] && mv ./data/conf/nginx/nextcloud.conf ./data/conf/nginx/nextcloud.conf-$(date +%s).bak
 
-  docker restart $(docker ps -aqf name=nginx-mailcow)
+  docker restart $(docker ps -aqf name=nginx-zynerone)
 
   echo -e "\033[32mNextcloud has been uninstalled sucessfully!\033[0m"
 
@@ -194,7 +194,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
   echo ""
   echo -e "\033[33mFinalizing installation...\033[0m"
-  docker restart $(docker ps -aqf name=nginx-mailcow)
+  docker restart $(docker ps -aqf name=nginx-zynerone)
 
   echo ""
   echo "******************************************"

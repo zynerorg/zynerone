@@ -5213,8 +5213,8 @@ paths:
                       started_at: "2019-12-22T21:00:09.851559297Z"
                       state: running
                       type: info
-                    nginx-mailcow:
-                      container: nginx-mailcow
+                    nginx-zynerone:
+                      container: nginx-zynerone
                       image: "nginx:mainline-alpine"
                       started_at: "2019-12-22T21:00:12.9843038Z"
                       state: running
