@@ -347,7 +347,7 @@ services:
           aliases:
             - memcached
 
-    nginx-mailcow:
+    nginx-zynerone:
       depends_on:
         - sogo-zynerone
         - php-fpm-zynerone
@@ -394,7 +394,7 @@ services:
 
     acme-mailcow:
       depends_on:
-        nginx-mailcow:
+        nginx-zynerone:
           condition: service_started
         unbound-zynerone:
           condition: service_healthy
@@ -610,7 +610,7 @@ services:
         - dovecot-zynerone
         - postfix-zynerone
         - memcached-zynerone
-        - nginx-mailcow
+        - nginx-zynerone
         - acme-mailcow
         - netfilter-mailcow
         - watchdog-mailcow
