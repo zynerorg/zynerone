@@ -727,10 +727,10 @@ olefy_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/olefy-mailcow; echo "$(tail -50 /tmp/olefy-mailcow)" > /tmp/olefy-mailcow
-    host_ip=$(get_container_ip olefy-mailcow)
+    touch /tmp/olefy-zynerone; echo "$(tail -50 /tmp/olefy-zynerone)" > /tmp/olefy-zynerone
+    host_ip=$(get_container_ip olefy-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>> /tmp/olefy-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>> /tmp/olefy-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Olefy" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -970,7 +970,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! olefy_checks; then
     log_msg "Olefy hit error limit"
-    echo olefy-mailcow > /tmp/com_pipe
+    echo olefy-zynerone > /tmp/com_pipe
   fi
 done
 ) &

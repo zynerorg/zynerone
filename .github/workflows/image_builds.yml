@@ -18,7 +18,7 @@ jobs:
           - "dockerapi-zynerone"
           - "dovecot-zynerone"
           - "netfilter-zynerone"
-          - "olefy-mailcow"
+          - "olefy-zynerone"
           - "php-fpm-zynerone"
           - "postfix-zynerone"
           - "rspamd-zynerone"
