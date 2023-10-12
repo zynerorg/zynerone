@@ -60,7 +60,6 @@ $template_data = [
   'hostname' => $hostname,
   'timezone' => $timezone,
   'gal' => @$_SESSION['gal'],
-  'license_guid' => license('guid'),
   'solr_status' => $solr_status,
   'solr_uptime' => round($solr_status['status']['dovecot-fts']['uptime'] / 1000 / 60 / 60),
   'clamd_status' => $clamd_status,
