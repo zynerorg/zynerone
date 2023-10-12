@@ -525,7 +525,7 @@ services:
           aliases:
             - watchdog
 
-    dockerapi-mailcow:
+    dockerapi-zynerone:
       image: zyner/dockerapi:2.05
       security_opt:
         - label=disable
@@ -614,7 +614,7 @@ services:
         - acme-zynerone
         - netfilter-zynerone
         - watchdog-zynerone
-        - dockerapi-mailcow
+        - dockerapi-zynerone
         - solr-mailcow
       environment:
         - TZ=${TZ}
