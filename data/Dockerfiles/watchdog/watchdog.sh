@@ -424,10 +424,10 @@ clamd_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/clamd-mailcow; echo "$(tail -50 /tmp/clamd-mailcow)" > /tmp/clamd-mailcow
-    host_ip=$(get_container_ip clamd-mailcow)
+    touch /tmp/clamd-zynerone; echo "$(tail -50 /tmp/clamd-zynerone)" > /tmp/clamd-zynerone
+    host_ip=$(get_container_ip clamd-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>> /tmp/clamd-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>> /tmp/clamd-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Clamd" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -861,7 +861,7 @@ if [[ "${SKIP_CLAMD}" =~ ^([nN][oO]|[nN])+$ ]]; then
 while true; do
   if ! clamd_checks; then
     log_msg "Clamd hit error limit"
-    echo clamd-mailcow > /tmp/com_pipe
+    echo clamd-zynerone > /tmp/com_pipe
   fi
 done
 ) &

@@ -363,7 +363,7 @@ SKIP_IP_CHECK=n
 
 SKIP_HTTP_VERIFICATION=n
 
-# Skip ClamAV (clamd-mailcow) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
+# Skip ClamAV (clamd-zynerone) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
 
 SKIP_CLAMD=${SKIP_CLAMD}
 

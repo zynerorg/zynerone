@@ -5171,8 +5171,8 @@ paths:
                       started_at: "2019-12-22T21:00:08.270660275Z"
                       state: running
                       type: info
-                    clamd-mailcow:
-                      container: clamd-mailcow
+                    clamd-zynerone:
+                      container: clamd-zynerone
                       image: "mailcow/clamd:1.35"
                       started_at: "2019-12-22T21:00:01.622856172Z"
                       state: running
