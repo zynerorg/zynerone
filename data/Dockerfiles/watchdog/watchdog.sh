@@ -1009,7 +1009,7 @@ while true; do
   while nc -z dockerapi 443; do
     sleep 3
   done
-  log_msg "Cannot find dockerapi-mailcow, waiting to recover..."
+  log_msg "Cannot find dockerapi-zynerone, waiting to recover..."
   kill -STOP ${BACKGROUND_TASKS[*]}
   until nc -z dockerapi 443; do
     sleep 3

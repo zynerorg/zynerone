@@ -15,7 +15,7 @@ jobs:
         images:
           - "acme-zynerone"
           - "clamd-zynerone"
-          - "dockerapi-mailcow"
+          - "dockerapi-zynerone"
           - "dovecot-zynerone"
           - "netfilter-zynerone"
           - "olefy-mailcow"
