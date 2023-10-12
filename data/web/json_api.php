@@ -867,10 +867,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('dovecot-mailcow', $extra);
+                  $logs = get_logs('dovecot-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('dovecot-mailcow');
+                  $logs = get_logs('dovecot-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -1531,7 +1531,7 @@ if (isset($_GET['query'])) {
                 break;
                 case "vmail":
                   $exec_fields_vmail = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields_vmail), true));
+                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields_vmail), true));
                   $temp = array(
                     'type' => 'info',
                     'disk' => $vmail_df[0],

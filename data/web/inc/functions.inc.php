@@ -428,7 +428,7 @@ function sys_mail($_data) {
       )
     );
     $mail->isSMTP();
-    $mail->Host = 'dovecot-mailcow';
+    $mail->Host = 'dovecot-zynerone';
     $mail->SMTPAuth = false;
     $mail->Port = 24;
     $mail->setFrom($mass_from);
@@ -2307,7 +2307,7 @@ function get_logs($application, $lines = false) {
     }
   }
   // Redis
-  if ($application == "dovecot-mailcow") {
+  if ($application == "dovecot-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('DOVECOT_MAILLOG', $from - 1, $to - 1);
     }

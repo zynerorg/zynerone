@@ -20,7 +20,7 @@ $js_minifier->add('/web/js/site/debug.js');
 
 // vmail df
 $exec_fields = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields), true));
+$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true));
 
 // containers
 $containers = (array) docker('info');
