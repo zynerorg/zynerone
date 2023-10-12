@@ -544,7 +544,7 @@ services:
           aliases:
             - dockerapi
 
-    solr-mailcow:
+    solr-zynerone:
       image: zyner/solr:1.8.1
       restart: always
       volumes:
@@ -615,7 +615,7 @@ services:
         - netfilter-zynerone
         - watchdog-zynerone
         - dockerapi-zynerone
-        - solr-mailcow
+        - solr-zynerone
       environment:
         - TZ=${TZ}
       image: robbertkl/ipv6nat
