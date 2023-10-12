@@ -109,7 +109,7 @@ function fail2ban($_action, $_data = null) {
             return false;
           }
           // Rules will also be recreated on log events, but rules may seem empty for a second in the UI
-          docker('post', 'netfilter-mailcow', 'restart');
+          docker('post', 'netfilter-zynerone', 'restart');
           $fail_count = 0;
           $regex_result = json_decode($redis->Get('F2B_REGEX'), true);
           while (empty($regex_result) && $fail_count < 10) {
@@ -206,7 +206,7 @@ function fail2ban($_action, $_data = null) {
                 try {
                   $redis->hSet('F2B_BLACKLIST', $network, 1);
                   $redis->hDel('F2B_WHITELIST', $network, 1);
-                  //$response = docker('post', 'netfilter-mailcow', 'restart');
+                  //$response = docker('post', 'netfilter-zynerone', 'restart');
                 }
                 catch (RedisException $e) {
                   $_SESSION['return'][] = array(

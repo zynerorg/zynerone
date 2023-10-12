@@ -2405,7 +2405,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "netfilter-mailcow") {
+  if ($application == "netfilter-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('NETFILTER_LOG', $from - 1, $to - 1);
     }
