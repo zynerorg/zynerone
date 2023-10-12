@@ -1,4 +1,4 @@
-rspamd_config.MAILCOW_AUTH = {
+rspamd_config.ZYNERONE_AUTH = {
 	callback = function(task)
 		local uname = task:get_user()
 		if uname then
@@ -219,7 +219,7 @@ rspamd_config:register_symbol({
     local lua_util = require "lua_util"
 
     local tagged_rcpt = task:get_symbol("TAGGED_RCPT")
-    local mailcow_domain = task:get_symbol("RCPT_MAILCOW_DOMAIN")
+    local zynerone_domain = task:get_symbol("RCPT_ZYNERONE_DOMAIN")
 
     local function remove_moo_tag()
       local moo_tag_header = task:get_header('X-Moo-Tag', false)
@@ -231,7 +231,7 @@ rspamd_config:register_symbol({
       return true
     end
 
-    if tagged_rcpt and tagged_rcpt[1].options and mailcow_domain then
+    if tagged_rcpt and tagged_rcpt[1].options and zynerone_domain then
       local tag = tagged_rcpt[1].options[1]
       rspamd_logger.infox("found tag: %s", tag)
       local action = task:get_metric_action('default')

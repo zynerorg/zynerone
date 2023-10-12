@@ -90,8 +90,8 @@ fi
 
 if [[ -f ${ACME_BASE}/cert.pem ]] && [[ -f ${ACME_BASE}/key.pem ]] && [[ $(stat -c%s ${ACME_BASE}/cert.pem) != 0 ]]; then
   ISSUER=$(openssl x509 -in ${ACME_BASE}/cert.pem -noout -issuer)
-  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"mailcow"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
-    log_f "Found certificate with issuer other than mailcow snake-oil CA and Let's Encrypt, skipping ACME client..."
+  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"zynerone"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
+    log_f "Found certificate with issuer other than zynerone snake-oil CA and Let's Encrypt, skipping ACME client..."
     sleep 3650d
     exec $(readlink -f "$0")
   fi
@@ -103,7 +103,7 @@ else
     # Restarting with env var set to trigger a restart,
     exec env TRIGGER_RESTART=1 $(readlink -f "$0")
   else
-    log_f "Restoring mailcow snake-oil certificates and restarting script..."
+    log_f "Restoring zynerone snake-oil certificates and restarting script..."
     cp ${SSL_EXAMPLE}/cert.pem ${ACME_BASE}/cert.pem
     cp ${SSL_EXAMPLE}/key.pem ${ACME_BASE}/key.pem
     exec env TRIGGER_RESTART=1 $(readlink -f "$0")

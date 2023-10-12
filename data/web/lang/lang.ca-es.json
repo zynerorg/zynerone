@@ -93,7 +93,7 @@
         "api_key": "API key",
         "app_links": "Enllaços a App",
         "app_name": "Nom de la App",
-        "apps_name": "Nom de \"mailcow Apps\"",
+        "apps_name": "Nom de \"zynerone Apps\"",
         "change_logo": "Canviar el logo",
         "configuration": "Configuració",
         "customize": "Personalitzar",
@@ -288,7 +288,7 @@
         "administration": "Administració",
         "debug": "Debug",
         "email": "E-Mail",
-        "mailcow_config": "Configuració",
+        "zynerone_config": "Configuració",
         "quarantine": "Quarantena",
         "restart_sogo": "Reiniciar SOGo",
         "user_settings": "Preferències d'usuari"

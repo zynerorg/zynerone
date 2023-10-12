@@ -7,7 +7,7 @@ define('state_missing', '<i class="bi bi-x-lg text-danger"></i>');
 define('state_nomatch', "?");
 define('state_optional', " <sup>2</sup>");
 
-if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "admin"|| $_SESSION['mailcow_cc_role'] == "domainadmin")) {
+if (isset($_SESSION['zynerone_cc_role']) && ($_SESSION['zynerone_cc_role'] == "admin"|| $_SESSION['zynerone_cc_role'] == "domainadmin")) {
 
   $alias_domains = array();
 
@@ -23,7 +23,7 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
     }
   }
 
-  $ch = curl_init('http://ip4.mailcow.email');
+  $ch = curl_init('http://ip4.zyner.one');
   curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
   curl_setopt($ch, CURLOPT_VERBOSE, false);
   curl_setopt($ch, CURLOPT_HEADER, false);
@@ -32,7 +32,7 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
   $ip = curl_exec($ch);
   curl_close($ch);
 
-  $ch = curl_init('http://ip6.mailcow.email');
+  $ch = curl_init('http://ip6.zyner.one');
   curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V6);
   curl_setopt($ch, CURLOPT_VERBOSE, false);
   curl_setopt($ch, CURLOPT_HEADER, false);
@@ -63,7 +63,7 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
 
   if (!isset($autodiscover_config['sieve'])) {
     $autodiscover_config['sieve'] = array(
-      'server' => $mailcow_hostname,
+      'server' => $zynerone_hostname,
       'port' => array_pop(explode(':', getenv('SIEVE_PORT')))
     );
   }
@@ -74,27 +74,27 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
 
   $records = array();
 
-  if ($_SESSION['mailcow_cc_role'] == "admin") {
+  if ($_SESSION['zynerone_cc_role'] == "admin") {
     $records[] = array(
-      $mailcow_hostname,
+      $zynerone_hostname,
       'A',
       $ip
     );
     $records[] = array(
       $ptr,
       'PTR',
-      $mailcow_hostname
+      $zynerone_hostname
     );
     if (!empty($ip6)) {
       $records[] = array(
-        $mailcow_hostname,
+        $zynerone_hostname,
         'AAAA',
         expand_ipv6($ip6)
       );
       $records[] = array(
         $ptr6,
         'PTR',
-        $mailcow_hostname
+        $zynerone_hostname
       );
     }
     $records[] = array(
@@ -107,24 +107,24 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
   $records[] = array(
     $domain,
     'MX',
-    $mailcow_hostname
+    $zynerone_hostname
   );
 
   if (!in_array($domain, $alias_domains)) {
     $records[] = array(
       'autodiscover.' . $domain,
       'CNAME',
-      $mailcow_hostname
+      $zynerone_hostname
     );
     $records[] = array(
       '_autodiscover._tcp.' . $domain,
       'SRV',
-      $mailcow_hostname . ' ' . $https_port
+      $zynerone_hostname . ' ' . $https_port
     );
     $records[] = array(
       'autoconfig.' . $domain,
       'CNAME',
-      $mailcow_hostname
+      $zynerone_hostname
     );
   }
 
@@ -278,7 +278,7 @@ if (isset($_SESSION['mailcow_cc_role']) && ($_SESSION['mailcow_cc_role'] == "adm
         }
         else {
           $currents = (array)dns_get_record($record[0], $record_types[$record[1]]);
-          if ($record[0] == $mailcow_hostname && ($record[1] == "A" || $record[1] == "AAAA")) {
+          if ($record[0] == $zynerone_hostname && ($record[1] == "A" || $record[1] == "AAAA")) {
             if (!empty((array)dns_get_record($record[0], DNS_CNAME))) {
               $currents[0]['ip'] = state_missing . ' <b>(CNAME)</b>';
               $currents[0]['ipv6'] = state_missing . ' <b>(CNAME)</b>';

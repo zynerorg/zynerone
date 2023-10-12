@@ -189,7 +189,7 @@ $(document).ready(function() {
         if (response_obj.type == "success") {
           $(validation_button).next().attr({"disabled": false});
         }
-        mailcow_alert_box(response_obj.msg, response_obj.type);
+        zynerone_alert_box(response_obj.msg, response_obj.type);
       },
     });
   });

@@ -14,9 +14,9 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="text-center mailcow-logo mb-4">
-          <img class="main-logo" src="{{ logo|default('/img/cow_mailcow.svg') }}" alt="mailcow">
-          <img class="main-logo-dark" src="{{ logo_dark|default('/img/cow_mailcow.svg') }}" alt="mailcow-logo-dark">
+        <div class="text-center zynerone-logo mb-4">
+          <img class="main-logo" src="{{ logo|default('/img/zynerone.svg') }}" alt="zynerone">
+          <img class="main-logo-dark" src="{{ logo_dark|default('/img/zynerone.svg') }}" alt="zynerone-logo-dark">
         </div>
         {% if ui_texts.ui_announcement_text and ui_texts.ui_announcement_active %}
         <div class="my-4 alert alert-{{ ui_texts.ui_announcement_type }} rot-enc ui-announcement-alert">{{ ui_texts.ui_announcement_text|rot13 }}</div>
@@ -48,12 +48,12 @@
             {% if not oauth2_request %}
             <div class="d-grid d-sm-block">
             <button type="button" {% if available_languages|length == 1 %}disabled="true"{% endif %} class="btn btn-secondary ms-auto dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="flag-icon flag-icon-{{ mailcow_locale[-2:] }}"></span>
+              <span class="flag-icon flag-icon-{{ zynerone_locale[-2:] }}"></span>
             </button>
             <ul class="dropdown-menu ms-auto login">
               {% for key, val in available_languages %}
                 <li>
-                  <a class="dropdown-item {% if mailcow_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
+                  <a class="dropdown-item {% if zynerone_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
                     <span class="flag-icon flag-icon-{{ key[-2:] }}"></span>{{ val }}
                   </a>
                 </li>
@@ -67,10 +67,10 @@
         <p><div class="my-4 alert alert-info">{{ lang.login.delayed|format(login_delay) }}</b></div></p>
         {% endif %}
         <div class="my-4" id="fido2-alerts"></div>
-        {% if not oauth2_request and (mailcow_apps or app_links) %}
+        {% if not oauth2_request and (zynerone_apps or app_links) %}
         <legend><i class="bi bi-link-45deg"></i> {{ ui_texts.apps_name|raw }}</legend><hr />
         <div class="my-2 d-grid gap-2 d-sm-block apps">
-          {% for app in mailcow_apps %}
+          {% for app in zynerone_apps %}
             {% if not skip_sogo or not is_uri('SOGo', app.link) %}
               <a href="{{ app.link }}" role="button" {% if app.description %}title="{{ app.description }}"{% endif %} class="btn btn-primary">{{ app.name }}</a>
             {% endif %}

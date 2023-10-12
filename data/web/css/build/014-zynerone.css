@@ -153,7 +153,7 @@ html {
   font-size: 10.5pt;
   line-height: 1.5;
 }
-#mailcow-alert {
+#zynerone-alert {
   position: fixed;
   bottom: 8px;
   right: 25px;
@@ -176,7 +176,7 @@ legend {
 .navbar .navbar-brand img {
   height: 40px;
 }
-.mailcow-logo img {
+.zynerone-logo img {
   max-width: 250px;
 }
 .lang-link-disabled a  {

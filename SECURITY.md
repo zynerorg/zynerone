@@ -1,6 +1,6 @@
 # Security Policies and Procedures
 
-This document outlines security procedures and general policies for the _mailcow: dockerized_ project as found on [zynerone](https://github.com/zynerorg/zynerone).
+This document outlines security procedures and general policies for the _Zyner One_ project as found on [zynerone](https://github.com/zynerorg/zynerone).
 
   * [Reporting a Vulnerability](#reporting-a-vulnerability)
   * [Disclosure Policy](#disclosure-policy)
@@ -8,18 +8,18 @@ This document outlines security procedures and general policies for the _mailcow
 
 ## Reporting a Vulnerability 
 
-The mailcow team and community take all security vulnerabilities
+The zynerone team and community take all security vulnerabilities
 seriously. Thank you for improving the security of our open source 
 software. We appreciate your efforts and responsible disclosure and will
 make every effort to acknowledge your contributions.
 
-Report security vulnerabilities by emailing the mailcow team at:
+Report security vulnerabilities by emailing the zynerone team at:
     
-    info at servercow.de
+    contact@zyner.net
 
-mailcow team will acknowledge your email as soon as possible, and will
+zynerone team will acknowledge your email as soon as possible, and will
 send a more detailed response afterwards indicating the next steps in 
-handling your report. After the initial reply to your report, the mailcow
+handling your report. After the initial reply to your report, the zynerone
 team will endeavor to keep you informed of the progress towards a fix and
 full announcement, and may ask for additional information or guidance.
 
@@ -28,7 +28,7 @@ team maintaining the module.
 
 ## Disclosure Policy
 
-When the mailcow team receives a security bug report, they will assign it
+When the zynerone team receives a security bug report, they will assign it
 to a primary handler. This person will coordinate the fix and release
 process, involving the following steps:
 

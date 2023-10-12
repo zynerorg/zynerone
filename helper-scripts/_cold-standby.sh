@@ -171,19 +171,19 @@ if ! ssh -o StrictHostKeyChecking=no \
   ${REMOTE_SSH_HOST} \
   -p ${REMOTE_SSH_PORT} \
   mkdir -p "${SCRIPT_DIR}/../" ; then
-    >&2 echo -e "\e[31m[ERR]\e[0m - Could not prepare remote for mailcow base directory transfer"
+    >&2 echo -e "\e[31m[ERR]\e[0m - Could not prepare remote for zynerone base directory transfer"
     exit 1
 fi
 
-# Syncing the mailcow base directory
-echo -e "\033[1mSynchronizing mailcow base directory...\033[0m"
+# Syncing the zynerone base directory
+echo -e "\033[1mSynchronizing zynerone base directory...\033[0m"
 rsync --delete -aH -e "ssh -o StrictHostKeyChecking=no \
   -i \"${REMOTE_SSH_KEY}\" \
   -p ${REMOTE_SSH_PORT}" \
   "${SCRIPT_DIR}/../" root@${REMOTE_SSH_HOST}:"${SCRIPT_DIR}/../"
 ec=$?
 if [ ${ec} -ne 0 ] && [ ${ec} -ne 24 ]; then
-  >&2 echo -e "\e[31m[ERR]\e[0m - Could not transfer mailcow base directory to remote"
+  >&2 echo -e "\e[31m[ERR]\e[0m - Could not transfer zynerone base directory to remote"
   exit 1
 fi
 

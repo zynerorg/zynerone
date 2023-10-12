@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != "admin") {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "admin") {
   header('Location: /');
   exit();
 }
@@ -11,7 +11,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.inc.php';
 $js_minifier->add('/web/js/site/queue.js');
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
-$role = ($_SESSION['mailcow_cc_role'] == "admin") ? 'admin' : 'domainadmin';
+$role = ($_SESSION['zynerone_cc_role'] == "admin") ? 'admin' : 'domainadmin';
 
 $template = 'queue.twig';
 $template_data = [

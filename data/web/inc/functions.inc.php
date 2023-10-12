@@ -130,7 +130,7 @@ function password_complexity($_action, $_data = null) {
   global $lang;
   switch ($_action) {
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -257,7 +257,7 @@ function last_login($action, $username, $sasl_limit_days = 7, $ui_offset = 1) {
   $sasl_limit_days = intval($sasl_limit_days);
   switch ($action) {
     case 'get':
-      if (filter_var($username, FILTER_VALIDATE_EMAIL) && hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+      if (filter_var($username, FILTER_VALIDATE_EMAIL) && hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
         $stmt = $pdo->prepare('SELECT `real_rip`, MAX(`datetime`) as `datetime`, `service`, `app_password`, MAX(`app_passwd`.`name`) as `app_password_name` FROM `sasl_log`
           LEFT OUTER JOIN `app_passwd` on `sasl_log`.`app_password` = `app_passwd`.`id`
           WHERE `username` = :username
@@ -315,7 +315,7 @@ function last_login($action, $username, $sasl_limit_days = 7, $ui_offset = 1) {
       else {
         $sasl = array();
       }
-      if ($_SESSION['mailcow_cc_role'] == "admin" || $username == $_SESSION['mailcow_cc_username']) {
+      if ($_SESSION['zynerone_cc_role'] == "admin" || $username == $_SESSION['zynerone_cc_username']) {
         $stmt = $pdo->prepare('SELECT `remote`, `time` FROM `logs`
           WHERE JSON_EXTRACT(`call`, "$[0]") = "check_login"
             AND JSON_EXTRACT(`call`, "$[1]") = :username
@@ -333,12 +333,12 @@ function last_login($action, $username, $sasl_limit_days = 7, $ui_offset = 1) {
       return array('ui' => $ui, 'sasl' => $sasl);
     break;
     case 'reset':
-      if (filter_var($username, FILTER_VALIDATE_EMAIL) && hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+      if (filter_var($username, FILTER_VALIDATE_EMAIL) && hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
         $stmt = $pdo->prepare('DELETE FROM `sasl_log`
           WHERE `username` = :username');
         $stmt->execute(array(':username' => $username));
       }
-      if ($_SESSION['mailcow_cc_role'] == "admin" || $username == $_SESSION['mailcow_cc_username']) {
+      if ($_SESSION['zynerone_cc_role'] == "admin" || $username == $_SESSION['zynerone_cc_username']) {
         $stmt = $pdo->prepare('DELETE FROM `logs`
           WHERE JSON_EXTRACT(`call`, "$[0]") = "check_login"
             AND JSON_EXTRACT(`call`, "$[1]") = :username
@@ -361,7 +361,7 @@ function flush_memcached() {
   }
 }
 function sys_mail($_data) {
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] =  array(
       'type' => 'danger',
       'log' => array(__FUNCTION__),
@@ -501,12 +501,12 @@ function logger($_data = false) {
         $call = json_encode($return['log'], JSON_UNESCAPED_UNICODE);
       }
       if (!empty($_SESSION["dual-login"]["username"])) {
-        $user = $_SESSION["dual-login"]["username"] . ' => ' . $_SESSION['mailcow_cc_username'];
-        $role = $_SESSION["dual-login"]["role"] . ' => ' . $_SESSION['mailcow_cc_role'];
+        $user = $_SESSION["dual-login"]["username"] . ' => ' . $_SESSION['zynerone_cc_username'];
+        $role = $_SESSION["dual-login"]["role"] . ' => ' . $_SESSION['zynerone_cc_role'];
       }
-      elseif (!empty($_SESSION['mailcow_cc_username'])) {
-        $user = $_SESSION['mailcow_cc_username'];
-        $role = $_SESSION['mailcow_cc_role'];
+      elseif (!empty($_SESSION['zynerone_cc_username'])) {
+        $user = $_SESSION['zynerone_cc_username'];
+        $role = $_SESSION['zynerone_cc_role'];
       }
       else {
         $user = 'unauthenticated';
@@ -840,8 +840,8 @@ function check_login($user, $pass, $app_passwd_data = false) {
       $authenticators = get_tfa($user);
       if (isset($authenticators['additional']) && is_array($authenticators['additional']) && count($authenticators['additional']) > 0) {
         // active tfa authenticators found, set pending user login
-        $_SESSION['pending_mailcow_cc_username'] = $user;
-        $_SESSION['pending_mailcow_cc_role'] = "admin";
+        $_SESSION['pending_zynerone_cc_username'] = $user;
+        $_SESSION['pending_zynerone_cc_role'] = "admin";
         $_SESSION['pending_tfa_methods'] = $authenticators['additional'];
         unset($_SESSION['ldelay']);
         $_SESSION['return'][] =  array(
@@ -878,8 +878,8 @@ function check_login($user, $pass, $app_passwd_data = false) {
       // check for tfa authenticators
       $authenticators = get_tfa($user);
       if (isset($authenticators['additional']) && is_array($authenticators['additional']) && count($authenticators['additional']) > 0) {
-        $_SESSION['pending_mailcow_cc_username'] = $user;
-        $_SESSION['pending_mailcow_cc_role'] = "domainadmin";
+        $_SESSION['pending_zynerone_cc_username'] = $user;
+        $_SESSION['pending_zynerone_cc_role'] = "domainadmin";
         $_SESSION['pending_tfa_methods'] = $authenticators['additional'];
         unset($_SESSION['ldelay']);
         $_SESSION['return'][] =  array(
@@ -949,8 +949,8 @@ function check_login($user, $pass, $app_passwd_data = false) {
         if (isset($authenticators['additional']) && is_array($authenticators['additional']) && count($authenticators['additional']) > 0 &&
             $app_passwd_data['eas'] !== true && $app_passwd_data['dav'] !== true) {
           // authenticators found, init TFA flow
-          $_SESSION['pending_mailcow_cc_username'] = $user;
-          $_SESSION['pending_mailcow_cc_role'] = "user";
+          $_SESSION['pending_zynerone_cc_username'] = $user;
+          $_SESSION['pending_zynerone_cc_role'] = "user";
           $_SESSION['pending_tfa_methods'] = $authenticators['additional'];
           unset($_SESSION['ldelay']);
           $_SESSION['return'][] =  array(
@@ -990,7 +990,7 @@ function check_login($user, $pass, $app_passwd_data = false) {
     $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
     error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
   }
-  elseif (!isset($_SESSION['mailcow_cc_username'])) {
+  elseif (!isset($_SESSION['zynerone_cc_username'])) {
     $_SESSION['ldelay'] = $_SESSION['ldelay']+0.5;
     $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
     error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
@@ -1077,8 +1077,8 @@ function edit_user_account($_data) {
   !isset($_data_log['user_new_pass']) ?: $_data_log['user_new_pass'] = '*';
   !isset($_data_log['user_new_pass2']) ?: $_data_log['user_new_pass2'] = '*';
   !isset($_data_log['user_old_pass']) ?: $_data_log['user_old_pass'] = '*';
-  $username = $_SESSION['mailcow_cc_username'];
-  $role = $_SESSION['mailcow_cc_role'];
+  $username = $_SESSION['zynerone_cc_username'];
+  $role = $_SESSION['zynerone_cc_role'];
   $password_old = $_data['user_old_pass'];
   if (filter_var($username, FILTER_VALIDATE_EMAIL === false) || $role != 'user') {
     $_SESSION['return'][] =  array(
@@ -1129,13 +1129,13 @@ function user_get_alias_details($username) {
   global $lang;
   $data['direct_aliases'] = array();
   $data['shared_aliases'] = array();
-  if ($_SESSION['mailcow_cc_role'] == "user") {
-    $username = $_SESSION['mailcow_cc_username'];
+  if ($_SESSION['zynerone_cc_role'] == "user") {
+    $username = $_SESSION['zynerone_cc_username'];
   }
   if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
     return false;
   }
-  if (!hasMailboxObjectAccess($username, $_SESSION['mailcow_cc_role'], $username)) {
+  if (!hasMailboxObjectAccess($username, $_SESSION['zynerone_cc_role'], $username)) {
     return false;
   }
   $data['address'] = $username;
@@ -1216,10 +1216,10 @@ function set_tfa($_data) {
   $_data_log = $_data;
   $access_denied = null;
   !isset($_data_log['confirm_password']) ?: $_data_log['confirm_password'] = '*';
-  $username = $_SESSION['mailcow_cc_username'];
+  $username = $_SESSION['zynerone_cc_username'];
 
   // check for empty user and role
-  if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) $access_denied = true;
+  if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) $access_denied = true;
 
   // check admin confirm password
   if ($access_denied === null) {
@@ -1370,8 +1370,8 @@ function fido2($_data) {
   // Silent errors for "get" requests
   switch ($_data["action"]) {
     case "register":
-      $username = $_SESSION['mailcow_cc_username'];
-      if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) {
+      $username = $_SESSION['zynerone_cc_username'];
+      if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) {
           $_SESSION['return'][] =  array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_data["action"]),
@@ -1401,8 +1401,8 @@ function fido2($_data) {
     break;
     case "get_user_cids":
       // Used to exclude existing CredentialIds while registering
-      $username = $_SESSION['mailcow_cc_username'];
-      if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) {
+      $username = $_SESSION['zynerone_cc_username'];
+      if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) {
         return false;
       }
       $stmt = $pdo->prepare("SELECT `credentialId` FROM `fido2` WHERE `username` = :username");
@@ -1439,8 +1439,8 @@ function fido2($_data) {
       return $data;
     break;
     case "get_friendly_names":
-      $username = $_SESSION['mailcow_cc_username'];
-      if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) {
+      $username = $_SESSION['zynerone_cc_username'];
+      if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) {
         return false;
       }
       $stmt = $pdo->prepare("SELECT SHA2(`credentialId`, 256) AS `cid`, `created`, `certificateSubject`, `friendlyName` FROM `fido2` WHERE `username` = :username");
@@ -1456,8 +1456,8 @@ function fido2($_data) {
       return $fns;
     break;
     case "unset_fido2_key":
-      $username = $_SESSION['mailcow_cc_username'];
-      if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) {
+      $username = $_SESSION['zynerone_cc_username'];
+      if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) {
         $_SESSION['return'][] =  array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_data["action"]),
@@ -1477,8 +1477,8 @@ function fido2($_data) {
       );
     break;
     case "edit_fn":
-      $username = $_SESSION['mailcow_cc_username'];
-      if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) {
+      $username = $_SESSION['zynerone_cc_username'];
+      if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) {
         $_SESSION['return'][] =  array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_data["action"]),
@@ -1508,10 +1508,10 @@ function unset_tfa_key($_data) {
   $_data_log = $_data;
   $access_denied = null;
   $id = intval($_data['unset_tfa_key']);
-  $username = $_SESSION['mailcow_cc_username'];
+  $username = $_SESSION['zynerone_cc_username'];
 
   // check for empty user and role
-  if (!isset($_SESSION['mailcow_cc_role']) || empty($username)) $access_denied = true;
+  if (!isset($_SESSION['zynerone_cc_role']) || empty($username)) $access_denied = true;
 
   try {
     if (!is_numeric($id)) $access_denied = true;
@@ -1560,8 +1560,8 @@ function unset_tfa_key($_data) {
 }
 function get_tfa($username = null, $id = null) {
   global $pdo;
-  if (isset($_SESSION['mailcow_cc_username'])) {
-    $username = $_SESSION['mailcow_cc_username'];
+  if (isset($_SESSION['zynerone_cc_username'])) {
+    $username = $_SESSION['zynerone_cc_username'];
   }
   elseif (empty($username)) {
     return false;
@@ -1792,7 +1792,7 @@ function verify_tfa_login($username, $_data) {
                 return false;
             }
 
-            if ($process_webauthn['username'] != $_SESSION['pending_mailcow_cc_username']){
+            if ($process_webauthn['username'] != $_SESSION['pending_zynerone_cc_username']){
               $_SESSION['return'][] =  array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $username, '*'),
@@ -1817,17 +1817,17 @@ function verify_tfa_login($username, $_data) {
             $stmt->execute(array(':username' => $process_webauthn['username']));
             $obj_props = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($obj_props['superadmin'] === 1) {
-              $_SESSION["mailcow_cc_role"] = "admin";
+              $_SESSION["zynerone_cc_role"] = "admin";
             }
             elseif ($obj_props['superadmin'] === 0) {
-              $_SESSION["mailcow_cc_role"] = "domainadmin";
+              $_SESSION["zynerone_cc_role"] = "domainadmin";
             }
             else {
               $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE `username` = :username");
               $stmt->execute(array(':username' => $process_webauthn['username']));
               $row = $stmt->fetch(PDO::FETCH_ASSOC);
               if (!empty($row['username'])) {
-                $_SESSION["mailcow_cc_role"] = "user";
+                $_SESSION["zynerone_cc_role"] = "user";
               } else {
                 $_SESSION['return'][] =  array(
                   'type' => 'danger',
@@ -1838,7 +1838,7 @@ function verify_tfa_login($username, $_data) {
               }
             }
 
-            $_SESSION["mailcow_cc_username"] = $process_webauthn['username'];
+            $_SESSION["zynerone_cc_username"] = $process_webauthn['username'];
             $_SESSION['tfa_id'] = $process_webauthn['id'];
             $_SESSION['authReq'] = null;
             unset($_SESSION["challenge"]);
@@ -1874,7 +1874,7 @@ function verify_tfa_login($username, $_data) {
 }
 function admin_api($access, $action, $data = null) {
   global $pdo;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] =  array(
       'type' => 'danger',
       'log' => array(__FUNCTION__),
@@ -1998,7 +1998,7 @@ function license($action, $data = null) {
   global $pdo;
   global $redis;
   global $lang;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] =  array(
       'type' => 'danger',
       'log' => array(__FUNCTION__),
@@ -2012,7 +2012,7 @@ function license($action, $data = null) {
       $stmt = $pdo->query("SELECT `version` FROM `versions` WHERE `application` = 'GUID'");
       $versions = $stmt->fetch(PDO::FETCH_ASSOC);
       $post = array('guid' => $versions['version']);
-      $curl = curl_init('https://verify.mailcow.email');
+      $curl = curl_init('https://verify.zyner.one');
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
       curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
@@ -2066,7 +2066,7 @@ function license($action, $data = null) {
   }
 }
 function rspamd_ui($action, $data = null) {
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] =  array(
       'type' => 'danger',
       'log' => array(__FUNCTION__),
@@ -2137,7 +2137,7 @@ function cors($action, $data = null) {
 
   switch ($action) {
     case "edit":
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] =  array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $action, $data),
@@ -2262,11 +2262,11 @@ function get_logs($application, $lines = false) {
   }
   global $redis;
   global $pdo;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     return false;
   }
   // SQL
-  if ($application == "mailcow-ui") {
+  if ($application == "zynerone-ui") {
     if (isset($from) && isset($to)) {
       $stmt = $pdo->prepare("SELECT * FROM `logs` ORDER BY `id` DESC LIMIT :from, :to");
       $stmt->execute(array(
@@ -2391,7 +2391,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "api-mailcow") {
+  if ($application == "api-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('API_LOG', $from - 1, $to - 1);
     }
@@ -2419,7 +2419,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "autodiscover-mailcow") {
+  if ($application == "autodiscover-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('AUTODISCOVER_LOG', $from - 1, $to - 1);
     }

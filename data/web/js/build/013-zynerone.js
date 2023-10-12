@@ -9,8 +9,8 @@ const DATETIME_FORMAT = {
 };
 
 $(document).ready(function() {
-  // mailcow alert box generator
-  window.mailcow_alert_box = function(message, type) {
+  // zynerone alert box generator
+  window.zynerone_alert_box = function(message, type) {
     msg = $('<span/>').text(message).text();
     if (type == 'danger' || type == 'info') {
       auto_hide = 0;
@@ -343,7 +343,7 @@ $(document).ready(function() {
       if ($('#rspamd_logo_sm').length) $('#rspamd_logo_sm').attr('src', '/img/rspamd_logo_dark.png');
       localStorage.setItem('theme', 'light');
     }else{
-      $('head').append('<link id="dark-mode-theme" rel="stylesheet" type="text/css" href="/css/themes/mailcow-darkmode.css">');
+      $('head').append('<link id="dark-mode-theme" rel="stylesheet" type="text/css" href="/css/themes/zynerone-darkmode.css">');
       $('#dark-mode-toggle').prop('checked', true);
       $('.main-logo').addClass('d-none');
       $('.main-logo-dark').removeClass('d-none');

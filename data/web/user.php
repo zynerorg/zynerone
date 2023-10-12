@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
-if (isset($_SESSION['mailcow_cc_role']) && $_SESSION['mailcow_cc_role'] == 'domainadmin') {
+if (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'domainadmin') {
 
   /*
   / DOMAIN ADMIN
@@ -10,7 +10,7 @@ if (isset($_SESSION['mailcow_cc_role']) && $_SESSION['mailcow_cc_role'] == 'doma
   $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
   $tfa_data = get_tfa();
   $fido2_data = fido2(array("action" => "get_friendly_names"));
-  $username = $_SESSION['mailcow_cc_username'];
+  $username = $_SESSION['zynerone_cc_username'];
 
   $template = 'domainadmin.twig';
   $template_data = [
@@ -23,7 +23,7 @@ if (isset($_SESSION['mailcow_cc_role']) && $_SESSION['mailcow_cc_role'] == 'doma
     'lang_datatables' => json_encode($lang['datatables']),
   ];
 }
-elseif (isset($_SESSION['mailcow_cc_role']) && $_SESSION['mailcow_cc_role'] == 'user') {
+elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'user') {
 
   /*
   / USER
@@ -31,13 +31,13 @@ elseif (isset($_SESSION['mailcow_cc_role']) && $_SESSION['mailcow_cc_role'] == '
 
   require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.inc.php';
   $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
-  $username = $_SESSION['mailcow_cc_username'];
+  $username = $_SESSION['zynerone_cc_username'];
   $mailboxdata = mailbox('get', 'mailbox_details', $username);
   $pushover_data = pushover('get', $username);
   $tfa_data = get_tfa();
   $fido2_data = fido2(array("action" => "get_friendly_names"));
 
-  $clientconfigstr = "host=" . urlencode($mailcow_hostname) . "&email=" . urlencode($username) . "&name=" . urlencode($mailboxdata['name']) . "&ui=" . urlencode(strtok($_SERVER['HTTP_HOST'], ':')) . "&port=" . urlencode($autodiscover_config['caldav']['port']);
+  $clientconfigstr = "host=" . urlencode($zynerone_hostname) . "&email=" . urlencode($username) . "&name=" . urlencode($mailboxdata['name']) . "&ui=" . urlencode(strtok($_SERVER['HTTP_HOST'], ':')) . "&port=" . urlencode($autodiscover_config['caldav']['port']);
   if ($autodiscover_config['useEASforOutlook'] == 'yes')
   $clientconfigstr .= "&outlookEAS=1";
   if (file_exists('thunderbird-plugins/version.csv')) {

@@ -5,7 +5,7 @@ function fail2ban($_action, $_data = null) {
   switch ($_action) {
     case 'get':
       $f2b_options = array();
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       try {
@@ -85,7 +85,7 @@ function fail2ban($_action, $_data = null) {
       return $f2b_options;
     break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),

@@ -19,7 +19,7 @@ function pushover($_action, $_data = null) {
         $usernames = $_data['username'];
       }
       foreach ($usernames as $username) {
-        if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+        if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data),
@@ -127,7 +127,7 @@ function pushover($_action, $_data = null) {
       }
     break;
     case 'get':
-      if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+      if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -165,7 +165,7 @@ function pushover($_action, $_data = null) {
         $usernames = $_data['username'];
       }
       foreach ($usernames as $username) {
-        if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+        if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data),

@@ -5,7 +5,7 @@ function relayhost($_action, $_data = null) {
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -49,7 +49,7 @@ function relayhost($_action, $_data = null) {
       );
     break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -105,7 +105,7 @@ function relayhost($_action, $_data = null) {
       }
     break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -137,7 +137,7 @@ function relayhost($_action, $_data = null) {
       }
     break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
         return false;
       }
       $relayhosts = array();
@@ -146,7 +146,7 @@ function relayhost($_action, $_data = null) {
       return $relayhosts;
     break;
     case 'details':
-      if ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       $relayhostdata = array();
@@ -182,7 +182,7 @@ function transport($_action, $_data = null) {
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -311,7 +311,7 @@ function transport($_action, $_data = null) {
       );
     break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -447,7 +447,7 @@ function transport($_action, $_data = null) {
       }
     break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -477,7 +477,7 @@ function transport($_action, $_data = null) {
       }
     break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       $transports = array();
@@ -486,7 +486,7 @@ function transport($_action, $_data = null) {
       return $transports;
     break;
     case 'details':
-      if ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       $transportdata = array();

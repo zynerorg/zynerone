@@ -54,14 +54,14 @@ if (!empty($_SERVER['HTTP_X_API_KEY'])) {
     $remote = get_remote_ip(false);
     $allow_from = array_map('trim', preg_split( "/( |,|;|\n)/", $api_return['allow_from']));
     if ($skip_ip_check === true || ip_acl($remote, $allow_from)) {
-      $_SESSION['mailcow_cc_username'] = 'API';
-      $_SESSION['mailcow_cc_role'] = 'admin';
-      $_SESSION['mailcow_cc_api'] = true;
+      $_SESSION['zynerone_cc_username'] = 'API';
+      $_SESSION['zynerone_cc_role'] = 'admin';
+      $_SESSION['zynerone_cc_api'] = true;
       if ($api_return['access'] == 'rw') {
-        $_SESSION['mailcow_cc_api_access'] = 'rw';
+        $_SESSION['zynerone_cc_api_access'] = 'rw';
       }
       else {
-        $_SESSION['mailcow_cc_api_access'] = 'ro';
+        $_SESSION['zynerone_cc_api_access'] = 'ro';
       }
     }
     else {
@@ -92,8 +92,8 @@ if (!empty($_SERVER['HTTP_X_API_KEY'])) {
 // Handle logouts
 if (isset($_POST["logout"])) {
   if (isset($_SESSION["dual-login"])) {
-    $_SESSION["mailcow_cc_username"] = $_SESSION["dual-login"]["username"];
-    $_SESSION["mailcow_cc_role"] = $_SESSION["dual-login"]["role"];
+    $_SESSION["zynerone_cc_username"] = $_SESSION["dual-login"]["username"];
+    $_SESSION["zynerone_cc_role"] = $_SESSION["dual-login"]["role"];
     unset($_SESSION["dual-login"]);
     header("Location: /mailbox");
     exit();
@@ -109,7 +109,7 @@ if (isset($_POST["logout"])) {
 
 // Check session
 function session_check() {
-  if (isset($_SESSION['mailcow_cc_api']) && $_SESSION['mailcow_cc_api'] === true) {
+  if (isset($_SESSION['zynerone_cc_api']) && $_SESSION['zynerone_cc_api'] === true) {
     return true;
   }
   if (!isset($_SESSION['SESS_REMOTE_UA']) || ($_SESSION['SESS_REMOTE_UA'] != $_SERVER['HTTP_USER_AGENT'])) {
@@ -134,7 +134,7 @@ function session_check() {
   return true;
 }
 
-if (isset($_SESSION['mailcow_cc_role']) && session_check() === false) {
+if (isset($_SESSION['zynerone_cc_role']) && session_check() === false) {
   $_POST = array();
   $_FILES = array();
 }

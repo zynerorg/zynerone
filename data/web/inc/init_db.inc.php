@@ -32,7 +32,7 @@ function init_db_schema() {
         GROUP BY goto;",
       // START
       // Unused at the moment - we cannot allow to show a foreign mailbox as sender address in SOGo, as SOGo does not like this
-      // We need to create delegation in SOGo AND set a sender_acl in mailcow to allow to send as user X
+      // We need to create delegation in SOGo AND set a sender_acl in zynerone to allow to send as user X
       "grouped_sender_acl" => "CREATE VIEW grouped_sender_acl (username, send_as_acl) AS
         SELECT logged_in_as, IFNULL(GROUP_CONCAT(send_as SEPARATOR ' '), '') AS send_as_acl FROM sender_acl
         WHERE send_as NOT LIKE '@%'

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DEBIAN_DOCKER_IMAGE="mailcow/backup:latest"
+DEBIAN_DOCKER_IMAGE="zynerone/backup:latest"
 
-if [[ ! -z ${MAILCOW_BACKUP_LOCATION} ]]; then
-  BACKUP_LOCATION="${MAILCOW_BACKUP_LOCATION}"
+if [[ ! -z ${ZYNERONE_BACKUP_LOCATION} ]]; then
+  BACKUP_LOCATION="${ZYNERONE_BACKUP_LOCATION}"
 fi
 
 if [[ ! ${1} =~ (backup|restore) ]]; then
@@ -93,9 +93,9 @@ fi
 
 function backup() {
   DATE=$(date +"%Y-%m-%d-%H-%M-%S")
-  mkdir -p "${BACKUP_LOCATION}/mailcow-${DATE}"
-  chmod 755 "${BACKUP_LOCATION}/mailcow-${DATE}"
-  cp "${SCRIPT_DIR}/../zynerone.conf" "${BACKUP_LOCATION}/mailcow-${DATE}"
+  mkdir -p "${BACKUP_LOCATION}/zynerone-${DATE}"
+  chmod 755 "${BACKUP_LOCATION}/zynerone-${DATE}"
+  cp "${SCRIPT_DIR}/../zynerone.conf" "${BACKUP_LOCATION}/zynerone-${DATE}"
   for bin in docker; do
   if [[ -z $(which ${bin}) ]]; then
     >&2 echo -e "\e[31mCannot find ${bin} in local PATH, exiting...\e[0m"
@@ -105,33 +105,33 @@ function backup() {
   while (( "$#" )); do
     case "$1" in
     vmail|all)
-      docker run --name mailcow-backup --rm \
-        -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+      docker run --name zynerone-backup --rm \
+        -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_vmail-vol-1$):/vmail:ro,z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_vmail.tar.gz /vmail
       ;;&
     crypt|all)
-      docker run --name mailcow-backup --rm \
-        -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+      docker run --name zynerone-backup --rm \
+        -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_crypt-vol-1$):/crypt:ro,z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_crypt.tar.gz /crypt
       ;;&
     redis|all)
       docker exec $(docker ps -qf name=redis-zynerone) redis-cli save
-      docker run --name mailcow-backup --rm \
-        -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+      docker run --name zynerone-backup --rm \
+        -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_redis-vol-1$):/redis:ro,z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_redis.tar.gz /redis
       ;;&
     rspamd|all)
-      docker run --name mailcow-backup --rm \
-        -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+      docker run --name zynerone-backup --rm \
+        -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_rspamd-vol-1$):/rspamd:ro,z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_rspamd.tar.gz /rspamd
       ;;&
     postfix|all)
-      docker run --name mailcow-backup --rm \
-        -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+      docker run --name zynerone-backup --rm \
+        -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_postfix-vol-1$):/postfix:ro,z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_postfix.tar.gz /postfix
       ;;&
@@ -143,12 +143,12 @@ function backup() {
         continue
       else
         echo "Using SQL image ${SQLIMAGE}, starting..."
-        docker run --name mailcow-backup --rm \
+        docker run --name zynerone-backup --rm \
           --network $(docker network ls -qf name=^${CMPS_PRJ}_zynerone-network$) \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:ro,z \
           -t --entrypoint= \
           --sysctl net.ipv6.conf.all.disable_ipv6=1 \
-          -v ${BACKUP_LOCATION}/mailcow-${DATE}:/backup:z \
+          -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
           ${SQLIMAGE} /bin/sh -c "mariabackup --host mysql --user root --password ${DBROOT} --backup --rsync --target-dir=/backup_mariadb ; \
           mariabackup --prepare --target-dir=/backup_mariadb ; \
           chown -R 999:999 /backup_mariadb ; \
@@ -158,7 +158,7 @@ function backup() {
     --delete-days)
       shift
       if [[ "${1}" =~ ^[0-9]+$ ]]; then
-        find ${BACKUP_LOCATION}/mailcow-* -maxdepth 0 -mmin +$((${1}*60*24)) -exec rm -rvf {} \;
+        find ${BACKUP_LOCATION}/zynerone-* -maxdepth 0 -mmin +$((${1}*60*24)) -exec rm -rvf {} \;
       else
         echo "Parameter of --delete-days is not a number."
       fi
@@ -183,7 +183,7 @@ function restore() {
     COMPOSE_COMMAND="docker-compose"
 
   else
-    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from zynerone.conf! Is your mailcow up to date? Exiting...\e[0m"
+    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from zynerone.conf! Is your zynerone up to date? Exiting...\e[0m"
     exit 1
   fi
 
@@ -197,7 +197,7 @@ function restore() {
     case "$1" in
     vmail)
       docker stop $(docker ps -qf name=dovecot-zynerone)
-      docker run -it --name mailcow-backup --rm \
+      docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_vmail-vol-1$):/vmail:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_vmail.tar.gz
@@ -216,7 +216,7 @@ function restore() {
       ;;
     redis)
       docker stop $(docker ps -qf name=redis-zynerone)
-      docker run -it --name mailcow-backup --rm \
+      docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_redis-vol-1$):/redis:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_redis.tar.gz
@@ -224,7 +224,7 @@ function restore() {
       ;;
     crypt)
       docker stop $(docker ps -qf name=dovecot-zynerone)
-      docker run -it --name mailcow-backup --rm \
+      docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_crypt-vol-1$):/crypt:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_crypt.tar.gz
@@ -232,7 +232,7 @@ function restore() {
       ;;
     rspamd)
       docker stop $(docker ps -qf name=rspamd-zynerone)
-      docker run -it --name mailcow-backup --rm \
+      docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_rspamd-vol-1$):/rspamd:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_rspamd.tar.gz
@@ -240,7 +240,7 @@ function restore() {
       ;;
     postfix)
       docker stop $(docker ps -qf name=postfix-zynerone)
-      docker run -it --name mailcow-backup --rm \
+      docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_postfix-vol-1$):/postfix:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_postfix.tar.gz
@@ -258,25 +258,25 @@ function restore() {
         shift
         continue
       else
-        read -p "mailcow will be stopped and the currently active zynerone.conf will be modified to use the DB parameters found in ${RESTORE_LOCATION}/zynerone.conf - do you want to proceed? [Y|n] " MYSQL_STOP_MAILCOW
-        if [[ ${MYSQL_STOP_MAILCOW,,} =~ ^(no|n|N)$ ]]; then
+        read -p "zynerone will be stopped and the currently active zynerone.conf will be modified to use the DB parameters found in ${RESTORE_LOCATION}/zynerone.conf - do you want to proceed? [Y|n] " MYSQL_STOP_ZYNERONE
+        if [[ ${MYSQL_STOP_ZYNERONE,,} =~ ^(no|n|N)$ ]]; then
           echo "OK, skipped."
           shift
           continue
         else
-          echo "Stopping mailcow..."
+          echo "Stopping zynerone..."
           ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
         fi
         #docker stop $(docker ps -qf name=mariadb-zynerone)
         if [[ -d "${RESTORE_LOCATION}/mysql" ]]; then
-        docker run --name mailcow-backup --rm \
+        docker run --name zynerone-backup --rm \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:rw,z \
           --entrypoint= \
           -v ${RESTORE_LOCATION}/mysql:/backup:z \
           ${SQLIMAGE} /bin/bash -c "shopt -s dotglob ; /bin/rm -rf /var/lib/mysql/* ; rsync -avh --usermap=root:mysql --groupmap=root:mysql /backup/ /var/lib/mysql/"
         elif [[ -f "${RESTORE_LOCATION}/backup_mysql.gz" ]]; then
         docker run \
-          -it --name mailcow-backup --rm \
+          -it --name zynerone-backup --rm \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:z \
           --entrypoint= \
           -u mysql \
@@ -287,7 +287,7 @@ function restore() {
           gunzip < backup/backup_mysql.gz | mysql -uroot && \
           mysql -uroot -e SHUTDOWN;"
         elif [[ -f "${RESTORE_LOCATION}/backup_mariadb.tar.gz" ]]; then
-        docker run --name mailcow-backup --rm \
+        docker run --name zynerone-backup --rm \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/backup_mariadb/:rw,z \
           --entrypoint= \
           -v ${RESTORE_LOCATION}:/backup:z \
@@ -302,7 +302,7 @@ function restore() {
         sed -i --follow-symlinks "/DBPASS/c\DBPASS=${DBPASS}" ${SCRIPT_DIR}/../zynerone.conf
         sed -i --follow-symlinks "/DBROOT/c\DBROOT=${DBROOT}" ${SCRIPT_DIR}/../zynerone.conf
         source ${SCRIPT_DIR}/../zynerone.conf
-        echo "Starting mailcow..."
+        echo "Starting zynerone..."
         ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d
         #docker start $(docker ps -aqf name=mariadb-zynerone)
       fi
@@ -320,11 +320,11 @@ if [[ ${1} == "backup" ]]; then
 elif [[ ${1} == "restore" ]]; then
   i=1
   declare -A FOLDER_SELECTION
-  if [[ $(find ${BACKUP_LOCATION}/mailcow-* -maxdepth 1 -type d 2> /dev/null| wc -l) -lt 1 ]]; then
+  if [[ $(find ${BACKUP_LOCATION}/zynerone-* -maxdepth 1 -type d 2> /dev/null| wc -l) -lt 1 ]]; then
     echo "Selected backup location has no subfolders"
     exit 1
   fi
-  for folder in $(ls -d ${BACKUP_LOCATION}/mailcow-*/); do
+  for folder in $(ls -d ${BACKUP_LOCATION}/zynerone-*/); do
     echo "[ ${i} ] - ${folder}"
     FOLDER_SELECTION[${i}]="${folder}"
     ((i++))

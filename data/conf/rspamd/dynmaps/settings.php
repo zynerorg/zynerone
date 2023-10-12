@@ -86,7 +86,7 @@ function wl_by_sogo() {
         continue;
       }
       // Explicit from, no mime_from, no regex - envelope must match
-      // mailcow white and blacklists also cover mime_from
+      // zynerone white and blacklists also cover mime_from
       $rcpt[$row['user']][] = normalize_email($contact);
     }
   }

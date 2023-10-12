@@ -34,7 +34,7 @@ function dkim($_action, $_data = null, $privkey = false) {
           );
           continue;
         }
-        if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+        if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data),
@@ -99,7 +99,7 @@ function dkim($_action, $_data = null, $privkey = false) {
       }
     break;
     case 'duplicate':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -141,7 +141,7 @@ function dkim($_action, $_data = null, $privkey = false) {
       }
     break;
     case 'import':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -231,7 +231,7 @@ function dkim($_action, $_data = null, $privkey = false) {
       return true;
     break;
     case 'details':
-      if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data) && $_SESSION['mailcow_cc_role'] != "admin") {
+      if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data) && $_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       $dkimdata = array();
@@ -267,7 +267,7 @@ function dkim($_action, $_data = null, $privkey = false) {
       return $dkimdata;
     break;
     case 'blind':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -283,7 +283,7 @@ function dkim($_action, $_data = null, $privkey = false) {
     break;
     case 'delete':
       $domains = (array)$_data['domains'];
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),

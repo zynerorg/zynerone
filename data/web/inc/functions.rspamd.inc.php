@@ -5,7 +5,7 @@ function rsettings($_action, $_data = null) {
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -38,7 +38,7 @@ function rsettings($_action, $_data = null) {
       );
     break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -82,7 +82,7 @@ function rsettings($_action, $_data = null) {
       }
     break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -102,7 +102,7 @@ function rsettings($_action, $_data = null) {
       }
     break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       $settingsmaps = array();
@@ -111,7 +111,7 @@ function rsettings($_action, $_data = null) {
       return $settingsmaps;
     break;
     case 'details':
-      if ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       $settingsmapdata = array();
@@ -134,7 +134,7 @@ function rspamd_maps($_action, $_data = null) {
   $_data_log = $_data;
   switch ($_action) {
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, '-'),
@@ -185,7 +185,7 @@ function rspamd_maps($_action, $_data = null) {
   }
 }
 function rspamd_actions() {
-  if (isset($_SESSION["mailcow_cc_role"]) && $_SESSION["mailcow_cc_role"] == "admin") {
+  if (isset($_SESSION["zynerone_cc_role"]) && $_SESSION["zynerone_cc_role"] == "admin") {
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_UNIX_SOCKET_PATH, '/var/lib/rspamd/rspamd.sock');
     curl_setopt($curl, CURLOPT_URL,"http://rspamd/stat");

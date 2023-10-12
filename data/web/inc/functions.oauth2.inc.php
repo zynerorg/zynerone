@@ -3,7 +3,7 @@ function oauth2($_action, $_type, $_data = null) {
   global $pdo;
   global $redis;
   global $lang;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] = array(
       'type' => 'danger',
       'log' => array(__FUNCTION__, $_action, $_type, $_data),

@@ -1,10 +1,10 @@
 <?php
 require_once 'inc/prerequisites.inc.php';
 
-if (empty($mailcow_hostname)) {
+if (empty($zynerone_hostname)) {
   exit();
 }
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != 'user') {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != 'user') {
   session_destroy();
   // probably better than appending the whole current http query string
   $append_get = (isset($_GET['only_email'])) ? '&only_email' : '';
@@ -18,8 +18,8 @@ error_reporting(0);
 header('Content-Type: application/x-apple-aspen-config');
 header('Content-Disposition: attachment; filename="'.$UI_TEXTS['main_name'].'.mobileconfig"');
 
-$email = $_SESSION['mailcow_cc_username'];
-$domain = explode('@', $_SESSION['mailcow_cc_username'])[1];
+$email = $_SESSION['zynerone_cc_username'];
+$domain = explode('@', $_SESSION['zynerone_cc_username'])[1];
 $identifier = implode('.', array_reverse(preg_split( '/(@|\.)/', $email))) . '.appleprofile.'.preg_replace('/[^a-zA-Z0-9]+/', '', $UI_TEXTS['main_name']);
 
 try {

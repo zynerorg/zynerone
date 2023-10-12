@@ -43,8 +43,8 @@ elseif (isset($_GET['login'])) {
   $is_dual = (!empty($_SESSION["dual-login"]["username"])) ? true : false;
   // check permissions (if dual_login is active, deny sso when acl is not given)
   $login = html_entity_decode(rawurldecode($_GET["login"]));
-  if (isset($_SESSION['mailcow_cc_role']) &&
-    (($_SESSION['acl']['login_as'] == "1" && $ALLOW_ADMIN_EMAIL_LOGIN !== 0) || ($is_dual === false && $login == $_SESSION['mailcow_cc_username']))) {
+  if (isset($_SESSION['zynerone_cc_role']) &&
+    (($_SESSION['acl']['login_as'] == "1" && $ALLOW_ADMIN_EMAIL_LOGIN !== 0) || ($is_dual === false && $login == $_SESSION['zynerone_cc_username']))) {
     if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
       if (user_get_alias_details($login) !== false) {
         // load master password
@@ -77,7 +77,7 @@ elseif (isset($_SERVER['HTTP_X_ORIGINAL_URI']) && strcasecmp(substr($_SERVER['HT
   $url_parts = explode("/", $_SERVER['HTTP_X_ORIGINAL_URI']);
   $email_list = array(
       $url_parts[3],                                // Requested mailbox
-      ($_SESSION['mailcow_cc_username'] ?? ''),     // Current user
+      ($_SESSION['zynerone_cc_username'] ?? ''),     // Current user
       ($_SESSION["dual-login"]["username"] ?? ''),  // Dual login user
   );
   foreach($email_list as $email) {

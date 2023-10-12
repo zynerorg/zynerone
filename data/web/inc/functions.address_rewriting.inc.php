@@ -2,7 +2,7 @@
 function bcc($_action, $_data = null, $_attr = null) {
 	global $pdo;
 	global $lang;
-  if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
     return false;
   }
   switch ($_action) {
@@ -36,7 +36,7 @@ function bcc($_action, $_data = null, $_attr = null) {
         return false;
       }
       if (is_valid_domain_name($local_dest)) {
-        if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $local_dest)) {
+        if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $local_dest)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data, $_attr),
@@ -59,8 +59,8 @@ function bcc($_action, $_data = null, $_attr = null) {
           );
           return false;
         }
-        if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $local_dest) &&
-          !hasAliasObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $local_dest)) {
+        if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $local_dest) &&
+          !hasAliasObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $local_dest)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_data, $_attr),
@@ -197,7 +197,7 @@ function bcc($_action, $_data = null, $_attr = null) {
       $stmt->execute(array(':id' => $id));
       $bccdata = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $bccdata['domain'])) {
+      if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $bccdata['domain'])) {
         $bccdata = null;
         return false;
       }
@@ -212,7 +212,7 @@ function bcc($_action, $_data = null, $_attr = null) {
       $all_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       foreach ($all_items as $i) {
-        if (hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $i['domain'])) {
+        if (hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $i['domain'])) {
           $bccdata[] = $i['id'];
         }
       }
@@ -236,7 +236,7 @@ function bcc($_action, $_data = null, $_attr = null) {
         $stmt = $pdo->prepare("SELECT `domain` FROM `bcc_maps` WHERE id = :id");
         $stmt->execute(array(':id' => $id));
         $domain = $stmt->fetch(PDO::FETCH_ASSOC)['domain'];
-        if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+        if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data, $_attr),
@@ -260,7 +260,7 @@ function bcc($_action, $_data = null, $_attr = null) {
 function recipient_map($_action, $_data = null, $attr = null) {
 	global $pdo;
 	global $lang;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     return false;
   }
   switch ($_action) {

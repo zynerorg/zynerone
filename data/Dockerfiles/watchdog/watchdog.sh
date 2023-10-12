@@ -55,7 +55,7 @@ get_ipv6(){
   local IPV6=
   local IPV6_SRCS=
   local TRY=
-  IPV6_SRCS[0]="ip6.mailcow.email"
+  IPV6_SRCS[0]="https://only.ipv6.gg"
   IPV6_SRCS[1]="ip6.nevondo.com"
   until [[ ! -z ${IPV6} ]] || [[ ${TRY} -ge 10 ]]; do
     IPV6=$(curl --connect-timeout 3 -m 10 -L6s ${IPV6_SRCS[$RANDOM % ${#IPV6_SRCS[@]} ]} | grep "^\([0-9a-fA-F]\{0,4\}:\)\{1,7\}[0-9a-fA-F]\{0,4\}$")
@@ -101,7 +101,7 @@ function mail_error() {
   THROTTLE=
   [[ -z ${1} ]] && return 1
   # If exists, body will be the content of "/tmp/${1}", even if ${2} is set
-  [[ -z ${2} ]] && BODY="Service was restarted on $(date), please check your mailcow installation." || BODY="$(date) - ${2}"
+  [[ -z ${2} ]] && BODY="Service was restarted on $(date), please check your zynerone installation." || BODY="$(date) - ${2}"
   # If exists, mail will be throttled by argument in seconds
   [[ ! -z ${3} ]] && THROTTLE=${3}
   if [[ ! -z ${THROTTLE} ]]; then
@@ -714,7 +714,7 @@ olefy_checks() {
 
 # Notify about start
 if [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]]; then
-  mail_error "watchdog-zynerone" "Watchdog started monitoring mailcow."
+  mail_error "watchdog-zynerone" "Watchdog started monitoring zynerone."
 fi
 
 # Create watchdog agents
@@ -1017,7 +1017,7 @@ while true; do
         [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && [[ ${WATCHDOG_NOTIFY_BAN} =~ ^([yY][eE][sS]|[yY])+$ ]] && mail_error "${com_pipe_answer}" "IP ban: ${host}"
       done
     fi
-  elif [[ ${com_pipe_answer} =~ .+-mailcow ]]; then
+  elif [[ ${com_pipe_answer} =~ .+-zynerone ]]; then
     kill -STOP ${BACKGROUND_TASKS[*]}
     sleep 10
     CONTAINER_ID=$(curl --silent --insecure https://dockerapi/containers/json | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring | contains(\"${com_pipe_answer}\")) | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id")
