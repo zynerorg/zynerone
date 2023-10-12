@@ -535,14 +535,14 @@ function recursiveBase64StrToArrayBuffer(obj) {
   {% endif %}
   {% if mailcow_cc_username and mailcow_info.mailcow_branch|lower == "master" and mailcow_info.version_tag|default %}
   <span class="version">
-    🐮 + 🐋 = 💕
+    Zyner One
         Version: <a href="{{ mailcow_info.git_project_url }}/releases/tag/{{ mailcow_info.version_tag }}" target="_blank">{{ mailcow_info.version_tag }}
     </a>
   </span>
   {% endif %}  
   {% if mailcow_cc_username and mailcow_info.mailcow_branch|lower == "nightly" and mailcow_info.version_tag|default %}
   <span class="version">
-    🛠️🐮 + 🐋 = 💕
+    Zyner One - Nightly
         Nightly: <a href="{{ mailcow_info.git_project_url }}/commit/{{ mailcow_info.git_commit }}" target="_blank">{{ mailcow_info.version_tag }}
     </a><br>
     <span style="text-align:right;display:block;">Build: {{ mailcow_info.git_commit_date }}</span>
