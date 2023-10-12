@@ -5207,8 +5207,8 @@ paths:
                       started_at: "2019-12-22T21:00:02.201937528Z"
                       state: running
                       type: info
-                    netfilter-mailcow:
-                      container: netfilter-mailcow
+                    netfilter-zynerone:
+                      container: netfilter-zynerone
                       image: "mailcow/netfilter:1.31"
                       started_at: "2019-12-22T21:00:09.851559297Z"
                       state: running

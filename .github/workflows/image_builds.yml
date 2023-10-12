@@ -17,7 +17,7 @@ jobs:
           - "clamd-zynerone"
           - "dockerapi-mailcow"
           - "dovecot-zynerone"
-          - "netfilter-mailcow"
+          - "netfilter-zynerone"
           - "olefy-mailcow"
           - "php-fpm-zynerone"
           - "postfix-zynerone"

@@ -118,7 +118,7 @@ function mail_error() {
   # Some exceptions for subject and body formats
   if [[ ${1} == "fail2ban" ]]; then
     SUBJECT="${BODY}"
-    BODY="Please see netfilter-mailcow for more details and triggered rules."
+    BODY="Please see netfilter-zynerone for more details and triggered rules."
   else
     SUBJECT="${WATCHDOG_SUBJECT}: ${1}"
   fi
