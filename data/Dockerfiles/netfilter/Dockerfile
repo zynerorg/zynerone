@@ -1,5 +1,5 @@
 FROM alpine:3.17
-LABEL maintainer "The Infrastructure Company GmbH <info@servercow.de>"
+LABEL maintainer "Zyner <contact@zyner.net>"
 
 ENV XTABLES_LIBDIR /usr/lib/xtables
 ENV PYTHON_IPTABLES_XTABLES_VERSION 12
