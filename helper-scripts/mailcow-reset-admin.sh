@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-[[ -f mailcow.conf ]] && source mailcow.conf
-[[ -f ../mailcow.conf ]] && source ../mailcow.conf
+[[ -f zynerone.conf ]] && source zynerone.conf
+[[ -f ../zynerone.conf ]] && source ../zynerone.conf
 
 if [[ -z ${DBUSER} ]] || [[ -z ${DBPASS} ]] || [[ -z ${DBNAME} ]]; then
-	echo "Cannot find mailcow.conf, make sure this script is run from within the mailcow folder."
+	echo "Cannot find zynerone.conf, make sure this script is run from within the mailcow folder."
 	exit 1
 fi
 

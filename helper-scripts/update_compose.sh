@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-source ${SCRIPT_DIR}/../mailcow.conf
+source ${SCRIPT_DIR}/../zynerone.conf
 
 if [ "${DOCKER_COMPOSE_VERSION}" == "standalone" ]; then
 LATEST_COMPOSE=$(curl -Ls -w %{url_effective} -o /dev/null https://github.com/docker/compose/releases/latest) # redirect to latest release
@@ -67,6 +67,6 @@ elif [ "${DOCKER_COMPOSE_VERSION}" == "native" ]; then
     exit 1
 
 else
-    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from mailcow.conf! Is your mailcow up to date? Exiting...\e[0m"
+    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from zynerone.conf! Is your mailcow up to date? Exiting...\e[0m"
     exit 1
 fi

@@ -41,7 +41,7 @@ try:
       break
 
   time_now = int(time.time())
-  mailcow_hostname = os.environ.get('MAILCOW_HOSTNAME')
+  mailcow_hostname = os.environ.get('ZYNERONE_HOSTNAME')
 
   max_score = float(r.get('Q_MAX_SCORE') or "9999.0")
   if max_score == "":

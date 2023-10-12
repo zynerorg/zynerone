@@ -4,8 +4,8 @@ content: |
   rcpt = "/.*@develcow.de$/";
   from = "/.*/";
   apply "default" {
-    MAILCOW_WHITE = -9999.0;
+    ZYNERONE_WHITE = -9999.0;
   }
   symbols [
-    "MAILCOW_WHITE"
+    "ZYNERONE_WHITE"
   ]

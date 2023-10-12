@@ -1,6 +1,6 @@
 # Zyner One
 
-[![Translation status](https://translate.mailcow.email/widgets/mailcow-dockerized/-/translation/svg-badge.svg)](https://translate.mailcow.email/engage/mailcow-dockerized/)
+[![Translation status](https://translate.mailcow.email/widgets/zynerone/-/translation/svg-badge.svg)](https://translate.mailcow.email/engage/zynerone/)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/mailcow_email.svg?style=social&label=Follow%20%40mailcow_email)](https://twitter.com/mailcow_email)
 
 ## Want to support mailcow?

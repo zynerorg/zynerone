@@ -62,8 +62,8 @@ data/web/inc/app_info.inc.php
 data/web/nextcloud*/
 data/web/rc*/
 docker-compose.override.yml
-mailcow.conf
-mailcow.conf_backup
+zynerone.conf
+zynerone.conf_backup
 rebuild-images.sh
 refresh_images.sh
 update_diffs/

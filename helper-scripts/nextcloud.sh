@@ -37,7 +37,7 @@ fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR}/../
-source mailcow.conf
+source zynerone.conf
 
 if [[ ${NC_PURGE} == "y" ]]; then
   read -r -p "Are you sure you want to purge Nextcloud? [y/N] " response
@@ -175,7 +175,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpmode --value=smtp; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpauthtype --value=LOGIN; \
     /web/nextcloud/occ --no-warnings config:system:set mail_from_address --value=nextcloud; \
-    /web/nextcloud/occ --no-warnings config:system:set mail_domain --value=${MAILCOW_HOSTNAME}; \
+    /web/nextcloud/occ --no-warnings config:system:set mail_domain --value=${ZYNERONE_HOSTNAME}; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtphost --value=postfix; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpport --value=588; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpstreamoptions ssl verify_peer --value=false --type=boolean

@@ -416,8 +416,8 @@
     "start": {
         "help": "Rādīt/Paslēp palīdzības paneli",
         "imap_smtp_server_auth_info": "Lūdzu, izmantojiet pilnu e-pasta adresi un PLAIN autentifikācijas mehānismu.<br>\r\nJūsu pieteikšanās dati tiks šifrēti, izmantojot servera puses obligātu šifrēšanu",
-        "mailcow_apps_detail": "Izmantojiet lietotni mailcow, lai piekļūtu savam pastam, kalendāram, kontaktiem un citām lietām.",
-        "mailcow_panel_detail": "<b>Domēna administrators</b> izveidot, mainīt vai dzēst pastkastes un aliases, mainīt domēnus un lasīt papildu informāciju par saviem piešķirtajiem domēniem.<br>\r\n  <b>Pastkastes lietotāji</b> var izveidot ierobežotus laika ierobežojumus (surogātpasta aliases), mainīt paroli un surogātpasta filtru iestatījumus."
+        "zynerone_apps_detail": "Izmantojiet lietotni mailcow, lai piekļūtu savam pastam, kalendāram, kontaktiem un citām lietām.",
+        "zynerone_panel_detail": "<b>Domēna administrators</b> izveidot, mainīt vai dzēst pastkastes un aliases, mainīt domēnus un lasīt papildu informāciju par saviem piešķirtajiem domēniem.<br>\r\n  <b>Pastkastes lietotāji</b> var izveidot ierobežotus laika ierobežojumus (surogātpasta aliases), mainīt paroli un surogātpasta filtru iestatījumus."
     },
     "success": {
         "admin_modified": "Izmaiņas administrātoram ir saglabātas",
