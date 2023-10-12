@@ -21,7 +21,7 @@ jobs:
           - "olefy-mailcow"
           - "php-fpm-mailcow"
           - "postfix-mailcow"
-          - "rspamd-mailcow"
+          - "rspamd-zynerone"
           - "sogo-mailcow"
           - "solr-mailcow"
           - "unbound-zynerone"

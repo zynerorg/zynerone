@@ -231,12 +231,12 @@ function restore() {
       docker start $(docker ps -aqf name=dovecot-mailcow)
       ;;
     rspamd)
-      docker stop $(docker ps -qf name=rspamd-mailcow)
+      docker stop $(docker ps -qf name=rspamd-zynerone)
       docker run -it --name mailcow-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_rspamd-vol-1$):/rspamd:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_rspamd.tar.gz
-      docker start $(docker ps -aqf name=rspamd-mailcow)
+      docker start $(docker ps -aqf name=rspamd-zynerone)
       ;;
     postfix)
       docker stop $(docker ps -qf name=postfix-mailcow)

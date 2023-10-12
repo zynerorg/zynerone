@@ -5243,8 +5243,8 @@ paths:
                       started_at: "2019-12-22T20:59:56.827166834Z"
                       state: running
                       type: info
-                    rspamd-mailcow:
-                      container: rspamd-mailcow
+                    rspamd-zynerone:
+                      container: rspamd-zynerone
                       image: "mailcow/rspamd:1.56"
                       started_at: "2019-12-22T21:00:12.456075355Z"
                       state: running
