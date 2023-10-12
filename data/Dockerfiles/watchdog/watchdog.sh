@@ -449,14 +449,14 @@ dovecot_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/dovecot-mailcow; echo "$(tail -50 /tmp/dovecot-mailcow)" > /tmp/dovecot-mailcow
-    host_ip=$(get_container_ip dovecot-mailcow)
+    touch /tmp/dovecot-zynerone; echo "$(tail -50 /tmp/dovecot-zynerone)" > /tmp/dovecot-zynerone
+    host_ip=$(get_container_ip dovecot-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Dovecot" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -898,7 +898,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! dovecot_checks; then
     log_msg "Dovecot hit error limit"
-    echo dovecot-mailcow > /tmp/com_pipe
+    echo dovecot-zynerone > /tmp/com_pipe
   fi
 done
 ) &

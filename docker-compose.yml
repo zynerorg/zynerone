@@ -80,7 +80,7 @@ services:
       image: zyner/rspamd:1.92
       stop_grace_period: 30s
       depends_on:
-        - dovecot-mailcow
+        - dovecot-zynerone
       environment:
         - TZ=${TZ}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
@@ -217,7 +217,7 @@ services:
           aliases:
             - sogo
 
-    dovecot-mailcow:
+    dovecot-zynerone:
       image: zyner/dovecot:1.25
       depends_on:
         - mariadb-zynerone
@@ -437,7 +437,7 @@ services:
       image: zyner/netfilter:1.52
       stop_grace_period: 30s
       depends_on:
-        - dovecot-mailcow
+        - dovecot-zynerone
         - postfix-mailcow
         - sogo-zynerone
         - php-fpm-zynerone
@@ -470,7 +470,7 @@ services:
       restart: always
       depends_on:
         - postfix-mailcow
-        - dovecot-mailcow
+        - dovecot-zynerone
         - mariadb-zynerone
         - acme-mailcow
         - redis-zynerone
@@ -586,7 +586,7 @@ services:
         - TZ=${TZ}
       depends_on:
         - sogo-zynerone
-        - dovecot-mailcow
+        - dovecot-zynerone
       labels:
         ofelia.enabled: "true"
       security_opt:
@@ -607,7 +607,7 @@ services:
         - rspamd-zynerone
         - php-fpm-zynerone
         - sogo-zynerone
-        - dovecot-mailcow
+        - dovecot-zynerone
         - postfix-mailcow
         - memcached-mailcow
         - nginx-mailcow

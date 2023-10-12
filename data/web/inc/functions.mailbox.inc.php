@@ -110,7 +110,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                 fwrite($filter_handle, $script_data);
                 fclose($filter_handle);
               }
-              $restart_response = json_decode(docker('post', 'dovecot-mailcow', 'restart'), true);
+              $restart_response = json_decode(docker('post', 'dovecot-zynerone', 'restart'), true);
               if ($restart_response['type'] == "success") {
                 $_SESSION['return'][] = array(
                   'type' => 'success',
@@ -145,7 +145,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                 fwrite($filter_handle, $script_data);
                 fclose($filter_handle);
               }
-              $restart_response = json_decode(docker('post', 'dovecot-mailcow', 'restart'), true);
+              $restart_response = json_decode(docker('post', 'dovecot-zynerone', 'restart'), true);
               if ($restart_response['type'] == "success") {
                 $_SESSION['return'][] = array(
                   'type' => 'success',
@@ -3669,7 +3669,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             'task' => 'list',
             'username' => $_data
           );
-          $filters = docker('post', 'dovecot-mailcow', 'exec', $exec_fields);
+          $filters = docker('post', 'dovecot-zynerone', 'exec', $exec_fields);
           $filters = array_filter(preg_split("/(\r\n|\n|\r)/",$filters));
           foreach ($filters as $filter) {
             if (preg_match('/.+ ACTIVE/i', $filter)) {
@@ -3679,7 +3679,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                 'script_name' => substr($filter, 0, -7),
                 'username' => $_data
               );
-              $script = docker('post', 'dovecot-mailcow', 'exec', $exec_fields);
+              $script = docker('post', 'dovecot-zynerone', 'exec', $exec_fields);
               // Remove first line
               return preg_replace('/^.+\n/', '', $script);
             }
@@ -4782,7 +4782,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               continue;
             }
             $exec_fields = array('cmd' => 'maildir', 'task' => 'cleanup', 'maildir' => $domain);
-            $maildir_gc = json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields), true);
+            $maildir_gc = json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true);
             if ($maildir_gc['type'] != 'success') {
               $_SESSION['return'][] = array(
                 'type' => 'warning',
@@ -5024,9 +5024,9 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
 
               if (getenv("CLUSTERMODE") == "replication") {
                 // broadcast to each dovecot container
-                docker('broadcast', 'dovecot-mailcow', 'exec', $exec_fields);
+                docker('broadcast', 'dovecot-zynerone', 'exec', $exec_fields);
               } else {
-                $maildir_gc = json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields), true);
+                $maildir_gc = json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true);
                 if ($maildir_gc['type'] != 'success') {
                   $_SESSION['return'][] = array(
                     'type' => 'warning',

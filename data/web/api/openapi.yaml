@@ -5183,8 +5183,8 @@ paths:
                       started_at: "2019-12-22T20:59:59.984797808Z"
                       state: running
                       type: info
-                    dovecot-mailcow:
-                      container: dovecot-mailcow
+                    dovecot-zynerone:
+                      container: dovecot-zynerone
                       image: "mailcow/dovecot:1.104"
                       started_at: "2019-12-22T21:00:08.988680259Z"
                       state: running
