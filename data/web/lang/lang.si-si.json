@@ -176,7 +176,7 @@
         "f2b_max_ban_time": "Maksimalno trajanje blokade (s)",
         "f2b_netban_ipv4": "velikost subneta IPv4 za blokiranje (8-32)",
         "f2b_netban_ipv6": "Velikost subneta IPv6 za blokiranje (8-128)",
-        "f2b_parameters": "Fail2ban parametri",
+        "f2b_parameters": "Netfilter parametri",
         "f2b_regex_info": "Upoštevajo se dnevniki SOGo, Postfix, Dovecot, PHP-FPM.",
         "f2b_retry_window": "Upoštevan čas (s) za največ poskusov",
         "f2b_whitelist": "Mreže/gostitelji na whitelisti",
