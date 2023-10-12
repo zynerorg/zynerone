@@ -747,7 +747,7 @@ olefy_checks() {
 
 # Notify about start
 if [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]]; then
-  mail_error "watchdog-mailcow" "Watchdog started monitoring mailcow."
+  mail_error "watchdog-zynerone" "Watchdog started monitoring mailcow."
 fi
 
 # Create watchdog agents

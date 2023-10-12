@@ -384,7 +384,7 @@ SOLR_HEAP=1024
 
 ALLOW_ADMIN_EMAIL_LOGIN=n
 
-# Enable watchdog (watchdog-mailcow) to restart unhealthy containers
+# Enable watchdog (watchdog-zynerone) to restart unhealthy containers
 
 USE_WATCHDOG=y
 
