@@ -5165,8 +5165,8 @@ paths:
               examples:
                 response:
                   value:
-                    acme-mailcow:
-                      container: acme-mailcow
+                    acme-zynerone:
+                      container: acme-zynerone
                       image: "mailcow/acme:1.63"
                       started_at: "2019-12-22T21:00:08.270660275Z"
                       state: running

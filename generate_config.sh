@@ -346,7 +346,7 @@ ADDITIONAL_SAN=
 
 ADDITIONAL_SERVER_NAMES=
 
-# Skip running ACME (acme-mailcow, Let's Encrypt certs) - y/n
+# Skip running ACME (acme-zynerone, Let's Encrypt certs) - y/n
 
 SKIP_LETS_ENCRYPT=n
 

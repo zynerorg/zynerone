@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         images:
-          - "acme-mailcow"
+          - "acme-zynerone"
           - "clamd-zynerone"
           - "dockerapi-mailcow"
           - "dovecot-zynerone"

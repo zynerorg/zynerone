@@ -392,7 +392,7 @@ services:
           aliases:
             - nginx
 
-    acme-mailcow:
+    acme-zynerone:
       depends_on:
         nginx-zynerone:
           condition: service_started
@@ -472,7 +472,7 @@ services:
         - postfix-zynerone
         - dovecot-zynerone
         - mariadb-zynerone
-        - acme-mailcow
+        - acme-zynerone
         - redis-zynerone
 
       environment:
@@ -611,7 +611,7 @@ services:
         - postfix-zynerone
         - memcached-zynerone
         - nginx-zynerone
-        - acme-mailcow
+        - acme-zynerone
         - netfilter-mailcow
         - watchdog-mailcow
         - dockerapi-mailcow
