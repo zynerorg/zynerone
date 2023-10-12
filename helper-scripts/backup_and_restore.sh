@@ -267,7 +267,7 @@ function restore() {
           echo "Stopping mailcow..."
           ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
         fi
-        #docker stop $(docker ps -qf name=mysql-mailcow)
+        #docker stop $(docker ps -qf name=mariadb-zynerone)
         if [[ -d "${RESTORE_LOCATION}/mysql" ]]; then
         docker run --name mailcow-backup --rm \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:rw,z \
@@ -304,7 +304,7 @@ function restore() {
         source ${SCRIPT_DIR}/../mailcow.conf
         echo "Starting mailcow..."
         ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d
-        #docker start $(docker ps -aqf name=mysql-mailcow)
+        #docker start $(docker ps -aqf name=mariadb-zynerone)
       fi
       ;;
     esac
