@@ -23,7 +23,7 @@ jobs:
           - "postfix-zynerone"
           - "rspamd-zynerone"
           - "sogo-zynerone"
-          - "solr-mailcow"
+          - "solr-zynerone"
           - "unbound-zynerone"
           - "watchdog-zynerone"
     runs-on: ubuntu-latest

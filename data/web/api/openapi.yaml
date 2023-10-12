@@ -5255,8 +5255,8 @@ paths:
                       started_at: "2019-12-22T20:59:58.382274592Z"
                       state: running
                       type: info
-                    solr-mailcow:
-                      container: solr-mailcow
+                    solr-zynerone:
+                      container: solr-zynerone
                       image: "mailcow/solr:1.7"
                       started_at: "2019-12-22T20:59:59.635413798Z"
                       state: running

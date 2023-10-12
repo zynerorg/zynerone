@@ -25,7 +25,7 @@ $vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-zynerone', 
 // containers
 $containers = (array) docker('info');
 if ($clamd_status === false) unset($containers['clamd-zynerone']);
-if ($solr_status === false) unset($containers['solr-mailcow']);
+if ($solr_status === false) unset($containers['solr-zynerone']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
   date_default_timezone_set('UTC');
