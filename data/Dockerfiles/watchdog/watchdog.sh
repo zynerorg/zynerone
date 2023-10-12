@@ -266,16 +266,16 @@ unbound_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/unbound-mailcow; echo "$(tail -50 /tmp/unbound-mailcow)" > /tmp/unbound-mailcow
-    host_ip=$(get_container_ip unbound-mailcow)
+    touch /tmp/unbound-zynerone; echo "$(tail -50 /tmp/unbound-zynerone)" > /tmp/unbound-zynerone
+    host_ip=$(get_container_ip unbound-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>> /tmp/unbound-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>> /tmp/unbound-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     DNSSEC=$(dig com +dnssec | egrep 'flags:.+ad')
     if [[ -z ${DNSSEC} ]]; then
-      echo "DNSSEC failure" 2>> /tmp/unbound-mailcow 1>&2
+      echo "DNSSEC failure" 2>> /tmp/unbound-zynerone 1>&2
       err_count=$(( ${err_count} + 1))
     else
-      echo "DNSSEC check succeeded" 2>> /tmp/unbound-mailcow 1>&2
+      echo "DNSSEC check succeeded" 2>> /tmp/unbound-zynerone 1>&2
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
@@ -847,7 +847,7 @@ if [ ${CHECK_UNBOUND} -eq 1 ]; then
 while true; do
   if ! unbound_checks; then
     log_msg "Unbound hit error limit"
-    echo unbound-mailcow > /tmp/com_pipe
+    echo unbound-zynerone > /tmp/com_pipe
   fi
 done
 ) &

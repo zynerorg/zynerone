@@ -5261,8 +5261,8 @@ paths:
                       started_at: "2019-12-22T20:59:59.635413798Z"
                       state: running
                       type: info
-                    unbound-mailcow:
-                      container: unbound-mailcow
+                    unbound-zynerone:
+                      container: unbound-zynerone
                       image: "mailcow/unbound:1.10"
                       started_at: "2019-12-22T20:59:58.760595825Z"
                       state: running

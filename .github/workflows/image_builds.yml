@@ -24,7 +24,7 @@ jobs:
           - "rspamd-mailcow"
           - "sogo-mailcow"
           - "solr-mailcow"
-          - "unbound-mailcow"
+          - "unbound-zynerone"
           - "watchdog-mailcow"
     runs-on: ubuntu-latest
     steps:

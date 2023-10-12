@@ -1,7 +1,7 @@
 version: '2.1'
 services:
 
-    unbound-mailcow:
+    unbound-zynerone:
       image: zyner/unbound:1.18
       environment:
         - TZ=${TZ}
@@ -19,7 +19,7 @@ services:
     mariadb-zynerone:
       image: mariadb:10.5
       depends_on:
-        - unbound-mailcow
+        - unbound-zynerone
       stop_grace_period: 45s
       volumes:
         - mysql-vol-1:/var/lib/mysql/
@@ -61,7 +61,7 @@ services:
       image: zyner/clamd:1.63
       restart: always
       depends_on:
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -302,7 +302,7 @@ services:
       depends_on:
         mariadb-zynerone:
           condition: service_started
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       volumes:
         - ./data/hooks/postfix:/hooks:Z
@@ -396,7 +396,7 @@ services:
       depends_on:
         nginx-mailcow:
           condition: service_started
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       image: zyner/acme:1.85
       dns:
@@ -600,7 +600,7 @@ services:
 
     ipv6nat-mailcow:
       depends_on:
-        - unbound-mailcow
+        - unbound-zynerone
         - mariadb-zynerone
         - redis-mailcow
         - clamd-mailcow
