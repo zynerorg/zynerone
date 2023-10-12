@@ -164,8 +164,6 @@
         "forwarding_hosts_hint": "Saapuvat viestit hyväksytään ehdoitta kaikilta täällä luetelluilta isännöimiltä. Näitä isäntiä ei sitten tarkisteta DNSBL: ien suhteen, eikä heille suoriteta tyyliluettelointia. Heiltä vastaanotettua roskapostia ei koskaan hylätä, mutta valinnaisesti se voidaan tallentaa Roskakori-kansioon. Yleisin käyttö tähän tarkoitukseen on määrittää postipalvelimet, joille olet asettanut säännön, joka välittää tulevat sähköpostit mailcow-palvelimellesi.",
         "from": "Lähettäjä",
         "generate": "Tuota",
-        "guid": "GUID-yksilöllinen tunnus ID",
-        "guid_and_license": "GUID &-lisenssi",
         "hash_remove_info": "Nopeusrajasiirron (jos se on edelleen olemassa) poistaminen nollaa laskurinsa kokonaan.<br>\r\nJokainen hash on merkitty yksittäisellä värillä.",
         "help_text": "Ohita kirjautumismaskin alla oleva ohjeteksti (HTML sallittu)",
         "host": "Host",
@@ -177,7 +175,6 @@
         "include_exclude_info": "Oletusarvoisesti-ilman valintaa - <b>kaikki posti laatikot</b> käsitellään",
         "includes": "Sisällytä nämä vastaanottajat",
         "last_applied": "Viimeksi käytetty",
-        "license_info": "Lisenssiä ei vaadita, mutta se auttaa kehittämään ohjelmaa jatkossa.<br><a href=\"https://www.servercow.de/mailcow?lang=en#sal\" target=\"_blank\" alt=\"SAL order\">Rekisteröi GUID-tunnus täältä</a> or <a href=\"https://www.servercow.de/mailcow?lang=en#support\" target=\"_blank\" alt=\"Support order\">Osta tuki mailcow-asennusta varten.</a>",
         "link": "Linkki",
         "loading": "Ole hyvä ja odota...",
         "logo_info": "Kuvasi skaalataan ylimmän navigointipalkin 40 pikselin korkeudelle ja korkeintaan. leveys 250 sivua aloitussivulle. Skaalautuva grafiikka on erittäin suositeltavaa.",
@@ -266,7 +263,6 @@
         "unchanged_if_empty": "Jollei muutoksia, jätä tyhjäksi",
         "upload": "Lataa",
         "username": "Käyttäjätunnus",
-        "validate_license_now": "Vahvista GUID-tunnus lisenssi palvelinta vastaan",
         "yes": "&#10003;"
     },
     "danger": {
