@@ -6,7 +6,7 @@ function app_passwd($_action, $_data = null) {
   !isset($_data_log['app_passwd']) ?: $_data_log['app_passwd'] = '*';
   !isset($_data_log['app_passwd2']) ?: $_data_log['app_passwd2'] = '*';
   if (isset($_data['username']) && filter_var($_data['username'], FILTER_VALIDATE_EMAIL)) {
-    if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data['username'])) {
+    if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data['username'])) {
       $_SESSION['return'][] = array(
         'type' => 'danger',
         'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -19,7 +19,7 @@ function app_passwd($_action, $_data = null) {
     }
   }
   else {
-    $username = $_SESSION['mailcow_cc_username'];
+    $username = $_SESSION['zynerone_cc_username'];
   }
   switch ($_action) {
     case 'add':
@@ -197,7 +197,7 @@ function app_passwd($_action, $_data = null) {
           );
           return false;
         }
-        if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $mailbox)) {
+        if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $mailbox)) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -231,7 +231,7 @@ function app_passwd($_action, $_data = null) {
       if (empty($app_passwd_data)) {
         return false;
       }
-      if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $app_passwd_data['mailbox'])) {
+      if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $app_passwd_data['mailbox'])) {
         $app_passwd_data = array();
         return false;
       }

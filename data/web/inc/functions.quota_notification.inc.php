@@ -2,7 +2,7 @@
 function quota_notification($_action, $_data = null) {
 	global $redis;
 	$_data_log = $_data;
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] = array(
       'type' => 'danger',
       'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -68,7 +68,7 @@ function quota_notification($_action, $_data = null) {
 function quota_notification_bcc($_action, $_data = null) {
 	global $redis;
 	$_data_log = $_data;
-  if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
     $_SESSION['return'][] = array(
       'type' => 'danger',
       'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -79,7 +79,7 @@ function quota_notification_bcc($_action, $_data = null) {
   switch ($_action) {
     case 'edit':
       $domain = $_data['domain'];
-      if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+      if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -126,7 +126,7 @@ function quota_notification_bcc($_action, $_data = null) {
     break;
     case 'get':
       $domain = $_data;
-      if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+      if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),

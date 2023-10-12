@@ -3,7 +3,7 @@
 [[ -f ../zynerone.conf ]] && source ../zynerone.conf
 
 if [[ -z ${DBUSER} ]] || [[ -z ${DBPASS} ]] || [[ -z ${DBNAME} ]]; then
-	echo "Cannot find zynerone.conf, make sure this script is run from within the mailcow folder."
+	echo "Cannot find zynerone.conf, make sure this script is run from within the zynerone folder."
 	exit 1
 fi
 
@@ -15,7 +15,7 @@ if [[ -z $(docker ps -qf name=mariadb-zynerone) ]]; then
 fi
 
 echo "OK"
-read -r -p "Are you sure you want to reset the mailcow administrator account? [y/N] " response
+read -r -p "Are you sure you want to reset the zynerone administrator account? [y/N] " response
 response=${response,,}    # tolower
 if [[ "$response" =~ ^(yes|y)$ ]]; then
 	echo -e "\nWorking, please wait..."

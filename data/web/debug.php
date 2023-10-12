@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != "admin") {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "admin") {
   header('Location: /');
   exit();
 }
@@ -49,7 +49,7 @@ foreach ($containers as $container => $container_info) {
   $containers[$container]['State']['StartedAtHR'] = $started;
 }
 
-// get mailcow data
+// get zynerone data
 $hostname = getenv('ZYNERONE_HOSTNAME');
 $timezone = getenv('TZ');
 

@@ -16,14 +16,14 @@
           <button class="btn btn-sm btn-xs-half btn-secondary" id="toggle_multi_select_all" data-id="mailbox_template" href="#"><i class="bi bi-check-all"></i> {{ lang.mailbox.toggle_all }}</button>
           <button class="btn btn-sm btn-xs-half btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</button>
           <ul class="dropdown-menu">
-            {% if mailcow_cc_role == 'admin' %}
+            {% if zynerone_cc_role == 'admin' %}
               <li><a class="dropdown-item" data-action="delete_selected" data-id="mailbox_template" data-api-url='delete/mailbox/template' href="#">{{ lang.mailbox.remove }}</a></li>
               <li class="table_collapse_option"><hr class="dropdown-divider"></li>
               <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="templates_mbox_table">{{ lang.datatables.expand_all }}</a></li>
               <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="templates_mbox_table">{{ lang.datatables.collapse_all }}</a></li>
             {% endif %}
           </ul>
-          {% if mailcow_cc_role == 'admin' %}
+          {% if zynerone_cc_role == 'admin' %}
           <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addMailboxTemplateModal"><i class="bi bi-plus-lg"></i> {{ lang.mailbox.add_template }}</button>
           {% endif %}
         </div>
@@ -34,14 +34,14 @@
           <button class="btn btn-sm btn-xs-lg btn-xs-half btn-secondary" id="toggle_multi_select_all" data-id="mailbox_template" href="#"><i class="bi bi-check-all"></i> {{ lang.mailbox.toggle_all }}</button>
           <button class="btn btn-sm btn-xs-lg btn-xs-half btn-secondary dropdown-toggle" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</button>
           <ul class="dropdown-menu">
-            {% if mailcow_cc_role == 'admin' %}
+            {% if zynerone_cc_role == 'admin' %}
               <li><a class="dropdown-item" data-action="delete_selected" data-id="mailbox_template" data-api-url='delete/mailbox/template' href="#">{{ lang.mailbox.remove }}</a></li>
               <li class="table_collapse_option"><hr class="dropdown-divider"></li>
               <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="templates_mbox_table">{{ lang.datatables.expand_all }}</a></li>
               <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="templates_mbox_table">{{ lang.datatables.collapse_all }}</a></li>
             {% endif %}
           </ul>
-          {% if mailcow_cc_role == 'admin' %}
+          {% if zynerone_cc_role == 'admin' %}
           <button class="btn btn-sm btn-xs-lg btn-success" data-bs-toggle="modal" data-bs-target="#addMailboxTemplateModal"><i class="bi bi-plus-lg"></i> {{ lang.mailbox.add_template }}</button>
           {% endif %}
         </div>

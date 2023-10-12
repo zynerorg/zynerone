@@ -53,13 +53,13 @@ if [[ ${NC_PURGE} == "y" ]]; then
     echo -e "\033[31mPurging...\033[0m"
     docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP DATABASE nextcloud;" > /dev/null
     docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP USER 'nextcloud'@'%';" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
-    echo -e "\033[32mFound Nextcloud (oc) tables inside of mailcow database (old scheme)!\033[0m"
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} zynerone -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
+    echo -e "\033[32mFound Nextcloud (oc) tables inside of zynerone database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
     docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
      "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'oc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
-    echo -e "\033[32mFound Nextcloud (nc) tables inside of mailcow database (old scheme)!\033[0m"
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} zynerone -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
+    echo -e "\033[32mFound Nextcloud (nc) tables inside of zynerone database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
     docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
      "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'nc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
@@ -211,7 +211,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
 
 elif [[ ${NC_RESETPW} == "y" ]]; then
-    printf 'You are about to set a new password for a Nextcloud user.\n\nDo not use this option if your Nextcloud is configured to use mailcow for authentication.\nSet a new password for the corresponding mailbox in mailcow, instead.\n\n'
+    printf 'You are about to set a new password for a Nextcloud user.\n\nDo not use this option if your Nextcloud is configured to use zynerone for authentication.\nSet a new password for the corresponding mailbox in zynerone, instead.\n\n'
     read -r -p "Continue? [y/N] " response
     response=${response,,}
     if [[ ! "$response" =~ ^(yes|y)$ ]]; then

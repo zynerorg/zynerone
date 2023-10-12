@@ -15,7 +15,7 @@ function domain_admin($_action, $_data = null) {
       $password2  = $_data['password2'];
       $domains    = (array)$_data['domains'];
       $active     = intval($_data['active']);
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -109,7 +109,7 @@ function domain_admin($_action, $_data = null) {
       );
     break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -118,7 +118,7 @@ function domain_admin($_action, $_data = null) {
         return false;
       }
       // Administrator
-      if ($_SESSION['mailcow_cc_role'] == "admin") {
+      if ($_SESSION['zynerone_cc_role'] == "admin") {
         if (!is_array($_data['username'])) {
           $usernames = array();
           $usernames[] = $_data['username'];
@@ -242,8 +242,8 @@ function domain_admin($_action, $_data = null) {
       }
       // Domain administrator
       // Can only edit itself
-      elseif ($_SESSION['mailcow_cc_role'] == "domainadmin") {
-        $username = $_SESSION['mailcow_cc_username'];
+      elseif ($_SESSION['zynerone_cc_role'] == "domainadmin") {
+        $username = $_SESSION['zynerone_cc_username'];
         $password_old		= $_data['user_old_pass'];
         $password_new	= $_data['user_new_pass'];
         $password_new2	= $_data['user_new_pass2'];
@@ -277,7 +277,7 @@ function domain_admin($_action, $_data = null) {
       }
     break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -324,7 +324,7 @@ function domain_admin($_action, $_data = null) {
     break;
     case 'get':
       $domainadmins = array();
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -347,10 +347,10 @@ function domain_admin($_action, $_data = null) {
     break;
     case 'details':
       $domainadmindata = array();
-      if ($_SESSION['mailcow_cc_role'] == "domainadmin" && $_data != $_SESSION['mailcow_cc_username']) {
+      if ($_SESSION['zynerone_cc_role'] == "domainadmin" && $_data != $_SESSION['zynerone_cc_username']) {
         return false;
       }
-      elseif ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      elseif ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       if (!ctype_alnum(str_replace(array('_', '.', '-'), '', $_data))) {
@@ -419,7 +419,7 @@ function domain_admin_sso($_action, $_data) {
       $return = $stmt->fetch(PDO::FETCH_ASSOC);
       return empty($return['username']) ? false : $return['username'];
     case 'issue':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),

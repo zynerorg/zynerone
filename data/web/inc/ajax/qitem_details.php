@@ -72,7 +72,7 @@ if (!empty($_GET['hash']) && ctype_alnum($_GET['hash'])) {
   }
 }
 elseif (!empty($_GET['id']) && ctype_alnum($_GET['id'])) {
-  if (!isset($_SESSION['mailcow_cc_role'])) {
+  if (!isset($_SESSION['zynerone_cc_role'])) {
     echo json_encode(array('error' => 'Access denied'));
     exit();
   }

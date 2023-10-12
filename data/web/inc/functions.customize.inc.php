@@ -14,7 +14,7 @@ function customize($_action, $_item, $_data = null) {
         );
         return false;
       }
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_item, $_data),
@@ -92,7 +92,7 @@ function customize($_action, $_item, $_data = null) {
         );
         return false;
       }
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_item, $_data),
@@ -192,7 +192,7 @@ function customize($_action, $_item, $_data = null) {
         );
         return false;
       }
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_item, $_data),

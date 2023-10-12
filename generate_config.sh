@@ -10,7 +10,7 @@ fi
 
 if [[ "$(uname -r)" =~ ^4\.4\. ]]; then
   if grep -q Ubuntu <<< $(uname -a); then
-    echo "DO NOT RUN mailcow ON THIS UBUNTU KERNEL!";
+    echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!";
     echo "Please update to linux-generic-hwe-16.04 by running \"apt-get install --install-recommends linux-generic-hwe-16.04\""
     exit 1
   fi
@@ -58,23 +58,24 @@ else
   exit 1
 fi
 
+# TODO check into how we can replace this
 detect_bad_asn() {
   echo -e "\e[33mDetecting if your IP is listed on Spamhaus Bad ASN List...\e[0m"
   response=$(curl --connect-timeout 15 --max-time 30 -s -o /dev/null -w "%{http_code}" "https://asn-check.mailcow.email")
   if [ "$response" -eq 503 ]; then
     if [ -z "$SPAMHAUS_DQS_KEY" ]; then
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[33mmailcow did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
+      echo -e "\e[33mzynerone did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
       sleep 2
       echo ""
       echo -e "\e[33mTo use the Spamhaus DNS Blocklists again, you will need to create a FREE account for their Data Query Service (DQS) at: https://www.spamhaus.com/free-trial/sign-up-for-a-free-data-query-service-account\e[0m"
-      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and mailcow will do the rest for you!\e[0m"
+      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and zynerone will do the rest for you!\e[0m"
       echo ""
       sleep 2
 
     else
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[32mmailcow detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
+      echo -e "\e[32mzynerone detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
     fi
   elif [ "$response" -eq 200 ]; then
     echo -e "\e[33mCheck completed! Your IP is \e[32mclean\e[0m"
@@ -136,12 +137,12 @@ elif [ -a /etc/localtime ]; then
   DETECTED_TZ=$(readlink /etc/localtime|sed -n 's|^.*zoneinfo/||p')
 fi
 
-while [ -z "${MAILCOW_TZ}" ]; do
+while [ -z "${ZYNERONE_TZ}" ]; do
   if [ -z "${DETECTED_TZ}" ]; then
-    read -p "Timezone: " -e MAILCOW_TZ
+    read -p "Timezone: " -e ZYNERONE_TZ
   else
-    read -p "Timezone [${DETECTED_TZ}]: " -e MAILCOW_TZ
-    [ -z "${MAILCOW_TZ}" ] && MAILCOW_TZ=${DETECTED_TZ}
+    read -p "Timezone [${DETECTED_TZ}]: " -e ZYNERONE_TZ
+    [ -z "${ZYNERONE_TZ}" ] && ZYNERONE_TZ=${DETECTED_TZ}
   fi
 done
 
@@ -184,7 +185,7 @@ else
 fi
 
 if [[ ${SKIP_BRANCH} != y ]]; then
-  echo "Which branch of mailcow do you want to use?"
+  echo "Which branch of zynerone do you want to use?"
   echo ""
   echo "Available Branches:"
   echo "- master branch (stable updates) | default, recommended [1]"
@@ -225,7 +226,7 @@ fi
 
 cat << EOF > zynerone.conf
 # ------------------------------
-# mailcow web ui configuration
+# zynerone web ui configuration
 # ------------------------------
 # example.org is _not_ a valid hostname, use a fqdn here.
 # Default admin user is "admin"
@@ -242,8 +243,8 @@ ZYNERONE_PASS_SCHEME=BLF-CRYPT
 # SQL database configuration
 # ------------------------------
 
-DBNAME=mailcow
-DBUSER=mailcow
+DBNAME=zynerone
+DBUSER=zynerone
 
 # Please use long, random alphanumeric strings (A-Za-z0-9)
 
@@ -292,18 +293,18 @@ REDIS_PORT=127.0.0.1:7654
 # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for a list of timezones
 # Use the column named 'TZ identifier' + pay attention for the column named 'Notes'
 
-TZ=${MAILCOW_TZ}
+TZ=${ZYNERONE_TZ}
 
 # Fixed project name
 # Please use lowercase letters only
 
-COMPOSE_PROJECT_NAME=mailcowdockerized
+COMPOSE_PROJECT_NAME=zynerone
 
 # Used Docker Compose version
 # Switch here between native (compose plugin) and standalone
-# For more informations take a look at the mailcow docs regarding the configuration options.
+# For more informations take a look at the zynerone docs regarding the configuration options.
 # Normally this should be untouched but if you decided to use either of those you can switch it manually here.
-# Please be aware that at least one of those variants should be installed on your machine or mailcow will fail.
+# Please be aware that at least one of those variants should be installed on your machine or zynerone will fail.
 
 DOCKER_COMPOSE_VERSION=${COMPOSE_VERSION}
 
@@ -322,8 +323,8 @@ MAILDIR_GC_TIME=7200
 
 # Additional SAN for the certificate
 #
-# You can use wildcard records to create specific names for every domain you add to mailcow.
-# Example: Add domains "example.com" and "example.net" to mailcow, change ADDITIONAL_SAN to a value like:
+# You can use wildcard records to create specific names for every domain you add to zynerone.
+# Example: Add domains "example.com" and "example.net" to zynerone, change ADDITIONAL_SAN to a value like:
 #ADDITIONAL_SAN=imap.*,smtp.*
 # This will expand the certificate to "imap.example.com", "smtp.example.com", "imap.example.net", "smtp.example.net"
 # plus every domain you add in the future.
@@ -404,13 +405,6 @@ WATCHDOG_NOTIFY_BAN=n
 # Subject for watchdog mails. Defaults to "Watchdog ALERT" followed by the error message.
 #WATCHDOG_SUBJECT=
 
-# Checks if mailcow is an open relay. Requires a SAL. More checks will follow.
-# https://www.servercow.de/mailcow?lang=en
-# https://www.servercow.de/mailcow?lang=de
-# No data is collected. Opt-in and anonymous.
-# Will only work with unmodified mailcow setups.
-WATCHDOG_EXTERNAL_CHECKS=n
-
 # Enable watchdog verbose logging
 WATCHDOG_VERBOSE=n
 
@@ -455,7 +449,7 @@ SOGO_EXPIRE_SESSION=480
 
 # DOVECOT_MASTER_USER and DOVECOT_MASTER_PASS must both be provided. No special chars.
 # Empty by default to auto-generate master user and password on start.
-# User expands to DOVECOT_MASTER_USER@mailcow.local
+# User expands to DOVECOT_MASTER_USER@zynerone.local
 # LEAVE EMPTY IF UNSURE
 DOVECOT_MASTER_USER=
 # LEAVE EMPTY IF UNSURE
@@ -489,7 +483,7 @@ chmod 600 zynerone.conf
 # copy but don't overwrite existing certificate
 echo "Generating snake-oil certificate..."
 # Making Willich more popular
-openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=DE/ST=NRW/L=Willich/O=mailcow/OU=mailcow/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
+openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=SE/ST=M/L=Lund/O=Zyner One/OU=Zyner One/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
 echo "Copying snake-oil certificate..."
 cp -n -d data/assets/ssl-example/*.pem data/assets/ssl/
 

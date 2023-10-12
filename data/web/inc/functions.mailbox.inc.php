@@ -20,7 +20,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           if (isset($_data['username']) && filter_var($_data['username'], FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data['username'])) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data['username'])) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -33,7 +33,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             }
           }
           else {
-            $username = $_SESSION['mailcow_cc_username'];
+            $username = $_SESSION['zynerone_cc_username'];
           }
           if (isset($_data["validity"]) && !filter_var($_data["validity"], FILTER_VALIDATE_INT, array('options' => array('min_range' => 1, 'max_range' => 87600)))) {
             $_SESSION['return'][] = array(
@@ -76,7 +76,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           );
         break;
         case 'global_filter':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -195,7 +195,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           if (isset($_data['username']) && filter_var($_data['username'], FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data['username'])) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data['username'])) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -207,8 +207,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               $username = $_data['username'];
             }
           }
-          elseif ($_SESSION['mailcow_cc_role'] == "user") {
-            $username = $_SESSION['mailcow_cc_username'];
+          elseif ($_SESSION['zynerone_cc_role'] == "user") {
+            $username = $_SESSION['zynerone_cc_username'];
           }
           else {
             $_SESSION['return'][] = array(
@@ -293,7 +293,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           if (isset($_data['username']) && filter_var($_data['username'], FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data['username'])) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data['username'])) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -305,8 +305,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               $username = $_data['username'];
             }
           }
-          elseif ($_SESSION['mailcow_cc_role'] == "user") {
-            $username = $_SESSION['mailcow_cc_username'];
+          elseif ($_SESSION['zynerone_cc_role'] == "user") {
+            $username = $_SESSION['zynerone_cc_username'];
           }
           else {
             $_SESSION['return'][] = array(
@@ -468,7 +468,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           );
         break;
         case 'domain':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_extra),
@@ -815,7 +815,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -877,7 +877,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             );
             return false;
           }
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $target_domain)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $target_domain)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1065,7 +1065,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             );
             return false;
           }
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1333,7 +1333,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             );
             return false;
           }
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1403,7 +1403,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           );
         break;
         case 'domain_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_extra),
@@ -1473,7 +1473,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           return true;
         break;
         case 'mailbox_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_extra),
@@ -1615,7 +1615,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $target_domain)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $target_domain)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1664,7 +1664,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1718,7 +1718,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1777,7 +1777,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1906,7 +1906,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             $stmt = $pdo->prepare("SELECT `goto` FROM `spamalias` WHERE `address` = :address");
             $stmt->execute(array(':address' => $address));
             $goto = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $goto)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $goto)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -1948,7 +1948,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!filter_var($username, FILTER_VALIDATE_EMAIL) || !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -2360,7 +2360,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             if ($is_now['address'] != $address) {
               $local_part = strstr($address, '@', true);
               $address      = $local_part.'@'.$domain;
-              if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+              if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -2515,8 +2515,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if ($_SESSION['mailcow_cc_role'] == "domainadmin" &&
-            hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if ($_SESSION['zynerone_cc_role'] == "domainadmin" &&
+            hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $is_now = mailbox('get', 'domain_details', $domain);
               if (!empty($is_now)) {
                 $gal                  = (isset($_data['gal'])) ? intval($_data['gal']) : $is_now['gal'];
@@ -2566,7 +2566,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                 'msg' => array('domain_modified', htmlspecialchars($domain))
               );
             }
-            elseif ($_SESSION['mailcow_cc_role'] == "admin") {
+            elseif ($_SESSION['zynerone_cc_role'] == "admin") {
               $is_now = mailbox('get', 'domain_details', $domain);
               if (!empty($is_now)) {
                 $active               = (isset($_data['active'])) ? intval($_data['active']) : $is_now['active'];
@@ -2737,7 +2737,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           }
         break;
         case 'domain_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_extra),
@@ -2868,7 +2868,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               return false;
             }
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3001,7 +3001,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                   // Check if user has domain access (if object is domain)
                   $domain = ltrim($sender_acl_domain_admin[$key], '@');
                   if (is_valid_domain_name($domain)) {
-                    // Check for- and skip non-mailcow domains
+                    // Check for- and skip non-zynerone domains
                     $domains = array_merge(mailbox('get', 'domains'), mailbox('get', 'alias_domains'));
                     if (!empty($domains)) {
                       if (!in_array($domain, $domains)) {
@@ -3014,7 +3014,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                         continue;
                       }
                     }
-                    if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+                    if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
                       $_SESSION['return'][] = array(
                         'type' => 'danger',
                         'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3025,7 +3025,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                     }
                   }
                   // Wildcard can only be used if role == admin
-                  if ($val == '*' && $_SESSION['mailcow_cc_role'] != 'admin') {
+                  if ($val == '*' && $_SESSION['zynerone_cc_role'] != 'admin') {
                     $_SESSION['return'][] = array(
                       'type' => 'danger',
                       'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3036,7 +3036,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                   }
                   // Check if user has alias access (if object is email)
                   if (filter_var($val, FILTER_VALIDATE_EMAIL)) {
-                    if (!hasAliasObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $val)) {
+                    if (!hasAliasObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $val)) {
                       $_SESSION['return'][] = array(
                         'type' => 'danger',
                         'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3156,7 +3156,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           return true;
         break;
         case 'mailbox_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_extra),
@@ -3310,7 +3310,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $name)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $name)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3348,7 +3348,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             );
             return false;
           }
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -3382,7 +3382,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
     case 'get':
       switch ($_type) {
         case 'sender_acl_handles':
-          if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
             return false;
           }
           $data['sender_acl_domains']['ro']               = array();
@@ -3425,18 +3425,18 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $stmt->execute(array(':logged_in_as' => $_data));
           $domain_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
           while ($domain_row = array_shift($domain_rows)) {
-            if (is_valid_domain_name($domain_row['send_as']) && !hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain_row['send_as'])) {
+            if (is_valid_domain_name($domain_row['send_as']) && !hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain_row['send_as'])) {
               $data['sender_acl_domains']['ro'][] = $domain_row['send_as'];
               continue;
             }
-            if (is_valid_domain_name($domain_row['send_as']) && hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain_row['send_as'])) {
+            if (is_valid_domain_name($domain_row['send_as']) && hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain_row['send_as'])) {
               $data['sender_acl_domains']['rw'][] = $domain_row['send_as'];
               continue;
             }
-            if ($domain_row['send_as'] == '*' && $_SESSION['mailcow_cc_role'] != 'admin') {
+            if ($domain_row['send_as'] == '*' && $_SESSION['zynerone_cc_role'] != 'admin') {
               $data['sender_acl_domains']['ro'][] = $domain_row['send_as'];
             }
-            if ($domain_row['send_as'] == '*' && $_SESSION['mailcow_cc_role'] == 'admin') {
+            if ($domain_row['send_as'] == '*' && $_SESSION['zynerone_cc_role'] == 'admin') {
               $data['sender_acl_domains']['rw'][] = $domain_row['send_as'];
             }
           }
@@ -3444,11 +3444,11 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $stmt->execute(array(':logged_in_as' => $_data));
           $address_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
           while ($address_row = array_shift($address_rows)) {
-            if (filter_var($address_row['send_as'], FILTER_VALIDATE_EMAIL) && !hasAliasObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $address_row['send_as'])) {
+            if (filter_var($address_row['send_as'], FILTER_VALIDATE_EMAIL) && !hasAliasObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $address_row['send_as'])) {
               $data['sender_acl_addresses']['ro'][] = $address_row['send_as'];
               continue;
             }
-            if (filter_var($address_row['send_as'], FILTER_VALIDATE_EMAIL) && hasAliasObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $address_row['send_as'])) {
+            if (filter_var($address_row['send_as'], FILTER_VALIDATE_EMAIL) && hasAliasObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $address_row['send_as'])) {
               $data['sender_acl_addresses']['rw'][] = $address_row['send_as'];
               continue;
             }
@@ -3472,11 +3472,11 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           ));
           $rows_domain = $stmt->fetchAll(PDO::FETCH_ASSOC);
           while ($row_domain = array_shift($rows_domain)) {
-            if (is_valid_domain_name($row_domain['domain']) && hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $row_domain['domain'])) {
+            if (is_valid_domain_name($row_domain['domain']) && hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $row_domain['domain'])) {
               $data['sender_acl_domains']['selectable'][] = $row_domain['domain'];
               continue;
             }
-            if ($row_domain['domain'] == '*' && $_SESSION['mailcow_cc_role'] == 'admin') {
+            if ($row_domain['domain'] == '*' && $_SESSION['zynerone_cc_role'] == 'admin') {
               $data['sender_acl_domains']['selectable'][] = $row_domain['domain'];
               continue;
             }
@@ -3498,7 +3498,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             if (in_array($row['address'], $data['fixed_sender_aliases'])) {
               continue;
             }
-            if (filter_var($row['address'], FILTER_VALIDATE_EMAIL) && hasAliasObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $row['address'])) {
+            if (filter_var($row['address'], FILTER_VALIDATE_EMAIL) && hasAliasObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $row['address'])) {
               $data['sender_acl_addresses']['selectable'][] = $row['address'];
             }
           }
@@ -3528,11 +3528,11 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
 
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
-              if (hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], explode('@', $row['username'])[1])) 
+              if (hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], explode('@', $row['username'])[1])) 
                 $mailboxes[] = $row['username'];
             }
           }
-          elseif (isset($_data) && hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          elseif (isset($_data) && hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             // get by domain
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE (`kind` = '' OR `kind` = NULL) AND `domain` = :domain");
             $stmt->execute(array(
@@ -3546,8 +3546,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           else {
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE (`kind` = '' OR `kind` = NULL) AND (`domain` IN (SELECT `domain` FROM `domain_admins` WHERE `active` = '1' AND `username` = :username) OR 'admin' = :role)");
             $stmt->execute(array(
-              ':username' => $_SESSION['mailcow_cc_username'],
-              ':role' => $_SESSION['mailcow_cc_role'],
+              ':username' => $_SESSION['zynerone_cc_username'],
+              ':role' => $_SESSION['zynerone_cc_role'],
             ));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
@@ -3559,12 +3559,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'tls_policy':
           $attrs = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `attributes` FROM `mailbox` WHERE `username` = :username");
           $stmt->execute(array(':username' => $_data));
@@ -3578,12 +3578,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'quarantine_notification':
           $attrs = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `attributes` FROM `mailbox` WHERE `username` = :username");
           $stmt->execute(array(':username' => $_data));
@@ -3594,12 +3594,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'quarantine_category':
           $attrs = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `attributes` FROM `mailbox` WHERE `username` = :username");
           $stmt->execute(array(':username' => $_data));
@@ -3610,12 +3610,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'filters':
           $filters = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `id` FROM `sieve_filters` WHERE `username` = :username");
           $stmt->execute(array(':username' => $_data));
@@ -3627,7 +3627,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'global_filter_details':
           $global_filters = array();
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             return false;
           }
           $global_filters['prefilter'] = file_get_contents('/global_sieve/before');
@@ -3649,7 +3649,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               WHERE `id` = :id");
           $stmt->execute(array(':id' => $_data));
           $filter_details = $stmt->fetch(PDO::FETCH_ASSOC);
-          if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $filter_details['username'])) {
+          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $filter_details['username'])) {
             return false;
           }
           return $filter_details;
@@ -3657,12 +3657,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'active_user_sieve':
           $filter_details = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $exec_fields = array(
             'cmd' => 'sieve',
@@ -3725,7 +3725,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             $syncjobdetails['log'] = '';
           }
           unset($syncjobdetails['returned_text']);
-          if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $syncjobdetails['user2'])) {
+          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $syncjobdetails['user2'])) {
             return false;
           }
           return $syncjobdetails;
@@ -3733,12 +3733,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'syncjobs':
           $syncjobdata = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `id` FROM `imapsync` WHERE `user2` = :username");
           $stmt->execute(array(':username' => $_data));
@@ -3792,12 +3792,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           curl_close($curl);
           $policydata = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `value` FROM `filterconf` WHERE `object` = :username AND
             (`option` = 'lowspamlevel' OR `option` = 'highspamlevel')");
@@ -3819,12 +3819,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'time_limited_aliases':
           $tladata = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $stmt = $pdo->prepare("SELECT `address`,
             `goto`,
@@ -3841,12 +3841,12 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'delimiter_action':
           $policydata = array();
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
           }
           else {
-            $_data = $_SESSION['mailcow_cc_username'];
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           try {
             if ($redis->hGet('RCPT_WANTS_SUBJECT_TAG', $_data)) {
@@ -3870,10 +3870,10 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'resources':
           $resources = array();
-          if (isset($_data) && !hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (isset($_data) && !hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
-          elseif (isset($_data) && hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          elseif (isset($_data) && hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE `kind` REGEXP 'location|thing|group' AND `domain` = :domain");
             $stmt->execute(array(
               ':domain' => $_data,
@@ -3886,8 +3886,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           else {
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE `kind` REGEXP 'location|thing|group' AND `domain` IN (SELECT `domain` FROM `domain_admins` WHERE `active` = '1' AND `username` = :username) OR 'admin' = :role");
             $stmt->execute(array(
-              ':username' => $_SESSION['mailcow_cc_username'],
-              ':role' => $_SESSION['mailcow_cc_role'],
+              ':username' => $_SESSION['zynerone_cc_username'],
+              ':role' => $_SESSION['zynerone_cc_role'],
             ));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
@@ -3898,10 +3898,10 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'alias_domains':
           $aliasdomains = array();
-          if (isset($_data) && !hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (isset($_data) && !hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
-          elseif (isset($_data) && hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          elseif (isset($_data) && hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             $stmt = $pdo->prepare("SELECT `alias_domain` FROM `alias_domain` WHERE `target_domain` = :domain");
             $stmt->execute(array(
               ':domain' => $_data,
@@ -3914,8 +3914,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           else {
             $stmt = $pdo->prepare("SELECT `alias_domain` FROM `alias_domain` WHERE `target_domain` IN (SELECT `domain` FROM `domain_admins` WHERE `active` = '1' AND `username` = :username) OR 'admin' = :role");
             $stmt->execute(array(
-              ':username' => $_SESSION['mailcow_cc_username'],
-              ':role' => $_SESSION['mailcow_cc_role'],
+              ':username' => $_SESSION['zynerone_cc_username'],
+              ':role' => $_SESSION['zynerone_cc_role'],
             ));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
@@ -3926,7 +3926,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'aliases':
           $aliases = array();
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
           $stmt = $pdo->prepare("SELECT `id` FROM `alias` WHERE `address` != `goto` AND `domain` = :domain");
@@ -3984,7 +3984,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $aliasdata['sogo_visible_int'] = $row['sogo_visible'];
           $aliasdata['created'] = $row['created'];
           $aliasdata['modified'] = $row['modified'];
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $aliasdata['domain'])) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $aliasdata['domain'])) {
             return false;
           }
           return $aliasdata;
@@ -4017,7 +4017,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $aliasdomaindata['rl'] = $rl;
           $aliasdomaindata['created'] = $row['created'];
           $aliasdomaindata['modified'] = $row['modified'];
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $aliasdomaindata['target_domain'])) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $aliasdomaindata['target_domain'])) {
             return false;
           }
           return $aliasdomaindata;
@@ -4031,7 +4031,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
           while($row = array_shift($rows)) {
             $domain = explode("@", $row['address'])[1];
-            if (hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $shared_aliases[] = $row['address'];
             }
           }
@@ -4048,7 +4048,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
 
           while($row = array_shift($rows)) {
             $domain = explode("@", $row['address'])[1];
-            if (hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $direct_aliases[] = $row['address'];
             }
           }
@@ -4057,7 +4057,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'domains':
           $domains = array();
-          if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
             return false;
           }
 
@@ -4077,9 +4077,9 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
 
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
-              if ($_SESSION['mailcow_cc_role'] == "admin")
+              if ($_SESSION['zynerone_cc_role'] == "admin")
                 $domains[] = $row['domain'];
-              elseif (hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $row['domain'])) 
+              elseif (hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $row['domain'])) 
                 $domains[] = $row['domain'];
             }
           } else {
@@ -4091,8 +4091,8 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
                 )
                 OR 'admin'= :role");
             $stmt->execute(array(
-              ':username' => $_SESSION['mailcow_cc_username'],
-              ':role' => $_SESSION['mailcow_cc_role'],
+              ':username' => $_SESSION['zynerone_cc_username'],
+              ':role' => $_SESSION['zynerone_cc_role'],
             ));
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             while($row = array_shift($rows)) {
@@ -4105,7 +4105,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         case 'domain_details':
           $domaindata = array();
           $_data = idn_to_ascii(strtolower(trim($_data)), 0, INTL_IDNA_VARIANT_UTS46);
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
           $stmt = $pdo->prepare("SELECT `target_domain` FROM `alias_domain` WHERE `alias_domain` =  :domain");
@@ -4211,7 +4211,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $AliasDataDomain = $stmt->fetch(PDO::FETCH_ASSOC);
           (isset($AliasDataDomain['alias_count'])) ? $domaindata['aliases_in_domain'] = $AliasDataDomain['alias_count'] : $domaindata['aliases_in_domain'] = "0";
           $domaindata['aliases_left'] = $row['aliases'] - $AliasDataDomain['alias_count'];
-          if ($_SESSION['mailcow_cc_role'] == "admin")
+          if ($_SESSION['zynerone_cc_role'] == "admin")
           {
               $stmt = $pdo->prepare("SELECT GROUP_CONCAT(`username` SEPARATOR ', ') AS domain_admins FROM `domain_admins` WHERE `domain` = :domain");
               $stmt->execute(array(
@@ -4233,7 +4233,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           return $domaindata;
         break;
         case 'domain_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
             return false;
           }
           $_data = (isset($_data)) ? intval($_data) : null;
@@ -4270,7 +4270,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           }
         break;
         case 'mailbox_details':
-          if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
           $mailboxdata = array();
@@ -4421,7 +4421,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           return $mailboxdata;
         break;
         case 'mailbox_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
             return false;
           }
           $_data = (isset($_data)) ? intval($_data) : null;
@@ -4459,7 +4459,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
         break;
         case 'resource_details':
           $resourcedata = array();
-          if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             return false;
           }
           $stmt = $pdo->prepare("SELECT
@@ -4484,7 +4484,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $resourcedata['domain'] = $row['domain'];
           $resourcedata['local_part'] = $row['local_part'];
           if (!isset($resourcedata['domain']) ||
-            (isset($resourcedata['domain']) && !hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $resourcedata['domain']))) {
+            (isset($resourcedata['domain']) && !hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $resourcedata['domain']))) {
             return false;
           }
           return $resourcedata;
@@ -4499,7 +4499,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             );
             return false;
           }
-          if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4550,7 +4550,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             $stmt = $pdo->prepare("SELECT `user2` FROM `imapsync` WHERE id = :id");
             $stmt->execute(array(':id' => $id));
             $user2 = $stmt->fetch(PDO::FETCH_ASSOC)['user2'];
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $user2)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $user2)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4590,7 +4590,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             $stmt = $pdo->prepare("SELECT `username` FROM `sieve_filters` WHERE id = :id");
             $stmt->execute(array(':id' => $id));
             $usr = $stmt->fetch(PDO::FETCH_ASSOC)['username'];
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $usr)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $usr)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4627,7 +4627,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             $stmt = $pdo->prepare("SELECT `goto` FROM `spamalias` WHERE `address` = :address");
             $stmt->execute(array(':address' => $address));
             $goto = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $goto)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $goto)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4664,7 +4664,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4700,7 +4700,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
             return false;
           }
           foreach ($usernames as $username) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4751,7 +4751,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           else {
             $domains = $_data['domain'];
           }
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4860,7 +4860,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           }
         break;
         case 'domain_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -4949,7 +4949,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               WHERE `alias_domain`= :alias_domain");
             $stmt->execute(array(':alias_domain' => $alias_domain));
             $DomainData = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $DomainData['target_domain'])) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $DomainData['target_domain'])) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -5009,7 +5009,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $username)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $username)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -5200,7 +5200,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           return true;
         break;
         case 'mailbox_templates':
-          if ($_SESSION['mailcow_cc_role'] != "admin") {
+          if ($_SESSION['zynerone_cc_role'] != "admin") {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -5252,7 +5252,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $name)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $name)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -5321,7 +5321,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
               );
               continue;
             }
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -5372,7 +5372,7 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
 
             $is_now = mailbox('get', 'mailbox_details', $username);
             $domain     = $is_now['domain'];
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $domain)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $domain)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),

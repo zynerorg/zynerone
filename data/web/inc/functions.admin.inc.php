@@ -1,6 +1,6 @@
 <?php
 function admin($_action, $_data = null) {
-  if ($_SESSION['mailcow_cc_role'] != "admin") {
+  if ($_SESSION['zynerone_cc_role'] != "admin") {
     $_SESSION['return'][] = array(
       'type' => 'danger',
       'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -169,7 +169,7 @@ function admin($_action, $_data = null) {
     case 'delete':
       $usernames = (array)$_data['username'];
       foreach ($usernames as $username) {
-        if ($_SESSION['mailcow_cc_username'] == $username) {
+        if ($_SESSION['zynerone_cc_username'] == $username) {
           $_SESSION['return'][] = array(
             'type' => 'warning',
             'log' => array(__FUNCTION__, $_action, $_data_log),

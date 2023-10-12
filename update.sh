@@ -97,7 +97,7 @@ migrate_docker_nat() {
     echo -e "\e[32mNative IPv6 implementation available.\e[0m"
     echo "This will enable experimental features in the Docker daemon and configure Docker to do the IPv6 NATing instead of ipv6nat-zynerone."
     echo '!!! This step is recommended !!!'
-    echo "mailcow will try to roll back the changes if starting Docker fails after modifying the daemon.json configuration file."
+    echo "zynerone will try to roll back the changes if starting Docker fails after modifying the daemon.json configuration file."
     read -r -p "Should we try to enable the native IPv6 implementation in Docker now (recommended)? [y/N] " dockernatresponse
     if [[ ! "${dockernatresponse}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
       echo "OK, skipping this step."
@@ -166,7 +166,7 @@ remove_obsolete_nginx_ports() {
               echo -e "\e[33mRemoved obsolete NGINX IPv6 Bind from original override File.\e[0m"
                 if [[ "$(cat $override | sed '/^\s*$/d' | wc -l)" == "2" ]]; then
                   mv $override ${override}_empty
-                  echo -e "\e[31m${override} is empty. Renamed it to ensure mailcow is startable.\e[0m"
+                  echo -e "\e[31m${override} is empty. Renamed it to ensure zynerone is startable.\e[0m"
                 fi
             fi
           fi
@@ -261,17 +261,17 @@ detect_bad_asn() {
   if [ "$response" -eq 503 ]; then
     if [ -z "$SPAMHAUS_DQS_KEY" ]; then
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[33mmailcow did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
+      echo -e "\e[33mzynerone did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
       sleep 2
       echo ""
       echo -e "\e[33mTo use the Spamhaus DNS Blocklists again, you will need to create a FREE account for their Data Query Service (DQS) at: https://www.spamhaus.com/free-trial/sign-up-for-a-free-data-query-service-account\e[0m"
-      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and mailcow will do the rest for you!\e[0m"
+      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and zynerone will do the rest for you!\e[0m"
       echo ""
       sleep 2
 
     else
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[32mmailcow detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
+      echo -e "\e[32mzynerone detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
     fi
   elif [ "$response" -eq 200 ]; then
     echo -e "\e[33mCheck completed! Your IP is \e[32mclean\e[0m"
@@ -298,18 +298,18 @@ if [ -f "${SCRIPT_DIR}/pre_update_hook.sh" ]; then
 fi
 
 if [[ "$(uname -r)" =~ ^4\.15\.0-60 ]]; then
-  echo "DO NOT RUN mailcow ON THIS UBUNTU KERNEL!";
+  echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!";
   echo "Please update to 5.x or use another distribution."
   exit 1
 fi
 
 if [[ "$(uname -r)" =~ ^4\.4\. ]]; then
   if grep -q Ubuntu <<< $(uname -a); then
-    echo "DO NOT RUN mailcow ON THIS UBUNTU KERNEL!"
+    echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!"
     echo "Please update to linux-generic-hwe-16.04 by running \"apt-get install --install-recommends linux-generic-hwe-16.04\""
     exit 1
   fi
-  echo "mailcow on a 4.4.x kernel is not supported. It may or may not work, please upgrade your kernel or continue at your own risk."
+  echo "zynerone on a 4.4.x kernel is not supported. It may or may not work, please upgrade your kernel or continue at your own risk."
   read -p "Press any key to continue..." < /dev/tty
 fi
 
@@ -396,13 +396,13 @@ while (($#)); do
     echo './update.sh [-c|--check, --ours, --gc, --nightly, --prefetch, --skip-start, --skip-ping-check, --stable, -f|--force, -d|--dev, -h|--help]
 
   -c|--check           -   Check for updates and exit (exit codes => 0: update available, 3: no updates)
-  --ours               -   Use merge strategy option "ours" to solve conflicts in favor of non-mailcow code (local changes over remote changes), not recommended!
+  --ours               -   Use merge strategy option "ours" to solve conflicts in favor of non-zynerone code (local changes over remote changes), not recommended!
   --gc                 -   Run garbage collector to delete old image tags
-  --nightly            -   Switch your mailcow updates to the unstable (nightly) branch. FOR TESTING PURPOSES ONLY!!!!
+  --nightly            -   Switch your zynerone updates to the unstable (nightly) branch. FOR TESTING PURPOSES ONLY!!!!
   --prefetch           -   Only prefetch new images and exit (useful to prepare updates)
-  --skip-start         -   Do not start mailcow after update
-  --skip-ping-check    -   Skip ICMP Check to public DNS resolvers (Use it only if you´ve blocked any ICMP Connections to your mailcow machine)
-  --stable             -   Switch your mailcow updates to the stable (master) branch. Default unless you changed it with --nightly.
+  --skip-start         -   Do not start zynerone after update
+  --skip-ping-check    -   Skip ICMP Check to public DNS resolvers (Use it only if you´ve blocked any ICMP Connections to your zynerone machine)
+  --stable             -   Switch your zynerone updates to the stable (master) branch. Default unless you changed it with --nightly.
   -f|--force           -   Force update, do not ask questions
   -d|--dev             -   Enables Developer Mode (No Checkout of update.sh for tests)
 '
@@ -416,7 +416,7 @@ source zynerone.conf
 
 detect_docker_compose_command
 
-[[ ! -f zynerone.conf ]] && { echo "zynerone.conf is missing! Is mailcow installed?"; exit 1;}
+[[ ! -f zynerone.conf ]] && { echo "zynerone.conf is missing! Is zynerone installed?"; exit 1;}
 DOTS=${ZYNERONE_HOSTNAME//[^.]};
 if [ ${#DOTS} -lt 1 ]; then
   echo -e "\e[31mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is not a FQDN!\e[0m"
@@ -498,16 +498,16 @@ for option in ${CONFIG_ARRAY[@]}; do
   elif [[ ${option} == "COMPOSE_PROJECT_NAME" ]]; then
     if ! grep -q ${option} zynerone.conf; then
       echo "Adding new option \"${option}\" to zynerone.conf"
-      echo "COMPOSE_PROJECT_NAME=mailcowdockerized" >> zynerone.conf
+      echo "COMPOSE_PROJECT_NAME=zynerone" >> zynerone.conf
     fi
   elif [[ ${option} == "DOCKER_COMPOSE_VERSION" ]]; then
     if ! grep -q ${option} zynerone.conf; then
       echo "Adding new option \"${option}\" to zynerone.conf"
       echo "# Used Docker Compose version" >> zynerone.conf
       echo "# Switch here between native (compose plugin) and standalone" >> zynerone.conf
-      echo "# For more informations take a look at the mailcow docs regarding the configuration options." >> zynerone.conf
+      echo "# For more informations take a look at the zynerone docs regarding the configuration options." >> zynerone.conf
       echo "# Normally this should be untouched but if you decided to use either of those you can switch it manually here." >> zynerone.conf
-      echo "# Please be aware that at least one of those variants should be installed on your maschine or mailcow will fail." >> zynerone.conf
+      echo "# Please be aware that at least one of those variants should be installed on your maschine or zynerone will fail." >> zynerone.conf
       echo "" >> zynerone.conf
       echo "DOCKER_COMPOSE_VERSION=${DOCKER_COMPOSE_VERSION}" >> zynerone.conf
     fi
@@ -605,7 +605,7 @@ for option in ${CONFIG_ARRAY[@]}; do
   elif [[ ${option} == "SKIP_SOLR" ]]; then
     if ! grep -q ${option} zynerone.conf; then
       echo "Adding new option \"${option}\" to zynerone.conf"
-      echo '# Solr is disabled by default after upgrading from non-Solr to Solr-enabled mailcows.' >> zynerone.conf
+      echo '# Solr is disabled by default after upgrading from non-Solr to Solr-enabled zynerone.' >> zynerone.conf
       echo '# Disable Solr or if you do not want to store a readable index of your mails in solr-vol-1.' >> zynerone.conf
       echo "SKIP_SOLR=y" >> zynerone.conf
     fi
@@ -642,14 +642,6 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo '# Subject for watchdog mails. Defaults to "Watchdog ALERT" followed by the error message.' >> zynerone.conf
       echo "#WATCHDOG_SUBJECT=" >> zynerone.conf
     fi
-  elif [[ ${option} == "WATCHDOG_EXTERNAL_CHECKS" ]]; then
-    if ! grep -q ${option} zynerone.conf; then
-      echo "Adding new option \"${option}\" to zynerone.conf"
-      echo '# Checks if mailcow is an open relay. Requires a SAL. More checks will follow.' >> zynerone.conf
-      echo '# No data is collected. Opt-in and anonymous.' >> zynerone.conf
-      echo '# Will only work with unmodified mailcow setups.' >> zynerone.conf
-      echo "WATCHDOG_EXTERNAL_CHECKS=n" >> zynerone.conf
-    fi
   elif [[ ${option} == "SOGO_EXPIRE_SESSION" ]]; then
     if ! grep -q ${option} zynerone.conf; then
       echo "Adding new option \"${option}\" to zynerone.conf"
@@ -666,7 +658,7 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo "Adding new option \"${option}\" to zynerone.conf"
       echo '# DOVECOT_MASTER_USER and _PASS must _both_ be provided. No special chars.' >> zynerone.conf
       echo '# Empty by default to auto-generate master user and password on start.' >> zynerone.conf
-      echo '# User expands to DOVECOT_MASTER_USER@mailcow.local' >> zynerone.conf
+      echo '# User expands to DOVECOT_MASTER_USER@zynerone.local' >> zynerone.conf
       echo '# LEAVE EMPTY IF UNSURE' >> zynerone.conf
       echo "DOVECOT_MASTER_USER=" >> zynerone.conf
     fi
@@ -750,7 +742,7 @@ else
 fi
 
 if ! [ $NEW_BRANCH ]; then
-  echo -e "\e[33mDetecting which build your mailcow runs on...\e[0m"
+  echo -e "\e[33mDetecting which build your zynerone runs on...\e[0m"
   sleep 1
   if [ ${BRANCH} == "master" ]; then
     echo -e "\e[32mYou are receiving stable updates (master).\e[0m"
@@ -764,7 +756,7 @@ if ! [ $NEW_BRANCH ]; then
   else
     echo -e "\e[33mYou are receiving updates from a unsupported branch.\e[0m"
     sleep 1
-    echo -e "\e[33mThe mailcow stack might still work but it is recommended to switch to the master branch (stable builds).\e[0m"
+    echo -e "\e[33mThe zynerone stack might still work but it is recommended to switch to the master branch (stable builds).\e[0m"
     echo -e "\e[33mTo change that run the update.sh Script one time with the --stable parameter to switch to stable builds.\e[0m"
   fi
 elif [ $FORCE ]; then
@@ -773,12 +765,12 @@ elif [ $FORCE ]; then
   echo -e "\e[31mPlease rerun the update.sh Script without the --force/-f parameter.\e[0m"
   sleep 1
 elif [ $NEW_BRANCH == "master" ] && [ $CURRENT_BRANCH != "master" ]; then
-  echo -e "\e[33mYou are about to switch your mailcow Updates to the stable (master) branch.\e[0m"
+  echo -e "\e[33mYou are about to switch your zynerone Updates to the stable (master) branch.\e[0m"
   sleep 1
   echo -e "\e[33mBefore you do: Please take a backup of all components to ensure that no Data is lost...\e[0m"
   sleep 1
   echo -e "\e[31mWARNING: Please see on GitHub or ask in the communitys if a switch to master is stable or not.
-  In some rear cases a Update back to master can destroy your mailcow configuration in case of Database Upgrades etc.
+  In some rear cases a Update back to master can destroy your zynerone configuration in case of Database Upgrades etc.
   Normally a upgrade back to master should be safe during each full release. 
   Check GitHub for Database Changes and Update only if there similar to the full release!\e[0m"
   read -r -p "Are you sure you that want to continue upgrading to the stable (master) branch? [y/N] " response
@@ -801,7 +793,7 @@ elif [ $NEW_BRANCH == "master" ] && [ $CURRENT_BRANCH != "master" ]; then
   git checkout -f ${BRANCH}
 
 elif [ $NEW_BRANCH == "nightly" ] && [ $CURRENT_BRANCH != "nightly" ]; then
-  echo -e "\e[33mYou are about to switch your mailcow Updates to the unstable (nightly) branch.\e[0m"
+  echo -e "\e[33mYou are about to switch your zynerone Updates to the unstable (nightly) branch.\e[0m"
   sleep 1
   echo -e "\e[33mBefore you do: Please take a backup of all components to ensure that no Data is lost...\e[0m"
   sleep 1
@@ -839,7 +831,7 @@ if [ ! $DEV ]; then
 fi
 
 if [ ! $FORCE ]; then
-  read -r -p "Are you sure you want to update mailcow: dockerized? All containers will be stopped. [y/N] " response
+  read -r -p "Are you sure you want to update zynerone? All containers will be stopped. [y/N] " response
   if [[ ! "${response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
     echo "OK, exiting."
     exit 0
@@ -858,10 +850,10 @@ if ! $COMPOSE_COMMAND config -q; then
 fi
 
 echo -e "\e[32mChecking for conflicting bridges...\e[0m"
-MAILCOW_BRIDGE=$($COMPOSE_COMMAND config | grep -i com.docker.network.bridge.name | cut -d':' -f2)
+ZYNERONE_BRIDGE=$($COMPOSE_COMMAND config | grep -i com.docker.network.bridge.name | cut -d':' -f2)
 while read NAT_ID; do
   iptables -t nat -D POSTROUTING $NAT_ID
-done < <(iptables -L -vn -t nat --line-numbers | grep $IPV4_NETWORK | grep -E 'MASQUERADE.*all' | grep -v ${MAILCOW_BRIDGE} | cut -d' ' -f1)
+done < <(iptables -L -vn -t nat --line-numbers | grep $IPV4_NETWORK | grep -E 'MASQUERADE.*all' | grep -v ${ZYNERONE_BRIDGE} | cut -d' ' -f1)
 
 DIFF_DIRECTORY=update_diffs
 DIFF_FILE=${DIFF_DIRECTORY}/diff_before_update_$(date +"%Y-%m-%d-%H-%M-%S")
@@ -876,26 +868,26 @@ fi
 echo -e "\e[32mPrefetching images...\e[0m"
 prefetch_images
 
-echo -e "\e[32mStopping mailcow...\e[0m"
+echo -e "\e[32mStopping zynerone...\e[0m"
 sleep 2
-MAILCOW_CONTAINERS=($($COMPOSE_COMMAND ps -q))
+ZYNERONE_CONTAINERS=($($COMPOSE_COMMAND ps -q))
 $COMPOSE_COMMAND down
 echo -e "\e[32mChecking for remaining containers...\e[0m"
 sleep 2
-for container in "${MAILCOW_CONTAINERS[@]}"; do
+for container in "${ZYNERONE_CONTAINERS[@]}"; do
   docker rm -f "$container" 2> /dev/null
 done
 
 [[ -f data/conf/nginx/ZZZ-ejabberd.conf ]] && rm data/conf/nginx/ZZZ-ejabberd.conf
 
 
-# Silently fixing remote url from andryyy to mailcow
+# Silently fixing remote url from andryyy to zynerone
 # git remote set-url origin https://github.com/ZynerOrg/zynerone
 
 DEFAULT_REPO=https://github.com/ZynerOrg/zynerone
 CURRENT_REPO=$(git remote get-url origin)
 if [ "$CURRENT_REPO" != "$DEFAULT_REPO" ]; then 
-  echo "The Repository currently used is not the default Mailcow Repository."
+  echo "The Repository currently used is not the default zynerone Repository."
   echo "Currently Repository: $CURRENT_REPO"
   echo "Default Repository:   $DEFAULT_REPO"
   read -r -p "Should it be changed back to default? [y/N] " repo_response
@@ -918,7 +910,7 @@ git merge -X${MERGE_STRATEGY:-theirs} -Xpatience -m "After update on ${DATE}"
 # Need to use a variable to not pass return codes of if checks
 MERGE_RETURN=$?
 if [[ ${MERGE_RETURN} == 128 ]]; then
-  echo -e "\e[31m\nOh no, what happened?\n=> You most likely added files to your local mailcow instance that were now added to the official mailcow repository. Please move them to another location before updating mailcow.\e[0m"
+  echo -e "\e[31m\nOh no, what happened?\n=> You most likely added files to your local zynerone instance that were now added to the official zynerone repository. Please move them to another location before updating zynerone.\e[0m"
   exit 1
 elif [[ ${MERGE_RETURN} == 1 ]]; then
   echo -e "\e[93mPotenial conflict, trying to fix...\e[0m"
@@ -948,7 +940,7 @@ if grep -q 'SYSCTL_IPV6_DISABLED=1' zynerone.conf; then
   echo '!! IMPORTANT !!'
   echo
   echo 'SYSCTL_IPV6_DISABLED was removed due to complications. IPv6 can be disabled by editing "docker-compose.yml" and setting "enable_ipv6: true" to "enable_ipv6: false".'
-  echo "This setting will only be active after a complete shutdown of mailcow by running $COMPOSE_COMMAND down followed by $COMPOSE_COMMAND up -d."
+  echo "This setting will only be active after a complete shutdown of zynerone by running $COMPOSE_COMMAND down followed by $COMPOSE_COMMAND up -d."
   echo
   echo '!! IMPORTANT !!'
   echo
@@ -970,7 +962,7 @@ fi
 if [ -f "data/conf/rspamd/local.d/metrics.conf" ]; then
   if [ ! -z "$(git diff --name-only origin/master data/conf/rspamd/local.d/metrics.conf)" ]; then
     echo -e "\e[33mWARNING\e[0m - Please migrate your customizations of data/conf/rspamd/local.d/metrics.conf to actions.conf and groups.conf after this update."
-    echo "The deprecated configuration file metrics.conf will be moved to metrics.conf_deprecated after updating mailcow."
+    echo "The deprecated configuration file metrics.conf will be moved to metrics.conf_deprecated after updating zynerone."
   fi
   mv data/conf/rspamd/local.d/metrics.conf data/conf/rspamd/local.d/metrics.conf_deprecated
 fi
@@ -1017,9 +1009,9 @@ else
 fi
 
 if [[ ${SKIP_START} == "y" ]]; then
-  echo -e "\e[33mNot starting mailcow, please run \"$COMPOSE_COMMAND up -d --remove-orphans\" to start mailcow.\e[0m"
+  echo -e "\e[33mNot starting zynerone, please run \"$COMPOSE_COMMAND up -d --remove-orphans\" to start zynerone.\e[0m"
 else
-  echo -e "\e[32mStarting mailcow...\e[0m"
+  echo -e "\e[32mStarting zynerone...\e[0m"
   sleep 2
   $COMPOSE_COMMAND up -d --remove-orphans
 fi
@@ -1032,7 +1024,7 @@ if [ -f "${SCRIPT_DIR}/post_update_hook.sh" ]; then
   bash "${SCRIPT_DIR}/post_update_hook.sh"
 fi
 
-# echo "In case you encounter any problem, hard-reset to a state before updating mailcow:"
+# echo "In case you encounter any problem, hard-reset to a state before updating zynerone:"
 # echo
 # git reflog --color=always | grep "Before update on "
 # echo

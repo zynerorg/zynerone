@@ -632,7 +632,7 @@ networks:
   zynerone-network:
     driver: bridge
     driver_opts:
-      com.docker.network.bridge.name: br-mailcow
+      com.docker.network.bridge.name: br-zynerone
     enable_ipv6: true
     ipam:
       driver: default

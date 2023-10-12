@@ -67,6 +67,6 @@ elif [ "${DOCKER_COMPOSE_VERSION}" == "native" ]; then
     exit 1
 
 else
-    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from zynerone.conf! Is your mailcow up to date? Exiting...\e[0m"
+    echo -e "\e[31mCan not read DOCKER_COMPOSE_VERSION variable from zynerone.conf! Is your zynerone up to date? Exiting...\e[0m"
     exit 1
 fi

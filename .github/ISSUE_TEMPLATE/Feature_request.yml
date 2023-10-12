@@ -1,5 +1,5 @@
 name: 💡 Feature Request
-description: Suggest an idea for mailcow.
+description: Suggest an idea for zynerone.
 labels: ["enhancement"]
 body:
   - type: textarea
