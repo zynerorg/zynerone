@@ -16,10 +16,10 @@ jobs:
         with:
           github_token: ${{ secrets.PRTONIGHTLY_ACTION_PAT }}
           title: Automatic PR to nightly from ${{ github.event.repository.updated_at}}
-          assignee: DerLinkman
+          assignee: VermiumSifell
           source_branch: staging
           target_branch: nightly
-          reviewer: DerLinkman
+          reviewer: VermiumSifell
           label: upstream
           template: .github/ISSUE_TEMPLATE/pr_to_nighty_template.yml
           get_diff: true
