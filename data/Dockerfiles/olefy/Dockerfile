@@ -1,5 +1,5 @@
 FROM alpine:3.17
-LABEL maintainer "The Infrastructure Company GmbH <info@servercow.de>"
+LABEL maintainer "Zyner <contact@zyner.net>"
 
 WORKDIR /app
 
