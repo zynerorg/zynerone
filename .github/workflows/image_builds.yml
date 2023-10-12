@@ -1,4 +1,4 @@
-name: Build mailcow Docker Images
+name: Build zynerone Docker Images
 
 on:
   push:
