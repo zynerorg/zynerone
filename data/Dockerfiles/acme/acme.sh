@@ -90,8 +90,8 @@ fi
 
 if [[ -f ${ACME_BASE}/cert.pem ]] && [[ -f ${ACME_BASE}/key.pem ]] && [[ $(stat -c%s ${ACME_BASE}/cert.pem) != 0 ]]; then
   ISSUER=$(openssl x509 -in ${ACME_BASE}/cert.pem -noout -issuer)
-  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"zynerone"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
-    log_f "Found certificate with issuer other than zynerone snake-oil CA and Let's Encrypt, skipping ACME client..."
+  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"ZynerOne"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
+    log_f "Found certificate with issuer other than ZynerOne snake-oil CA and Let's Encrypt, skipping ACME client..."
     sleep 3650d
     exec $(readlink -f "$0")
   fi
