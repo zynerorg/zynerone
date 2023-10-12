@@ -803,7 +803,7 @@
         "sender": "Expeditor",
         "set_postfilter": "Marchează ca postfiltru",
         "set_prefilter": "Marchează ca prefiltru",
-        "sieve_info": "Poți stoca mai multe filtre pentru fiecare utilizator, dar numai un singur prefiltru și un singur postfiltru pot fi active în același timp.<br>\nFiecare filtru va fi procesat în ordinea descrisă. Nici un script eșuat, nici un \"keep;\" emis nu va opri procesarea altor scripturi.Modificările aduse scripturilor sită globale vor declanșa o repornire a Dovecot.<br>\nPrefilter → User scripts → Postfilter → <a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/sieve_after\" target=\"_blank\">global sieve postfilter</a>",
+        "sieve_info": "Poți stoca mai multe filtre pentru fiecare utilizator, dar numai un singur prefiltru și un singur postfiltru pot fi active în același timp.<br>\nFiecare filtru va fi procesat în ordinea descrisă. Nici un script eșuat, nici un \"keep;\" emis nu va opri procesarea altor scripturi.Modificările aduse scripturilor sită globale vor declanșa o repornire a Dovecot.<br>\nPrefilter → User scripts → Postfilter → <a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/sieve_after\" target=\"_blank\">global sieve postfilter</a>",
         "sieve_preset_1": "Renunțați la mailuri cu tipuri de fișiere probabil periculoase",
         "sieve_preset_2": "Marcați întotdeauna e-mailul unui expeditor specific imediat cum s-a văzut",
         "sieve_preset_3": "Aruncați silențios, opriți toate procesările ulterioare",

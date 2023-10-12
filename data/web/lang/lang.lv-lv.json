@@ -369,7 +369,7 @@
         "running": "Darbojas",
         "set_postfilter": "Atzīmēt kā pēcfiltru",
         "set_prefilter": "Atzīmēt kā pimrsfiltru",
-        "sieve_info": "Jūs varat saglabāt vairākus filtrus katram lietotājam, bet tikai viens pirmsfiltrs un viens pēcfiltrs var būt aktīvs vienlaicīgi.<br>\r\nKatrs filtrs tiks apstrādāts aprakstītajā kārtībā. Kļūdains vai izdots skripts \"Paturēt;\" pārtrauks turpmāko skriptu apstrādi.<br>\r\n<a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Global sieve prefilter</a> → Pirmsfiltrs → Lietotāja skripts → Pēcfiltrs → <a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Global sieve postfilter</a>",
+        "sieve_info": "Jūs varat saglabāt vairākus filtrus katram lietotājam, bet tikai viens pirmsfiltrs un viens pēcfiltrs var būt aktīvs vienlaicīgi.<br>\r\nKatrs filtrs tiks apstrādāts aprakstītajā kārtībā. Kļūdains vai izdots skripts \"Paturēt;\" pārtrauks turpmāko skriptu apstrādi.<br>\r\n<a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Global sieve prefilter</a> → Pirmsfiltrs → Lietotāja skripts → Pēcfiltrs → <a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Global sieve postfilter</a>",
         "spam_aliases": "Temp. alias",
         "status": "Status",
         "sync_jobs": "Sinhronizācijas darbi",

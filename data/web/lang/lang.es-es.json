@@ -549,7 +549,7 @@
         "running": "En marcha",
         "set_postfilter": "Marcar como posfiltro",
         "set_prefilter": "Marcar como prefiltro",
-        "sieve_info": "Puedes almacenar múltiples filtros por usuario, pero solo un prefiltro y un postfiltro pueden estar activos al mismo tiempo.<br>\r\nCada filtro será procesado en el orden descrito. Ni un script fallido ni un \"keep;\" emitido detendrá el procesamiento de otros scripts.<br>\r\n<a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Prefiltro sieve global</a> → Prefiltro → Scripts del usuario → Posfiltro → <a href=\"https://github.com/mailcow/mailcow-dockerized/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Posfiltro sieve global</a>",
+        "sieve_info": "Puedes almacenar múltiples filtros por usuario, pero solo un prefiltro y un postfiltro pueden estar activos al mismo tiempo.<br>\r\nCada filtro será procesado en el orden descrito. Ni un script fallido ni un \"keep;\" emitido detendrá el procesamiento de otros scripts.<br>\r\n<a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_before\" target=\"_blank\">Prefiltro sieve global</a> → Prefiltro → Scripts del usuario → Posfiltro → <a href=\"https://github.com/zynerorg/zynerone/blob/master/data/conf/dovecot/global_sieve_after\" target=\"_blank\">Posfiltro sieve global</a>",
         "status": "Status",
         "sync_jobs": "Trabajos de sincronización",
         "target_address": "Dirección destino",
