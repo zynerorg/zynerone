@@ -24,10 +24,10 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
-        token: ${{ secrets.mailcow_action_Update_postscreen_access_cidr_pat }}
+        token: ${{ GITHUB_TOKEN }}
         commit-message: update postscreen_access.cidr
-        committer: milkmaker <milkmaker@mailcow.de>
-        author: milkmaker <milkmaker@mailcow.de>
+        committer: Zyner <contact@zyner.net>
+        author: Zyner <contact@zyner.net>
         signoff: false
         branch: update/postscreen_access.cidr
         base: staging
@@ -36,4 +36,4 @@ jobs:
           data/conf/postfix/postscreen_access.cidr
         title: '[Postfix] update postscreen_access.cidr'
         body: |
-          This PR updates the postscreen_access.cidr using GitHub Actions and [helper-scripts/update_postscreen_whitelist.sh](https://github.com/mailcow/mailcow-dockerized/blob/master/helper-scripts/update_postscreen_whitelist.sh)
+          This PR updates the postscreen_access.cidr using GitHub Actions and [helper-scripts/update_postscreen_whitelist.sh](https://github.com/ZynerOrg/zynerone/blob/master/helper-scripts/update_postscreen_whitelist.sh)
