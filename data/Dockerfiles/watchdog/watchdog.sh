@@ -982,7 +982,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! acme_checks; then
     log_msg "ACME client hit error limit"
-    echo acme-mailcow > /tmp/com_pipe
+    echo acme-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -1052,10 +1052,10 @@ while true; do
     # Define $2 to override message text, else print service was restarted at ...
     # Only mail once a day
     [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please renew your certificate" 86400
-  elif [[ ${com_pipe_answer} == "acme-mailcow" ]]; then
-    log_msg "acme-mailcow did not complete successfully"
+  elif [[ ${com_pipe_answer} == "acme-zynerone" ]]; then
+    log_msg "acme-zynerone did not complete successfully"
     # Define $2 to override message text, else print service was restarted at ...
-    [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please check acme-mailcow for further information."
+    [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please check acme-zynerone for further information."
   elif [[ ${com_pipe_answer} == "fail2ban" ]]; then
     F2B_RES=($(timeout 4s ${REDIS_CMDLINE} --raw GET F2B_RES 2> /dev/null))
     if [[ ! -z "${F2B_RES}" ]]; then

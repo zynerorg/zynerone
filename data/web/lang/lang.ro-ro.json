@@ -81,7 +81,7 @@
         "password": "Parolă",
         "password_repeat": "Parola de confirmare (repetă)",
         "port": "Port",
-        "post_domain_add": "Containerul SOGo,  \"sogo-zynerone\", trebuie repornit după adăugarea unui nou domeniu!<br><br>În plus, configurația DNS a domeniului trebuie revizuită. Odată ce configurația DNS este aprobată, reporniți \"acme-mailcow\" pentru a genera automat certificate pentru noul domeniu (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Acest pas este opțional și va fi reîncercat la fiecare 24 de ore.",
+        "post_domain_add": "Containerul SOGo,  \"sogo-zynerone\", trebuie repornit după adăugarea unui nou domeniu!<br><br>În plus, configurația DNS a domeniului trebuie revizuită. Odată ce configurația DNS este aprobată, reporniți \"acme-zynerone\" pentru a genera automat certificate pentru noul domeniu (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Acest pas este opțional și va fi reîncercat la fiecare 24 de ore.",
         "private_comment": "Comentariu privat",
         "public_comment": "Comentariu public",
         "quota_mb": "Cotă (MiB)",

@@ -79,7 +79,7 @@
         "password": "Lösenord",
         "password_repeat": "Lösenord (igen)",
         "port": "Port",
-        "post_domain_add": "SOGo-behållaren, \"sogo-zynerone\", måste startas om efter att en ny domän har lagts till!<br><br>Dessutom bör domänens DNS-konfiguration granskas. När DNS-konfigurationen är kontrollerad, starta om \"acme-mailcow\" för att automatiskt generera certifikat för din nya domän (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Detta steg är valfritt och kommer att försökas varje dygn.",
+        "post_domain_add": "SOGo-behållaren, \"sogo-zynerone\", måste startas om efter att en ny domän har lagts till!<br><br>Dessutom bör domänens DNS-konfiguration granskas. När DNS-konfigurationen är kontrollerad, starta om \"acme-zynerone\" för att automatiskt generera certifikat för din nya domän (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>Detta steg är valfritt och kommer att försökas varje dygn.",
         "private_comment": "Privat kommentar",
         "public_comment": "Offentlig kommentar",
         "quota_mb": "Kvot (MiB)",

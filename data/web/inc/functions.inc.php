@@ -2363,7 +2363,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "acme-mailcow") {
+  if ($application == "acme-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('ACME_LOG', $from - 1, $to - 1);
     }

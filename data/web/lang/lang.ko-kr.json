@@ -76,7 +76,7 @@
         "password": "비밀번호",
         "password_repeat": "비밀번호 확인 (다시)",
         "port": "포트",
-        "post_domain_add": "새 도메인을 추가한 후 SOGo 컨테이너 (\"sogo-zynerone\") 를 재시작해야 합니다!<br><br>또한, 도메인의 DNS 설정도 다시 확인하는 것이 좋습니다. DNS 설정이 승인되면, \"acme-mailcow\" 를 재시작해서 새 도메인의 인증서를 자동으로 발급받을 수 있습니다. (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>이 단계는 선택 사항이며, 24시간마다 재시도합니다.",
+        "post_domain_add": "새 도메인을 추가한 후 SOGo 컨테이너 (\"sogo-zynerone\") 를 재시작해야 합니다!<br><br>또한, 도메인의 DNS 설정도 다시 확인하는 것이 좋습니다. DNS 설정이 승인되면, \"acme-zynerone\" 를 재시작해서 새 도메인의 인증서를 자동으로 발급받을 수 있습니다. (autoconfig.&lt;domain&gt;, autodiscover.&lt;domain&gt;).<br>이 단계는 선택 사항이며, 24시간마다 재시도합니다.",
         "private_comment": "비공개 메모",
         "public_comment": "공개 메모",
         "quota_mb": "디스크 할당량 (MiB)",

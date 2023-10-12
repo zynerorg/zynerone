@@ -146,7 +146,7 @@ while true; do
   DOVECOT_CERT_SERIAL="$(echo | openssl s_client -connect dovecot:143 -starttls imap 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
   POSTFIX_CERT_SERIAL_NEW="$(echo | openssl s_client -connect postfix:25 -starttls smtp 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
   DOVECOT_CERT_SERIAL_NEW="$(echo | openssl s_client -connect dovecot:143 -starttls imap 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
-  # Re-using previous acme-mailcow account and domain keys
+  # Re-using previous acme-zynerone account and domain keys
   if [[ ! -f ${ACME_BASE}/acme/key.pem ]]; then
     log_f "Generating missing domain private rsa key..."
     openssl genrsa 4096 > ${ACME_BASE}/acme/key.pem

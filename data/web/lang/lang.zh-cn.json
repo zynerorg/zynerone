@@ -81,7 +81,7 @@
         "password": "密码",
         "password_repeat": "确认密码 (重复)",
         "port": "端口",
-        "post_domain_add": "在添加新域名后，SOGo 服务的容器 \"sogo-zynerone\" 需要重新启动。<br><br>此外请检查并修改该域名的 DNS 配置。当 DNS 配置生效后，请重启 \"acme-mailcow\" 容器以便自动地为你的新域名生成证书 (包括 autoconfig.&lt;domain&gt; 和 autodiscover.&lt;domain&gt; 两个域名)。<br>重启该容器是可选的，因为生成证书的操作会每隔24小时重试一次。",
+        "post_domain_add": "在添加新域名后，SOGo 服务的容器 \"sogo-zynerone\" 需要重新启动。<br><br>此外请检查并修改该域名的 DNS 配置。当 DNS 配置生效后，请重启 \"acme-zynerone\" 容器以便自动地为你的新域名生成证书 (包括 autoconfig.&lt;domain&gt; 和 autodiscover.&lt;domain&gt; 两个域名)。<br>重启该容器是可选的，因为生成证书的操作会每隔24小时重试一次。",
         "private_comment": "私密评论",
         "public_comment": "公开评论",
         "quota_mb": "配额 (MiB)",
