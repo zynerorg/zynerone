@@ -19,7 +19,7 @@ jobs:
           - "dovecot-mailcow"
           - "netfilter-mailcow"
           - "olefy-mailcow"
-          - "php-fpm-mailcow"
+          - "php-fpm-zynerone"
           - "postfix-mailcow"
           - "rspamd-zynerone"
           - "sogo-mailcow"

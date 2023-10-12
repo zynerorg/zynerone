@@ -5225,8 +5225,8 @@ paths:
                       started_at: "2019-12-22T20:59:59.676259274Z"
                       state: running
                       type: info
-                    php-fpm-mailcow:
-                      container: php-fpm-mailcow
+                    php-fpm-zynerone:
+                      container: php-fpm-zynerone
                       image: "mailcow/phpfpm:1.55"
                       started_at: "2019-12-22T21:00:00.955808957Z"
                       state: running

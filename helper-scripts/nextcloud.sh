@@ -97,15 +97,15 @@ elif [[ ${NC_UPDATE} == "y" ]]; then
     echo -e "\033[31mError: Nextcloud occ not found. Is Nextcloud installed?\033[0m"
     exit 1
   fi
-  if grep -Pq 'This version of Nextcloud is not compatible with (?:PHP)?(?>=?)(?:PHP)?(?>.+)' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
-    echo -e "\033[31mError: This version of Nextcloud is not compatible with the current PHP version of php-fpm-mailcow, we'll fix it\033[0m"
+  if grep -Pq 'This version of Nextcloud is not compatible with (?:PHP)?(?>=?)(?:PHP)?(?>.+)' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
+    echo -e "\033[31mError: This version of Nextcloud is not compatible with the current PHP version of php-fpm-zynerone, we'll fix it\033[0m"
     wget -q https://raw.githubusercontent.com/nextcloud/server/v26.0.0/lib/versioncheck.php -O ./data/web/nextcloud/lib/versioncheck.php
 	echo -e "\e[33mPlease restart the update again.\e[0m"
-  elif ! grep -q 'installed: true' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
+  elif ! grep -q 'installed: true' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
     echo -e "\033[31mError: Nextcloud seems not to be installed.\033[0m"
     exit 1
   else
-    docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "php /web/nextcloud/updater/updater.phar"
+    docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "php /web/nextcloud/updater/updater.phar"
   fi
 
 elif [[ ${NC_INSTALL} == "y" ]]; then
@@ -145,10 +145,10 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
   ADMIN_NC_PASS=$(</dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)
 
   echo -ne "[1/4] Setting correct permissions for www-data"
-  docker exec -it $(docker ps -f name=php-fpm-mailcow -q) /bin/bash -c "chown -R www-data:www-data /web/nextcloud"
+  docker exec -it $(docker ps -f name=php-fpm-zynerone -q) /bin/bash -c "chown -R www-data:www-data /web/nextcloud"
   sleep 2
   echo -ne "\r[2/4] Running occ maintenance:install to install Nextcloud"
-  docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) /web/nextcloud/occ --no-warnings maintenance:install \
+  docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) /web/nextcloud/occ --no-warnings maintenance:install \
     --database mysql \
     --database-host mysql \
     --database-name ${NC_DBNAME} \
@@ -160,7 +160,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
   echo -ne "\r[3/4] Setting custom parameters inside the Nextcloud config file"
   echo ""
-  docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings config:system:set redis host --value=redis --type=string; \
+  docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings config:system:set redis host --value=redis --type=string; \
     /web/nextcloud/occ --no-warnings config:system:set redis port --value=6379 --type=integer; \
     /web/nextcloud/occ --no-warnings config:system:set redis timeout --value=0.0 --type=integer; \
     /web/nextcloud/occ --no-warnings config:system:set redis dbindex --value=10 --type=integer; \
@@ -223,5 +223,5 @@ elif [[ ${NC_RESETPW} == "y" ]]; then
     while [[ -z ${NC_USER} ]]; do
       read -p "Enter the username: " NC_USER
     done
-    docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) /web/nextcloud/occ user:resetpassword ${NC_USER}
+    docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) /web/nextcloud/occ user:resetpassword ${NC_USER}
 fi
