@@ -156,7 +156,7 @@
         "f2b_max_ban_time": "Max tiempo de restricción (s)",
         "f2b_netban_ipv4": "Tamaño de subred IPv4 para aplicar la restricción (8-32)",
         "f2b_netban_ipv6": "Tamaño de subred IPv6 para aplicar la restricción (8-128)",
-        "f2b_parameters": "Parametros Fail2ban",
+        "f2b_parameters": "Parametros Netfilter",
         "f2b_retry_window": "Ventana de tiempo entre reintentos",
         "f2b_whitelist": "Redes y hosts en lista blanca",
         "filter_table": "Filtrar tabla",
