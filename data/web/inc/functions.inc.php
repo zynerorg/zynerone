@@ -2321,7 +2321,7 @@ function get_logs($application, $lines = false) {
       return $data_array;
     }
   }
-  if ($application == "postfix-mailcow") {
+  if ($application == "postfix-zynerone") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('POSTFIX_MAILLOG', $from - 1, $to - 1);
     }

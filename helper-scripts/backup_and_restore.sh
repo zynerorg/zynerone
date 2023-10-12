@@ -239,12 +239,12 @@ function restore() {
       docker start $(docker ps -aqf name=rspamd-zynerone)
       ;;
     postfix)
-      docker stop $(docker ps -qf name=postfix-mailcow)
+      docker stop $(docker ps -qf name=postfix-zynerone)
       docker run -it --name mailcow-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_postfix-vol-1$):/postfix:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_postfix.tar.gz
-      docker start $(docker ps -aqf name=postfix-mailcow)
+      docker start $(docker ps -aqf name=postfix-zynerone)
       ;;
     mysql|mariadb)
       SQLIMAGE=$(grep -iEo '(mysql|mariadb)\:.+' ${COMPOSE_FILE})

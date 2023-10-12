@@ -20,7 +20,7 @@ jobs:
           - "netfilter-mailcow"
           - "olefy-mailcow"
           - "php-fpm-zynerone"
-          - "postfix-mailcow"
+          - "postfix-zynerone"
           - "rspamd-zynerone"
           - "sogo-zynerone"
           - "solr-mailcow"

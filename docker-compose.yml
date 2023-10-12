@@ -297,7 +297,7 @@ services:
           aliases:
             - dovecot
 
-    postfix-mailcow:
+    postfix-zynerone:
       image: zyner/postfix:1.72
       depends_on:
         mariadb-zynerone:
@@ -438,7 +438,7 @@ services:
       stop_grace_period: 30s
       depends_on:
         - dovecot-zynerone
-        - postfix-mailcow
+        - postfix-zynerone
         - sogo-zynerone
         - php-fpm-zynerone
         - redis-zynerone
@@ -469,7 +469,7 @@ services:
         - ./data/assets/ssl:/etc/ssl/mail/:ro,z
       restart: always
       depends_on:
-        - postfix-mailcow
+        - postfix-zynerone
         - dovecot-zynerone
         - mariadb-zynerone
         - acme-mailcow
@@ -608,7 +608,7 @@ services:
         - php-fpm-zynerone
         - sogo-zynerone
         - dovecot-zynerone
-        - postfix-mailcow
+        - postfix-zynerone
         - memcached-mailcow
         - nginx-mailcow
         - acme-mailcow

@@ -5231,8 +5231,8 @@ paths:
                       started_at: "2019-12-22T21:00:00.955808957Z"
                       state: running
                       type: info
-                    postfix-mailcow:
-                      container: postfix-mailcow
+                    postfix-zynerone:
+                      container: postfix-zynerone
                       image: "mailcow/postfix:1.44"
                       started_at: "2019-12-22T21:00:07.186717617Z"
                       state: running
