@@ -26,6 +26,7 @@ jobs:
           - "solr-zynerone"
           - "unbound-zynerone"
           - "watchdog-zynerone"
+          - "api-zynerone"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
