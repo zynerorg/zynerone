@@ -3,69 +3,57 @@
 set -o pipefail
 
 if [[ "$(uname -r)" =~ ^4\.15\.0-60 ]]; then
-  echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!"
+  echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!";
   echo "Please update to 5.x or use another distribution."
   exit 1
 fi
 
 if [[ "$(uname -r)" =~ ^4\.4\. ]]; then
-  if grep -q Ubuntu <<<$(uname -a); then
-    echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!"
+  if grep -q Ubuntu <<< $(uname -a); then
+    echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!";
     echo "Please update to linux-generic-hwe-16.04 by running \"apt-get install --install-recommends linux-generic-hwe-16.04\""
     exit 1
   fi
 fi
 
-if grep --help 2>&1 | head -n 1 | grep -q -i "busybox"; then
-  echo "BusyBox grep detected, please install gnu grep, \"apk add --no-cache --upgrade grep\""
-  exit 1
-fi
+if grep --help 2>&1 | head -n 1 | grep -q -i "busybox"; then echo "BusyBox grep detected, please install gnu grep, \"apk add --no-cache --upgrade grep\""; exit 1; fi
 # This will also cover sort
-if cp --help 2>&1 | head -n 1 | grep -q -i "busybox"; then
-  echo "BusyBox cp detected, please install coreutils, \"apk add --no-cache --upgrade coreutils\""
-  exit 1
-fi
-if sed --help 2>&1 | head -n 1 | grep -q -i "busybox"; then
-  echo "BusyBox sed detected, please install gnu sed, \"apk add --no-cache --upgrade sed\""
-  exit 1
-fi
+if cp --help 2>&1 | head -n 1 | grep -q -i "busybox"; then echo "BusyBox cp detected, please install coreutils, \"apk add --no-cache --upgrade coreutils\""; exit 1; fi
+if sed --help 2>&1 | head -n 1 | grep -q -i "busybox"; then echo "BusyBox sed detected, please install gnu sed, \"apk add --no-cache --upgrade sed\""; exit 1; fi
 
 for bin in openssl curl docker git awk sha1sum grep cut; do
-  if [[ -z $(which ${bin}) ]]; then
-    echo "Cannot find ${bin}, exiting..."
-    exit 1
-  fi
+  if [[ -z $(which ${bin}) ]]; then echo "Cannot find ${bin}, exiting..."; exit 1; fi
 done
 
-if docker compose >/dev/null 2>&1; then
-  if docker compose version --short | grep "^2." >/dev/null 2>&1; then
-    COMPOSE_VERSION=native
-    echo -e "\e[31mFound Docker Compose Plugin (native).\e[0m"
-    echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable to native\e[0m"
-    sleep 2
-    echo -e "\e[33mNotice: You´ll have to update this Compose Version via your Package Manager manually!\e[0m"
-  else
-    echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
-    echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
-    exit 1
-  fi
-elif docker-compose >/dev/null 2>&1; then
-  if ! [[ $(alias docker-compose 2>/dev/null) ]]; then
-    if docker-compose version --short | grep "^2." >/dev/null 2>&1; then
+if docker compose > /dev/null 2>&1; then
+    if docker compose version --short | grep "^2." > /dev/null 2>&1; then
+      COMPOSE_VERSION=native
+      echo -e "\e[31mFound Docker Compose Plugin (native).\e[0m"
+      echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable to native\e[0m"
+      sleep 2
+      echo -e "\e[33mNotice: You´ll have to update this Compose Version via your Package Manager manually!\e[0m"
+    else
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
+      echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
+      exit 1
+    fi
+elif docker-compose > /dev/null 2>&1; then
+  if ! [[ $(alias docker-compose 2> /dev/null) ]] ; then
+    if docker-compose version --short | grep "^2." > /dev/null 2>&1; then
       COMPOSE_VERSION=standalone
       echo -e "\e[31mFound Docker Compose Standalone.\e[0m"
       echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable to standalone\e[0m"
       sleep 2
       echo -e "\e[33mNotice: For an automatic update of docker-compose please use the update_compose.sh scripts located at the helper-scripts folder.\e[0m"
     else
-      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
       echo -e "\e[31mPlease update/install manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
   fi
 
 else
-  echo -e "\e[31mCannot find Docker Compose.\e[0m"
+  echo -e "\e[31mCannot find Docker Compose.\e[0m" 
   echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
   exit 1
 fi
@@ -108,12 +96,12 @@ fi
 if [ -f zynerone.conf ]; then
   read -r -p "A config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
   case $response in
-  [yY][eE][sS] | [yY])
-    mv zynerone.conf zynerone.conf_backup
-    chmod 600 zynerone.conf_backup
-    ;;
-  *)
-    exit 1
+    [yY][eE][sS]|[yY])
+      mv zynerone.conf zynerone.conf_backup
+      chmod 600 zynerone.conf_backup
+      ;;
+    *)
+      exit 1
     ;;
   esac
 fi
@@ -121,7 +109,7 @@ fi
 echo "Press enter to confirm the detected value '[value]' where applicable or enter a custom value."
 while [ -z "${ZYNERONE_HOSTNAME}" ]; do
   read -p "Mail server hostname (FQDN) - this is not your mail domain, but your mail servers hostname: " -e ZYNERONE_HOSTNAME
-  DOTS=${ZYNERONE_HOSTNAME//[^.]/}
+  DOTS=${ZYNERONE_HOSTNAME//[^.]};
   if [ ${#DOTS} -lt 1 ]; then
     echo -e "\e[31mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is not a FQDN!\e[0m"
     sleep 1
@@ -146,7 +134,7 @@ done
 if [ -a /etc/timezone ]; then
   DETECTED_TZ=$(cat /etc/timezone)
 elif [ -a /etc/localtime ]; then
-  DETECTED_TZ=$(readlink /etc/localtime | sed -n 's|^.*zoneinfo/||p')
+  DETECTED_TZ=$(readlink /etc/localtime|sed -n 's|^.*zoneinfo/||p')
 fi
 
 while [ -z "${ZYNERONE_TZ}" ]; do
@@ -163,13 +151,13 @@ MEM_TOTAL=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 if [ ${MEM_TOTAL} -le "2621440" ]; then
   echo "Installed memory is <= 2.5 GiB. It is recommended to disable ClamAV to prevent out-of-memory situations."
   echo "ClamAV can be re-enabled by setting SKIP_CLAMD=n in zynerone.conf."
-  read -r -p "Do you want to disable ClamAV now? [Y/n] " response
+  read -r -p  "Do you want to disable ClamAV now? [Y/n] " response
   case $response in
-  [nN][oO] | [nN])
-    SKIP_CLAMD=n
-    ;;
-  *)
-    SKIP_CLAMD=y
+    [nN][oO]|[nN])
+      SKIP_CLAMD=n
+      ;;
+    *)
+      SKIP_CLAMD=y
     ;;
   esac
 else
@@ -183,13 +171,13 @@ elif [ ${MEM_TOTAL} -le "3670016" ]; then
   echo "Installed memory is <= 3.5 GiB. It is recommended to disable Solr to prevent out-of-memory situations."
   echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in zynerone.conf according to your expected load."
   echo "Solr can be re-enabled by setting SKIP_SOLR=n in zynerone.conf but will refuse to start with less than 2 GB total memory."
-  read -r -p "Do you want to disable Solr now? [Y/n] " response
+  read -r -p  "Do you want to disable Solr now? [Y/n] " response
   case $response in
-  [nN][oO] | [nN])
-    SKIP_SOLR=n
-    ;;
-  *)
-    SKIP_SOLR=y
+    [nN][oO]|[nN])
+      SKIP_SOLR=n
+      ;;
+    *)
+      SKIP_SOLR=y
     ;;
   esac
 else
@@ -205,13 +193,13 @@ if [[ ${SKIP_BRANCH} != y ]]; then
   sleep 1
 
   while [ -z "${ZYNERONE_BRANCH}" ]; do
-    read -r -p "Choose the Branch with it´s number [1/2] " branch
+    read -r -p  "Choose the Branch with it´s number [1/2] " branch
     case $branch in
-    [2])
-      ZYNERONE_BRANCH="nightly"
-      ;;
-    *)
-      ZYNERONE_BRANCH="master"
+      [2])
+        ZYNERONE_BRANCH="nightly"
+        ;;
+      *)
+        ZYNERONE_BRANCH="master"
       ;;
     esac
   done
@@ -228,15 +216,15 @@ else
   echo -e "\033[31mCould not determine branch input..."
   echo -e "\033[31mExiting."
   exit 1
-fi
+fi  
 
 if [ ! -z "${ZYNERONE_BRANCH}" ]; then
   git_branch=${ZYNERONE_BRANCH}
 fi
 
-[ ! -f ./data/conf/rspamd/override.d/worker-controller-password.inc ] && echo '# Placeholder' >./data/conf/rspamd/override.d/worker-controller-password.inc
+[ ! -f ./data/conf/rspamd/override.d/worker-controller-password.inc ] && echo '# Placeholder' > ./data/conf/rspamd/override.d/worker-controller-password.inc
 
-cat <<EOF >zynerone.conf
+cat << EOF > zynerone.conf
 # ------------------------------
 # zynerone web ui configuration
 # ------------------------------
@@ -260,8 +248,8 @@ DBUSER=zynerone
 
 # Please use long, random alphanumeric strings (A-Za-z0-9)
 
-DBPASS=$(LC_ALL=C tr </dev/urandom -dc A-Za-z0-9 2>/dev/null | head -c 28)
-DBROOT=$(LC_ALL=C tr </dev/urandom -dc A-Za-z0-9 2>/dev/null | head -c 28)
+DBPASS=$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)
+DBROOT=$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)
 
 # ------------------------------
 # HTTP/S Bindings
@@ -481,7 +469,7 @@ WEBAUTHN_ONLY_TRUSTED_VENDORS=n
 
 # Spamhaus Data Query Service Key
 # Optional: Leave empty for none
-# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist.
+# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist. 
 # If empty, it will completely disable Spamhaus blocklists if it detects that you are running on a server using a blocked AS.
 # Otherwise it will work normally.
 SPAMHAUS_DQS_KEY=
@@ -501,17 +489,17 @@ cp -n -d data/assets/ssl-example/*.pem data/assets/ssl/
 
 # Set app_info.inc.php
 case ${git_branch} in
-master)
-  ZYNERONE_GIT_version=$(git describe --tags $(git rev-list --tags --max-count=1))
-  ;;
-nightly)
-  ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
-  ZYNERONE_LAST_GIT_VERSION=""
-  ;;
-*)
-  ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
-  ZYNERONE_LAST_GIT_VERSION=""
-  ;;
+  master)
+    ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+    ;;
+  nightly)
+    ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
+    ZYNERONE_LAST_GIT_VERSION=""
+    ;;
+  *)
+    ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
+    ZYNERONE_LAST_GIT_VERSION=""
+    ;;
 esac
 # if [ ${git_branch} == "master" ]; then
 #   ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -524,38 +512,38 @@ esac
 # fi
 
 if [[ $SKIP_BRANCH != "y" ]]; then
-  ZYNERONE_GIT_commit=$(git rev-parse origin/${git_branch})
-  ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream})
+ZYNERONE_GIT_commit=$(git rev-parse origin/${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
 else
-  ZYNERONE_GIT_commit=$(git rev-parse ${git_branch})
-  ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream})
-  git_branch=$(git rev-parse --abbrev-ref HEAD)
+ZYNERONE_GIT_commit=$(git rev-parse ${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
+git_branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 if [ $? -eq 0 ]; then
-  echo '<?php' >data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_REPO="zynerone";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_COMMIT="'$ZYNERONE_GIT_commit'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_COMMIT_DATE="'$ZYNERONE_GIT_commit_date'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >>data/web/inc/app_info.inc.php
-  echo '?>' >>data/web/inc/app_info.inc.php
+  echo '<?php' > data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="'$ZYNERONE_GIT_commit'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="'$ZYNERONE_GIT_commit_date'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '?>' >> data/web/inc/app_info.inc.php
 else
-  echo '<?php' >data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_REPO="zynerone";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_COMMIT="";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_GIT_COMMIT_DATE="";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >>data/web/inc/app_info.inc.php
-  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >>data/web/inc/app_info.inc.php
-  echo '?>' >>data/web/inc/app_info.inc.php
+  echo '<?php' > data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '?>' >> data/web/inc/app_info.inc.php
   echo -e "\e[33mCannot determine current git repository version...\e[0m"
 fi
 
