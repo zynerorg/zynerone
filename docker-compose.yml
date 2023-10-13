@@ -434,7 +434,7 @@ services:
             - acme
 
     netfilter-mailcow:
-      image: zyner/netfilter:1.52
+      image: zyner/netfilter:1.53
       stop_grace_period: 30s
       depends_on:
         - dovecot-mailcow
