@@ -1,7 +1,6 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 function is_valid_regex($exp)
 {
@@ -2418,9 +2417,9 @@ function get_logs($application, $lines = false)
   }
   if ($application == "ratelimited") {
     if (isset($from) && isset($to)) {
-      $data = $redis->lRange('RL_LOG', $from - 1, $to - 1);
+      $data = $redis->lRange('rl_log_v1', $from - 1, $to - 1);
     } else {
-      $data = $redis->lRange('RL_LOG', 0, $lines);
+      $data = $redis->lRange('rl_log_v1', 0, $lines);
     }
     if ($data) {
       foreach ($data as $json_line) {
@@ -2431,9 +2430,9 @@ function get_logs($application, $lines = false)
   }
   if ($application == "api-zynerone") {
     if (isset($from) && isset($to)) {
-      $data = $redis->lRange('API_LOG', $from - 1, $to - 1);
+      $data = $redis->lRange('api_log_v2', $from - 1, $to - 1);
     } else {
-      $data = $redis->lRange('API_LOG', 0, $lines);
+      $data = $redis->lRange('api_log_v2', 0, $lines);
     }
     if ($data) {
       foreach ($data as $json_line) {
