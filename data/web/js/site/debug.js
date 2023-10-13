@@ -284,15 +284,14 @@ jQuery(function($){
       hideTableExpandCollapseBtn('#tab-watchdog-logs', '#watchdog_log');
     });
   }
-
-  function draw_api_v1_logs() {
+  function draw_api_logs() {
     // just recalc width if instance already exists
-    if ($.fn.DataTable.isDataTable('#api_log_v1') ) {
-      $('#api_log_v1').DataTable().columns.adjust().responsive.recalc();
+    if ($.fn.DataTable.isDataTable('#api_log') ) {
+      $('#api_log').DataTable().columns.adjust().responsive.recalc();
       return;
     }
 
-    var table =  $('#api_log_v1').DataTable({
+    var table =  $('#api_log').DataTable({
       responsive: true,
       processing: true,
       serverSide: false,
@@ -304,13 +303,13 @@ jQuery(function($){
       language: lang_datatables,
       order: [[0, 'desc']],
       initComplete: function(){
-        hideTableExpandCollapseBtn('#tab-api-logs-v1', '#api_log_v1');
+        hideTableExpandCollapseBtn('#tab-api-logs', '#api_log');
       },
       ajax: {
         type: "GET",
-        url: "/api/v1/get/logs/api-v1",
+        url: "/api/v1/get/logs/api",
         dataSrc: function(data){
-          return process_table_data(data, 'general_syslog');
+          return process_table_data(data, 'apilog');
         }
       },
       columns: [
@@ -323,32 +322,42 @@ jQuery(function($){
           }
         },
         {
-          title: lang.priority,
-          data: 'priority',
+          title: 'URI',
+          data: 'uri',
+          defaultContent: '',
+          className: 'dtr-col-md dtr-break-all'
+        },
+        {
+          title: 'Method',
+          data: 'method',
           defaultContent: ''
         },
         {
-          title: lang.message,
-          data: 'message',
+          title: 'IP',
+          data: 'remote',
+          defaultContent: ''
+        },
+        {
+          title: 'Data',
+          data: 'data',
           defaultContent: '',
-          className: 'dtr-col-md text-break'
+          className: 'dtr-col-md dtr-break-all'
         }
       ]
     });
 
     table.on('responsive-resize', function (e, datatable, columns){
-      hideTableExpandCollapseBtn('#tab-api-logs-v1', '#api_log_v1');
+      hideTableExpandCollapseBtn('#tab-api-logs', '#api_log');
     });
   }
-
-  function draw_api_v2_logs() {
+  function draw_rl_logs() {
     // just recalc width if instance already exists
-    if ($.fn.DataTable.isDataTable('#api_log_v2') ) {
-      $('#api_log_v2').DataTable().columns.adjust().responsive.recalc();
+    if ($.fn.DataTable.isDataTable('#rl_log') ) {
+      $('#rl_log').DataTable().columns.adjust().responsive.recalc();
       return;
     }
 
-    var table =  $('#api_log_v2').DataTable({
+    var table = $('#rl_log').DataTable({
       responsive: true,
       processing: true,
       serverSide: false,
@@ -360,69 +369,13 @@ jQuery(function($){
       language: lang_datatables,
       order: [[0, 'desc']],
       initComplete: function(){
-        hideTableExpandCollapseBtn('#tab-api-logs-v2', '#api_log_v2');
+        hideTableExpandCollapseBtn('#tab-rl-logs', '#rl_log');
       },
       ajax: {
         type: "GET",
-        url: "/api/v1/get/logs/api-v2",
+        url: "/api/v1/get/logs/ratelimited",
         dataSrc: function(data){
-          return process_table_data(data, 'general_syslog');
-        }
-      },
-      columns: [
-        {
-          title: lang.time,
-          data: 'time',
-          defaultContent: '',
-          createdCell: function(td, cellData) {
-            createSortableDate(td, cellData)
-          }
-        },
-        {
-          title: lang.priority,
-          data: 'priority',
-          defaultContent: ''
-        },
-        {
-          title: lang.message,
-          data: 'message',
-          defaultContent: '',
-          className: 'dtr-col-md text-break'
-        }
-      ]
-    });
-
-    table.on('responsive-resize', function (e, datatable, columns){
-      hideTableExpandCollapseBtn('#tab-api-logs-v2', '#api_log_v2');
-    });
-  }
-
-  function draw_rl_v1_logs() {
-    // just recalc width if instance already exists
-    if ($.fn.DataTable.isDataTable('#rl_v1_log') ) {
-      $('#rl_v1_log').DataTable().columns.adjust().responsive.recalc();
-      return;
-    }
-
-    var table = $('#rl_v1_log').DataTable({
-      responsive: true,
-      processing: true,
-      serverSide: false,
-      stateSave: true,
-      pageLength: log_pagination_size,
-      dom: "<'row'<'col-sm-12 col-md-6'f><'col-sm-12 col-md-6'l>>" +
-           "tr" +
-           "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-      language: lang_datatables,
-      order: [[0, 'desc']],
-      initComplete: function(){
-        hideTableExpandCollapseBtn('#tab-rl-v1-logs', '#rl_v1_log');
-      },
-      ajax: {
-        type: "GET",
-        url: "/api/v1/get/logs/ratelimited-v1",
-        dataSrc: function(data){
-          return process_table_data(data, 'rllog_v1_v1');
+          return process_table_data(data, 'rllog');
         }
       },
       columns: [
@@ -498,7 +451,7 @@ jQuery(function($){
     });
 
     table.on('responsive-resize', function (e, datatable, columns){
-      hideTableExpandCollapseBtn('#tab-rl-v1-logs', '#rl_v1_log');
+      hideTableExpandCollapseBtn('#tab-rl-logs', '#rl_log');
     });
   }
   function draw_ui_logs() {
@@ -991,7 +944,7 @@ jQuery(function($){
               "data-order": cellData.sortBy,
               "data-sort": cellData.sortBy
             });
-          },
+          },    
           render: function (data) {
             return data.value;
           }
@@ -1016,7 +969,7 @@ jQuery(function($){
               "data-order": cellData.sortBy,
               "data-sort": cellData.sortBy
             });
-          },
+          },    
           render: function (data) {
             return data.value;
           }
@@ -1181,7 +1134,7 @@ jQuery(function($){
           item.priority = '<span class="badge fs-6 bg-info">' + item.priority + '</span>';
         }
       });
-    } else if (table == 'apilog_v2') {
+    } else if (table == 'apilog') {
       $.each(data, function (i, item) {
         if (item === null) { return true; }
         if (item.method == 'GET') {
@@ -1191,7 +1144,7 @@ jQuery(function($){
         }
         item.data = escapeHtml(item.data);
       });
-    } else if (table == 'rllog_v1') {
+    } else if (table == 'rllog') {
       $.each(data, function (i, item) {
         if (item.user == null) {
           item.user = "none";
@@ -1261,9 +1214,8 @@ jQuery(function($){
   onVisible("[id^=watchdog_log]", () => draw_watchdog_logs());
   onVisible("[id^=autodiscover_log]", () => draw_autodiscover_logs());
   onVisible("[id^=acme_log]", () => draw_acme_logs());
-  onVisible("[id^=api_v2_log]", () => draw_api_v2_logs());
-  onVisible("[id^=api_v1_log]", () => draw_api_v2_logs());
-  onVisible("[id^=rl_v1_log]", () => draw_rl_v1_logs());
+  onVisible("[id^=api_log]", () => draw_api_logs());
+  onVisible("[id^=rl_log]", () => draw_rl_logs());
   onVisible("[id^=ui_logs]", () => draw_ui_logs());
   onVisible("[id^=sasl_logs]", () => draw_sasl_logs());
   onVisible("[id^=netfilter_log]", () => draw_netfilter_logs());

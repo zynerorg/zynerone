@@ -4206,7 +4206,7 @@ paths:
         the end of the api url.
       operationId: Get ACME logs
       summary: Get ACME logs
-  "/api/v1/get/logs/api-v2/{count}":
+  "/api/v1/get/logs/api/{count}":
     get:
       parameters:
         - description: Number of logs to return
@@ -4235,7 +4235,7 @@ paths:
                       method: GET
                       remote: 1.1.1.1
                       time: 1569939001
-                      uri: /api/v1/get/logs/api-v2/2
+                      uri: /api/v1/get/logs/api/2
           description: OK
           headers: {}
       tags:
@@ -5621,8 +5621,8 @@ paths:
       tags:
         - Cross-Origin Resource Sharing (CORS)
       description: >-
-        This endpoint allows you to manage Cross-Origin Resource Sharing (CORS) settings for the API.
-        CORS is a security feature implemented by web browsers to prevent unauthorized cross-origin requests.
+        This endpoint allows you to manage Cross-Origin Resource Sharing (CORS) settings for the API. 
+        CORS is a security feature implemented by web browsers to prevent unauthorized cross-origin requests. 
         By editing the CORS settings, you can specify which domains and which methods are permitted to access the API resources from outside the zynerone domain.
       operationId: Edit Cross-Origin Resource Sharing (CORS) settings
       requestBody:

@@ -43,6 +43,6 @@ $data['message_id'] = $raw_data_decoded['message_id'];
 $data['header_subject'] = implode(' ', $raw_data_decoded['header_subject']);
 $data['header_from'] = implode(', ', $raw_data_decoded['header_from']);
 
-$redis->lpush('rl_log_v1', json_encode($data));
+$redis->lpush('RL_LOG', json_encode($data));
 exit;
 
