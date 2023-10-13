@@ -1,10 +1,11 @@
 <?php
-function ratelimit($_action, $_scope, $_data = null) {
+function ratelimit($_action, $_scope, $_data = null)
+{
   global $redis;
   $_data_log = $_data;
   switch ($_action) {
     case 'edit':
-      if (!isset($_SESSION['acl']['ratelimit']) || $_SESSION['acl']['ratelimit'] != "1" ) {
+      if (!isset($_SESSION['acl']['ratelimit']) || $_SESSION['acl']['ratelimit'] != "1") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_type, $_data_log, $_attr),
@@ -17,8 +18,7 @@ function ratelimit($_action, $_scope, $_data = null) {
           if (!is_array($_data['object'])) {
             $objects = array();
             $objects[] = $_data['object'];
-          }
-          else {
+          } else {
             $objects = $_data['object'];
           }
           foreach ($objects as $object) {
@@ -43,8 +43,7 @@ function ratelimit($_action, $_scope, $_data = null) {
             if (empty($rl_value)) {
               try {
                 $redis->hDel('RL_VALUE', $object);
-              }
-              catch (RedisException $e) {
+              } catch (RedisException $e) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -52,12 +51,10 @@ function ratelimit($_action, $_scope, $_data = null) {
                 );
                 continue;
               }
-            }
-            else {
+            } else {
               try {
                 $redis->hSet('RL_VALUE', $object, $rl_value . ' / 1' . $rl_frame);
-              }
-              catch (RedisException $e) {
+              } catch (RedisException $e) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -72,13 +69,12 @@ function ratelimit($_action, $_scope, $_data = null) {
               'msg' => array('rl_saved', $object)
             );
           }
-        break;
+          break;
         case 'mailbox':
           if (!is_array($_data['object'])) {
             $objects = array();
             $objects[] = $_data['object'];
-          }
-          else {
+          } else {
             $objects = $_data['object'];
           }
           foreach ($objects as $object) {
@@ -92,8 +88,10 @@ function ratelimit($_action, $_scope, $_data = null) {
               );
               continue;
             }
-            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)
-              || ($_SESSION['zynerone_cc_role'] != 'admin' && $_SESSION['zynerone_cc_role'] != 'domainadmin')) {
+            if (
+              !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)
+              || ($_SESSION['zynerone_cc_role'] != 'admin' && $_SESSION['zynerone_cc_role'] != 'domainadmin')
+            ) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -104,8 +102,7 @@ function ratelimit($_action, $_scope, $_data = null) {
             if (empty($rl_value)) {
               try {
                 $redis->hDel('RL_VALUE', $object);
-              }
-              catch (RedisException $e) {
+              } catch (RedisException $e) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -113,12 +110,10 @@ function ratelimit($_action, $_scope, $_data = null) {
                 );
                 continue;
               }
-            }
-            else {
+            } else {
               try {
                 $redis->hSet('RL_VALUE', $object, $rl_value . ' / 1' . $rl_frame);
-              }
-              catch (RedisException $e) {
+              } catch (RedisException $e) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -133,9 +128,9 @@ function ratelimit($_action, $_scope, $_data = null) {
               'msg' => array('rl_saved', $object)
             );
           }
-        break;
+          break;
       }
-    break;
+      break;
     case 'get':
       switch ($_scope) {
         case 'domain':
@@ -148,12 +143,10 @@ function ratelimit($_action, $_scope, $_data = null) {
               $data['value'] = $rl[0];
               $data['frame'] = $rl[1];
               return $data;
-            }
-            else {
+            } else {
               return false;
             }
-          }
-          catch (RedisException $e) {
+          } catch (RedisException $e) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -162,10 +155,12 @@ function ratelimit($_action, $_scope, $_data = null) {
             return false;
           }
           return false;
-        break;
+          break;
         case 'mailbox':
-          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)
-            || ($_SESSION['zynerone_cc_role'] != 'admin' && $_SESSION['zynerone_cc_role'] != 'domainadmin')) {
+          if (
+            !hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)
+            || ($_SESSION['zynerone_cc_role'] != 'admin' && $_SESSION['zynerone_cc_role'] != 'domainadmin')
+          ) {
             return false;
           }
           try {
@@ -174,12 +169,10 @@ function ratelimit($_action, $_scope, $_data = null) {
               $data['value'] = $rl[0];
               $data['frame'] = $rl[1];
               return $data;
-            }
-            else {
+            } else {
               return false;
             }
-          }
-          catch (RedisException $e) {
+          } catch (RedisException $e) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -188,9 +181,9 @@ function ratelimit($_action, $_scope, $_data = null) {
             return false;
           }
           return false;
-        break;
+          break;
       }
-    break;
+      break;
     case 'delete':
       $data['hash'] = $_data;
       if ($_SESSION['zynerone_cc_role'] != 'admin' || !preg_match('/^RL[0-9A-Za-z=]+$/i', trim($data['hash']))) {
@@ -218,8 +211,7 @@ function ratelimit($_action, $_scope, $_data = null) {
             'msg' => 'hash_deleted'
           );
           return true;
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'warning',
             'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -227,8 +219,7 @@ function ratelimit($_action, $_scope, $_data = null) {
           );
           return false;
         }
-      }
-      catch (RedisException $e) {
+      } catch (RedisException $e) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -237,6 +228,6 @@ function ratelimit($_action, $_scope, $_data = null) {
         return false;
       }
       return false;
-    break;
+      break;
   }
 }

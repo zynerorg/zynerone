@@ -1,9 +1,10 @@
 <?php
-function pushover($_action, $_data = null) {
+function pushover($_action, $_data = null)
+{
   global $pdo;
   switch ($_action) {
     case 'edit':
-      if (!isset($_SESSION['acl']['pushover']) || $_SESSION['acl']['pushover'] != "1" ) {
+      if (!isset($_SESSION['acl']['pushover']) || $_SESSION['acl']['pushover'] != "1") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -14,8 +15,7 @@ function pushover($_action, $_data = null) {
       if (!is_array($_data['username'])) {
         $usernames = array();
         $usernames[] = $_data['username'];
-      }
-      else {
+      } else {
         $usernames = $_data['username'];
       }
       foreach ($usernames as $username) {
@@ -30,9 +30,11 @@ function pushover($_action, $_data = null) {
         $delete = $_data['delete'];
         if ($delete == "true") {
           $stmt = $pdo->prepare("DELETE FROM `pushover` WHERE `username` = :username");
-          $stmt->execute(array(
-            ':username' => $username
-          ));
+          $stmt->execute(
+            array(
+              ':username' => $username
+            )
+          );
           $_SESSION['return'][] = array(
             'type' => 'success',
             'log' => array(__FUNCTION__, $_action, $_data),
@@ -52,8 +54,7 @@ function pushover($_action, $_data = null) {
           $evaluate_x_prio = (isset($_data['evaluate_x_prio'])) ? intval($_data['evaluate_x_prio']) : $is_now['evaluate_x_prio'];
           $only_x_prio = (isset($_data['only_x_prio'])) ? intval($_data['only_x_prio']) : $is_now['only_x_prio'];
           $sound = (isset($_data['sound'])) ? $_data['sound'] : $is_now['sound'];
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data),
@@ -69,7 +70,7 @@ function pushover($_action, $_data = null) {
           );
           continue;
         }
-        $senders = array_map('trim', preg_split( "/( |,|;|\n)/", $senders));
+        $senders = array_map('trim', preg_split("/( |,|;|\n)/", $senders));
         foreach ($senders as $i => &$sender) {
           if (empty($sender)) {
             continue;
@@ -81,8 +82,10 @@ function pushover($_action, $_data = null) {
           $senders[$i] = preg_replace('/\.(?=.*?@gmail\.com$)/', '$1', $sender);
         }
         $senders = array_filter($senders);
-        if (empty($senders)) { $senders = ''; }
-        $senders = implode(",", (array)$senders);
+        if (empty($senders)) {
+          $senders = '';
+        }
+        $senders = implode(",", (array) $senders);
         if (!ctype_alnum($key) || strlen($key) != 30) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
@@ -108,24 +111,26 @@ function pushover($_action, $_data = null) {
         );
         $stmt = $pdo->prepare("REPLACE INTO `pushover` (`username`, `key`, `attributes`, `senders_regex`, `senders`, `token`, `title`, `text`, `active`)
           VALUES (:username, :key, :po_attributes, :senders_regex, :senders, :token, :title, :text, :active)");
-        $stmt->execute(array(
-          ':username' => $username,
-          ':key' => $key,
-          ':po_attributes' => $po_attributes,
-          ':senders_regex' => $senders_regex,
-          ':senders' => $senders,
-          ':token' => $token,
-          ':title' => $title,
-          ':text' => $text,
-          ':active' => $active
-        ));
+        $stmt->execute(
+          array(
+            ':username' => $username,
+            ':key' => $key,
+            ':po_attributes' => $po_attributes,
+            ':senders_regex' => $senders_regex,
+            ':senders' => $senders,
+            ':token' => $token,
+            ':title' => $title,
+            ':text' => $text,
+            ':active' => $active
+          )
+        );
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data),
           'msg' => 'pushover_settings_edited'
         );
       }
-    break;
+      break;
     case 'get':
       if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
         $_SESSION['return'][] = array(
@@ -136,20 +141,21 @@ function pushover($_action, $_data = null) {
         return false;
       }
       $stmt = $pdo->prepare("SELECT * FROM `pushover` WHERE `username` = :username");
-      $stmt->execute(array(
-        ':username' => $_data
-      ));
+      $stmt->execute(
+        array(
+          ':username' => $_data
+        )
+      );
       $data = $stmt->fetch(PDO::FETCH_ASSOC);
       $data['attributes'] = json_decode($data['attributes'], true);
       if (empty($data)) {
         return false;
-      }
-      else {
+      } else {
         return $data;
       }
-    break;
+      break;
     case 'test':
-      if (!isset($_SESSION['acl']['pushover']) || $_SESSION['acl']['pushover'] != "1" ) {
+      if (!isset($_SESSION['acl']['pushover']) || $_SESSION['acl']['pushover'] != "1") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data),
@@ -160,8 +166,7 @@ function pushover($_action, $_data = null) {
       if (!is_array($_data['username'])) {
         $usernames = array();
         $usernames[] = $_data['username'];
-      }
-      else {
+      } else {
         $usernames = $_data['username'];
       }
       foreach ($usernames as $username) {
@@ -175,9 +180,11 @@ function pushover($_action, $_data = null) {
         }
         $stmt = $pdo->prepare("SELECT * FROM `pushover`
           WHERE `username` = :username");
-        $stmt->execute(array(
-          ':username' => $username
-        ));
+        $stmt->execute(
+          array(
+            ':username' => $username
+          )
+        );
         $api_data = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!empty($api_data)) {
           $title = (!empty($api_data['title'])) ? $api_data['title'] : 'Mail';
@@ -190,7 +197,8 @@ function pushover($_action, $_data = null) {
             ),
             CURLOPT_SAFE_UPLOAD => true,
             CURLOPT_RETURNTRANSFER => true,
-          ));
+          )
+          );
           $result = curl_exec($ch);
           $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
           curl_close($ch);
@@ -200,16 +208,14 @@ function pushover($_action, $_data = null) {
               'log' => array(__FUNCTION__, $_action, $_data),
               'msg' => sprintf('Pushover API OK (%d): %s', $httpcode, $result)
             );
-          }
-          else {
+          } else {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_data),
               'msg' => sprintf('Pushover API ERR (%d): %s', $httpcode, $result)
             );
           }
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data),
@@ -218,6 +224,6 @@ function pushover($_action, $_data = null) {
           return false;
         }
       }
-    break;
+      break;
   }
 }
