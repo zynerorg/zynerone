@@ -6,7 +6,6 @@
 # 2 = cert not due for renewal
 # * = errors
 
-
 source /srv/functions.sh
 
 CERT_DOMAINS=(${DOMAINS[@]})
@@ -22,7 +21,7 @@ if [[ "${TYPE}" != "rsa" ]]; then
 fi
 DOMAINS_FILE=${ACME_BASE}/${CERT_DOMAIN}/domains
 CERT=${ACME_BASE}/${CERT_DOMAIN}/${PREFIX}cert.pem
-SHARED_KEY=${ACME_BASE}/acme/${PREFIX}key.pem  # must already exist
+SHARED_KEY=${ACME_BASE}/acme/${PREFIX}key.pem # must already exist
 KEY=${ACME_BASE}/${CERT_DOMAIN}/${PREFIX}key.pem
 CSR=${ACME_BASE}/${CERT_DOMAIN}/${PREFIX}acme.csr
 
@@ -42,11 +41,11 @@ elif [[ ! -z "${DIRECTORY_URL}" ]]; then
   DIRECTORY_URL="--directory-url ${DIRECTORY_URL}"
 fi
 
-if [[ -f ${DOMAINS_FILE} && "$(cat ${DOMAINS_FILE})" ==  "${CERT_DOMAINS[*]}" ]]; then
+if [[ -f ${DOMAINS_FILE} && "$(cat ${DOMAINS_FILE})" == "${CERT_DOMAINS[*]}" ]]; then
   if [[ ! -f ${CERT} || ! -f "${KEY}" || -f "${ACME_BASE}/force_renew" ]]; then
     log_f "Certificate ${CERT} doesn't exist yet or forced renewal - start obtaining"
   # Certificate exists and did not change but could be due for renewal (30 days)
-  elif ! openssl x509 -checkend 2592000 -noout -in ${CERT} > /dev/null; then
+  elif ! openssl x509 -checkend 2592000 -noout -in ${CERT} >/dev/null; then
     log_f "Certificate ${CERT} is due for renewal (< 30 days) - start renewing"
   else
     log_f "Certificate ${CERT} validation done, neither changed nor due for renewal."
@@ -55,7 +54,6 @@ if [[ -f ${DOMAINS_FILE} && "$(cat ${DOMAINS_FILE})" ==  "${CERT_DOMAINS[*]}" ]]
 else
   log_f "Certificate ${CERT} missing or changed domains '${CERT_DOMAINS[*]}' - start obtaining"
 fi
-
 
 # Make backup
 if [[ -f ${CERT} ]]; then
@@ -77,10 +75,10 @@ if [[ ! -f ${KEY} ]]; then
 fi
 
 # Generating CSR
-printf "[SAN]\nsubjectAltName=" > /tmp/_SAN
-printf "DNS:%s," "${CERT_DOMAINS[@]}" >> /tmp/_SAN
+printf "[SAN]\nsubjectAltName=" >/tmp/_SAN
+printf "DNS:%s," "${CERT_DOMAINS[@]}" >>/tmp/_SAN
 sed -i '$s/,$//' /tmp/_SAN
-openssl req -new -sha256 -key ${KEY} -subj "/" -reqexts SAN -config <(cat "$(openssl version -d | sed 's/.*"\(.*\)"/\1/g')/openssl.cnf" /tmp/_SAN) > ${CSR}
+openssl req -new -sha256 -key ${KEY} -subj "/" -reqexts SAN -config <(cat "$(openssl version -d | sed 's/.*"\(.*\)"/\1/g')/openssl.cnf" /tmp/_SAN) >${CSR}
 
 # acme-tiny writes info to stderr and ceritifcate to stdout
 # The redirects will do the following:
@@ -89,42 +87,45 @@ openssl req -new -sha256 -key ${KEY} -subj "/" -reqexts SAN -config <(cat "$(ope
 # - tee stderr to get live output and log to dockerd
 
 log_f "Checking resolver..."
-until dig letsencrypt.org +time=3 +tries=1 @unbound > /dev/null; do
+until dig letsencrypt.org +time=3 +tries=1 @unbound >/dev/null; do
   sleep 2
 done
 log_f "Resolver OK"
 log_f "Using command acme-tiny ${DIRECTORY_URL} ${ACME_CONTACT_PARAMETER} --account-key ${ACME_BASE}/acme/account.pem --disable-check --csr ${CSR} --acme-dir /var/www/acme/"
-ACME_RESPONSE=$(acme-tiny ${DIRECTORY_URL} ${ACME_CONTACT_PARAMETER} \
-  --account-key ${ACME_BASE}/acme/account.pem \
-  --disable-check \
-  --csr ${CSR} \
-  --acme-dir /var/www/acme/ 2>&1 > /tmp/_cert.pem | tee /dev/fd/5; exit ${PIPESTATUS[0]})
+ACME_RESPONSE=$(
+  acme-tiny ${DIRECTORY_URL} ${ACME_CONTACT_PARAMETER} \
+    --account-key ${ACME_BASE}/acme/account.pem \
+    --disable-check \
+    --csr ${CSR} \
+    --acme-dir /var/www/acme/ 2>&1 >/tmp/_cert.pem | tee /dev/fd/5
+  exit ${PIPESTATUS[0]}
+)
 SUCCESS="$?"
 ACME_RESPONSE_B64=$(echo "${ACME_RESPONSE}" | openssl enc -e -A -base64)
 log_f "${ACME_RESPONSE_B64}" redis_only b64
 case "$SUCCESS" in
-  0) # cert requested
-    log_f "Deploying certificate ${CERT}..."
-    # Deploy the new certificate and key
-    # Moving temp cert to {domain} folder
-    if verify_hash_match /tmp/_cert.pem ${KEY}; then
-      RETURN=0  # certificate created
-      if [[ -f ${CERT} ]]; then
-        RETURN=1  # certificate renewed
-      fi
-      mv -f /tmp/_cert.pem ${CERT}
-      echo -n ${CERT_DOMAINS[*]} > ${DOMAINS_FILE}
-      rm /var/www/acme/* 2> /dev/null
-      log_f "Certificate successfully obtained"
-      exit ${RETURN}
-    else
-      log_f "Certificate was successfully requested, but key and certificate have non-matching hashes, ignoring certificate"
-      exit 4
+0) # cert requested
+  log_f "Deploying certificate ${CERT}..."
+  # Deploy the new certificate and key
+  # Moving temp cert to {domain} folder
+  if verify_hash_match /tmp/_cert.pem ${KEY}; then
+    RETURN=0 # certificate created
+    if [[ -f ${CERT} ]]; then
+      RETURN=1 # certificate renewed
     fi
-    ;;
-  *) # non-zero is non-fun
-    log_f "Failed to obtain certificate ${CERT} for domains '${CERT_DOMAINS[*]}'"
-    redis-cli -h redis SET ACME_FAIL_TIME "$(date +%s)"
-    exit 100${SUCCESS}
-    ;;
+    mv -f /tmp/_cert.pem ${CERT}
+    echo -n ${CERT_DOMAINS[*]} >${DOMAINS_FILE}
+    rm /var/www/acme/* 2>/dev/null
+    log_f "Certificate successfully obtained"
+    exit ${RETURN}
+  else
+    log_f "Certificate was successfully requested, but key and certificate have non-matching hashes, ignoring certificate"
+    exit 4
+  fi
+  ;;
+*) # non-zero is non-fun
+  log_f "Failed to obtain certificate ${CERT} for domains '${CERT_DOMAINS[*]}'"
+  redis-cli -h redis SET ACME_FAIL_TIME "$(date +%s)"
+  exit 100${SUCCESS}
+  ;;
 esac
