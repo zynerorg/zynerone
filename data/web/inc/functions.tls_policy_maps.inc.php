@@ -1,7 +1,8 @@
 <?php
-function tls_policy_maps($_action, $_data = null, $attr = null) {
-	global $pdo;
-	global $lang;
+function tls_policy_maps($_action, $_data = null, $attr = null)
+{
+  global $pdo;
+  global $lang;
   if ($_SESSION['zynerone_cc_role'] != "admin") {
     return false;
   }
@@ -44,20 +45,22 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
       }
       $stmt = $pdo->prepare("INSERT INTO `tls_policy_override` (`dest`, `policy`, `parameters`, `active`) VALUES
         (:dest, :policy, :parameters, :active)");
-      $stmt->execute(array(
-        ':dest' => $dest,
-        ':policy' => $policy,
-        ':parameters' => $parameters,
-        ':active' => $active
-      ));
+      $stmt->execute(
+        array(
+          ':dest' => $dest,
+          ':policy' => $policy,
+          ':parameters' => $parameters,
+          ':active' => $active
+        )
+      );
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data, $_attr),
         'msg' => array('tls_policy_map_entry_saved', htmlspecialchars($dest))
       );
-    break;
+      break;
     case 'edit':
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $is_now = tls_policy_maps('details', $id);
         if (!empty($is_now)) {
@@ -65,8 +68,7 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
           $dest = (!empty($_data['dest'])) ? $_data['dest'] : $is_now['dest'];
           $policy = (!empty($_data['policy'])) ? $_data['policy'] : $is_now['policy'];
           $parameters = (isset($_data['parameters'])) ? $_data['parameters'] : $is_now['parameters'];
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data, $_attr),
@@ -96,7 +98,9 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
         }
         $tls_policy_maps = tls_policy_maps('get');
         foreach ($tls_policy_maps as $tls_policy_map) {
-          if ($tls_policy_map == $id) { continue; }
+          if ($tls_policy_map == $id) {
+            continue;
+          }
           if (tls_policy_maps('details', $tls_policy_map)['dest'] == $dest) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
@@ -112,20 +116,22 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
           `parameters` = :parameters,
           `active` = :active
             WHERE `id`= :id");
-        $stmt->execute(array(
-          ':dest' => $dest,
-          ':policy' => $policy,
-          ':parameters' => $parameters,
-          ':active' => $active,
-          ':id' => $id
-        ));
+        $stmt->execute(
+          array(
+            ':dest' => $dest,
+            ':policy' => $policy,
+            ':parameters' => $parameters,
+            ':active' => $active,
+            ':id' => $id
+          )
+        );
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data, $_attr),
           'msg' => array('tls_policy_map_entry_saved', htmlspecialchars($dest))
         );
       }
-    break;
+      break;
     case 'details':
       $mapdata = array();
       $id = intval($_data);
@@ -140,7 +146,7 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
       $stmt->execute(array(':id' => $id));
       $mapdata = $stmt->fetch(PDO::FETCH_ASSOC);
       return $mapdata;
-    break;
+      break;
     case 'get':
       $mapdata = array();
       $all_items = array();
@@ -152,9 +158,9 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
       }
       $all_items = null;
       return $mapdata;
-    break;
+      break;
     case 'delete':
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         if (!is_numeric($id)) {
           return false;
@@ -167,6 +173,6 @@ function tls_policy_maps($_action, $_data = null, $attr = null) {
           'msg' => array('tls_policy_map_entry_deleted', htmlspecialchars($id))
         );
       }
-    break;
+      break;
   }
 }

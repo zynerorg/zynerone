@@ -1,5 +1,6 @@
 <?php
-function presets($_action, $_kind) {
+function presets($_action, $_kind)
+{
   switch ($_action) {
     case 'get':
       if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
@@ -19,11 +20,12 @@ function presets($_action, $_kind) {
         $presets[] = getPresetFromFilePath($filename, $lang_base);
       }
       return $presets;
-    break;
+      break;
   }
   return array();
 }
-function getPresetFromFilePath($filePath, $lang_base) {
+function getPresetFromFilePath($filePath, $lang_base)
+{
   global $lang;
   $preset = Spyc::YAMLLoad($filePath);
   $preset = ['name' => basename($filePath, '.yml')] + $preset;

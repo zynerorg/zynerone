@@ -1,7 +1,8 @@
 <?php
-function app_passwd($_action, $_data = null) {
-	global $pdo;
-	global $lang;
+function app_passwd($_action, $_data = null)
+{
+  global $pdo;
+  global $lang;
   $_data_log = $_data;
   !isset($_data_log['app_passwd']) ?: $_data_log['app_passwd'] = '*';
   !isset($_data_log['app_passwd2']) ?: $_data_log['app_passwd2'] = '*';
@@ -13,12 +14,10 @@ function app_passwd($_action, $_data = null) {
         'msg' => 'access_denied'
       );
       return false;
-    }
-    else {
+    } else {
       $username = $_data['username'];
     }
-  }
-  else {
+  } else {
     $username = $_SESSION['zynerone_cc_username'];
   }
   switch ($_action) {
@@ -27,7 +26,7 @@ function app_passwd($_action, $_data = null) {
       $password = $_data['app_passwd'];
       $password2 = $_data['app_passwd2'];
       $active = intval($_data['active']);
-      $protocols = (array)$_data['protocols'];
+      $protocols = (array) $_data['protocols'];
       $imap_access = (in_array('imap_access', $protocols)) ? 1 : 0;
       $dav_access = (in_array('dav_access', $protocols)) ? 1 : 0;
       $smtp_access = (in_array('smtp_access', $protocols)) ? 1 : 0;
@@ -70,27 +69,29 @@ function app_passwd($_action, $_data = null) {
       }
       $stmt = $pdo->prepare("INSERT INTO `app_passwd` (`name`, `mailbox`, `domain`, `password`, `imap_access`, `smtp_access`, `eas_access`, `dav_access`, `pop3_access`, `sieve_access`, `active`)
         VALUES (:app_name, :mailbox, :domain, :password, :imap_access, :smtp_access, :eas_access, :dav_access, :pop3_access, :sieve_access, :active)");
-      $stmt->execute(array(
-        ':app_name' => $app_name,
-        ':mailbox' => $username,
-        ':domain' => $domain,
-        ':password' => $password_hashed,
-        ':imap_access' => $imap_access,
-        ':smtp_access' => $smtp_access,
-        ':eas_access' => $eas_access,
-        ':dav_access' => $dav_access,
-        ':pop3_access' => $pop3_access,
-        ':sieve_access' => $sieve_access,
-        ':active' => $active
-      ));
+      $stmt->execute(
+        array(
+          ':app_name' => $app_name,
+          ':mailbox' => $username,
+          ':domain' => $domain,
+          ':password' => $password_hashed,
+          ':imap_access' => $imap_access,
+          ':smtp_access' => $smtp_access,
+          ':eas_access' => $eas_access,
+          ':dav_access' => $dav_access,
+          ':pop3_access' => $pop3_access,
+          ':sieve_access' => $sieve_access,
+          ':active' => $active
+        )
+      );
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data_log),
         'msg' => 'app_passwd_added'
       );
-    break;
+      break;
     case 'edit':
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $is_now = app_passwd('details', $id);
         if (!empty($is_now)) {
@@ -98,15 +99,14 @@ function app_passwd($_action, $_data = null) {
           $password = (!empty($_data['password'])) ? $_data['password'] : null;
           $password2 = (!empty($_data['password2'])) ? $_data['password2'] : null;
           if (isset($_data['protocols'])) {
-            $protocols = (array)$_data['protocols'];
+            $protocols = (array) $_data['protocols'];
             $imap_access = (in_array('imap_access', $protocols)) ? 1 : 0;
             $dav_access = (in_array('dav_access', $protocols)) ? 1 : 0;
             $smtp_access = (in_array('smtp_access', $protocols)) ? 1 : 0;
             $eas_access = (in_array('eas_access', $protocols)) ? 1 : 0;
             $pop3_access = (in_array('pop3_access', $protocols)) ? 1 : 0;
             $sieve_access = (in_array('sieve_access', $protocols)) ? 1 : 0;
-          }
-          else {
+          } else {
             $imap_access = $is_now['imap_access'];
             $smtp_access = $is_now['smtp_access'];
             $dav_access = $is_now['dav_access'];
@@ -115,8 +115,7 @@ function app_passwd($_action, $_data = null) {
             $sieve_access = $is_now['sieve_access'];
           }
           $active = (isset($_data['active'])) ? intval($_data['active']) : $is_now['active'];
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -146,11 +145,13 @@ function app_passwd($_action, $_data = null) {
           $stmt = $pdo->prepare("UPDATE `app_passwd` SET
               `password` = :password_hashed
                 WHERE `mailbox` = :username AND `id` = :id");
-          $stmt->execute(array(
-            ':password_hashed' => $password_hashed,
-            ':username' => $username,
-            ':id' => $id
-          ));
+          $stmt->execute(
+            array(
+              ':password_hashed' => $password_hashed,
+              ':username' => $username,
+              ':id' => $id
+            )
+          );
         }
 
         $stmt = $pdo->prepare("UPDATE `app_passwd` SET
@@ -164,27 +165,29 @@ function app_passwd($_action, $_data = null) {
           `sieve_access` = :sieve_access,
           `active` = :active
             WHERE `id` = :id");
-        $stmt->execute(array(
-          ':app_name' => $app_name,
-          ':username' => $username,
-          ':imap_access' => $imap_access,
-          ':smtp_access' => $smtp_access,
-          ':eas_access' => $eas_access,
-          ':dav_access' => $dav_access,
-          ':pop3_access' => $pop3_access,
-          ':sieve_access' => $sieve_access,
-          ':active' => $active,
-          ':id' => $id
-        ));
+        $stmt->execute(
+          array(
+            ':app_name' => $app_name,
+            ':username' => $username,
+            ':imap_access' => $imap_access,
+            ':smtp_access' => $smtp_access,
+            ':eas_access' => $eas_access,
+            ':dav_access' => $dav_access,
+            ':pop3_access' => $pop3_access,
+            ':sieve_access' => $sieve_access,
+            ':active' => $active,
+            ':id' => $id
+          )
+        );
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data_log),
           'msg' => array('object_modified', htmlspecialchars(implode(', ', $ids)))
         );
       }
-    break;
+      break;
     case 'delete':
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $stmt = $pdo->prepare("SELECT `mailbox` FROM `app_passwd` WHERE `id` = :id");
         $stmt->execute(array(':id' => $id));
@@ -213,14 +216,14 @@ function app_passwd($_action, $_data = null) {
           'msg' => array('app_passwd_removed', htmlspecialchars($id))
         );
       }
-    break;
+      break;
     case 'get':
       $app_passwds = array();
       $stmt = $pdo->prepare("SELECT `id`, `name` FROM `app_passwd` WHERE `mailbox` = :username");
       $stmt->execute(array(':username' => $username));
       $app_passwds = $stmt->fetchAll(PDO::FETCH_ASSOC);
       return $app_passwds;
-    break;
+      break;
     case 'details':
       $app_passwd_data = array();
       $stmt = $pdo->prepare("SELECT *
@@ -237,6 +240,6 @@ function app_passwd($_action, $_data = null) {
       }
       $app_passwd_data['name'] = htmlspecialchars(trim($app_passwd_data['name']));
       return $app_passwd_data;
-    break;
+      break;
   }
 }

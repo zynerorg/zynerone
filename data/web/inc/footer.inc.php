@@ -3,7 +3,7 @@ logger();
 
 $hash = $js_minifier->getDataHash();
 $JSPath = '/tmp/' . $hash . '.js';
-if(!file_exists($JSPath)) {
+if (!file_exists($JSPath)) {
   $js_minifier->minify($JSPath);
   cleanupJS($hash);
 }
@@ -16,7 +16,7 @@ if (is_array($alertbox_log_parser)) {
     $alerts[trim($log['type'], '"')][] = trim($message, '"');
   }
   $alert = array_filter(array_unique($alerts));
-  foreach($alert as $alert_type => $alert_msg) {
+  foreach ($alert as $alert_type => $alert_msg) {
     // html breaks from mysql alerts, replace ` with '
     $alerts[$alert_type] = implode('<hr class="alert-hr">', str_replace("`", "'", $alert_msg));
   }
@@ -25,19 +25,23 @@ if (is_array($alertbox_log_parser)) {
 
 // map tfa details for twig
 $pending_tfa_authmechs = [];
-foreach($_SESSION['pending_tfa_methods'] as $authdata){
+foreach ($_SESSION['pending_tfa_methods'] as $authdata) {
   $pending_tfa_authmechs[$authdata['authmech']] = false;
 }
 if (isset($pending_tfa_authmechs['webauthn'])) {
   $pending_tfa_authmechs['webauthn'] = true;
 }
-if (!isset($pending_tfa_authmechs['webauthn']) 
-    && isset($pending_tfa_authmechs['yubi_otp'])) {
+if (
+  !isset($pending_tfa_authmechs['webauthn'])
+  && isset($pending_tfa_authmechs['yubi_otp'])
+) {
   $pending_tfa_authmechs['yubi_otp'] = true;
 }
-if (!isset($pending_tfa_authmechs['webauthn']) 
-    && !isset($pending_tfa_authmechs['yubi_otp'])
-    && isset($pending_tfa_authmechs['totp'])) {
+if (
+  !isset($pending_tfa_authmechs['webauthn'])
+  && !isset($pending_tfa_authmechs['yubi_otp'])
+  && isset($pending_tfa_authmechs['totp'])
+) {
   $pending_tfa_authmechs['totp'] = true;
 }
 if (isset($pending_tfa_authmechs['u2f'])) {
@@ -57,7 +61,7 @@ $globalVariables = [
     'ZYNERONE_BRANCH' => $GLOBALS['ZYNERONE_BRANCH'],
     'updated_at' => $GLOBALS['ZYNERONE_UPDATEDAT']
   ),
-  'js_path' => '/cache/'.basename($JSPath),
+  'js_path' => '/cache/' . basename($JSPath),
   'pending_tfa_methods' => @$_SESSION['pending_tfa_methods'],
   'pending_tfa_authmechs' => $pending_tfa_authmechs,
   'pending_zynerone_cc_username' => @$_SESSION['pending_zynerone_cc_username'],
@@ -66,7 +70,7 @@ $globalVariables = [
   'lang_tfa' => json_encode($lang['tfa']),
   'lang_fido2' => json_encode($lang['fido2']),
   'docker_timeout' => $DOCKER_TIMEOUT,
-  'session_lifetime' => (int)$SESSION_LIFETIME,
+  'session_lifetime' => (int) $SESSION_LIFETIME,
   'csrf_token' => $_SESSION['CSRF']['TOKEN'],
   'pagination_size' => $PAGINATION_SIZE,
   'log_pagination_size' => $LOG_PAGINATION_SIZE,

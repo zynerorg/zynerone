@@ -1,7 +1,8 @@
 <?php
-function rsettings($_action, $_data = null) {
-	global $pdo;
-	global $lang;
+function rsettings($_action, $_data = null)
+{
+  global $pdo;
+  global $lang;
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
@@ -26,17 +27,19 @@ function rsettings($_action, $_data = null) {
       }
       $stmt = $pdo->prepare("INSERT INTO `settingsmap` (`content`, `desc`, `active`)
         VALUES (:content, :desc, :active)");
-      $stmt->execute(array(
-        ':content' => $content,
-        ':desc' => $desc,
-        ':active' => $active
-      ));
+      $stmt->execute(
+        array(
+          ':content' => $content,
+          ':desc' => $desc,
+          ':active' => $active
+        )
+      );
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data_log),
         'msg' => 'settings_map_added'
       );
-    break;
+      break;
     case 'edit':
       if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
@@ -46,15 +49,14 @@ function rsettings($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $is_now = rsettings('details', $id);
         if (!empty($is_now)) {
           $content = (!empty($_data['content'])) ? $_data['content'] : $is_now['content'];
           $desc = (!empty($_data['desc'])) ? $_data['desc'] : $is_now['desc'];
           $active = (isset($_data['active'])) ? intval($_data['active']) : $is_now['active'];
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -68,19 +70,21 @@ function rsettings($_action, $_data = null) {
           `desc` = :desc,
           `active` = :active
             WHERE `id` = :id");
-        $stmt->execute(array(
-          ':content' => $content,
-          ':desc' => $desc,
-          ':active' => $active,
-          ':id' => $id
-        ));
+        $stmt->execute(
+          array(
+            ':content' => $content,
+            ':desc' => $desc,
+            ':active' => $active,
+            ':id' => $id
+          )
+        );
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data_log),
           'msg' => array('object_modified', htmlspecialchars(implode(',', $ids)))
         );
       }
-    break;
+      break;
     case 'delete':
       if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
@@ -90,7 +94,7 @@ function rsettings($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $stmt = $pdo->prepare("DELETE FROM `settingsmap` WHERE `id`= :id");
         $stmt->execute(array(':id' => $id));
@@ -100,7 +104,7 @@ function rsettings($_action, $_data = null) {
           'msg' => array('settings_map_removed', htmlspecialchars($id))
         );
       }
-    break;
+      break;
     case 'get':
       if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
@@ -109,7 +113,7 @@ function rsettings($_action, $_data = null) {
       $stmt = $pdo->query("SELECT `id`, `desc`, `active` FROM `settingsmap`");
       $settingsmaps = $stmt->fetchAll(PDO::FETCH_ASSOC);
       return $settingsmaps;
-    break;
+      break;
     case 'details':
       if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
@@ -124,13 +128,14 @@ function rsettings($_action, $_data = null) {
       $stmt->execute(array(':id' => $_data));
       $settingsmapdata = $stmt->fetch(PDO::FETCH_ASSOC);
       return $settingsmapdata;
-    break;
+      break;
   }
 }
-function rspamd_maps($_action, $_data = null) {
-	global $pdo;
-	global $lang;
-	global $RSPAMD_MAPS;
+function rspamd_maps($_action, $_data = null)
+{
+  global $pdo;
+  global $lang;
+  global $RSPAMD_MAPS;
   $_data_log = $_data;
   switch ($_action) {
     case 'edit':
@@ -142,7 +147,7 @@ function rspamd_maps($_action, $_data = null) {
         );
         return false;
       }
-      $maps = (array)$_data['map'];
+      $maps = (array) $_data['map'];
       foreach ($maps as $map) {
         foreach ($RSPAMD_MAPS as $rspamd_map_type) {
           if (!in_array($map, $rspamd_map_type)) {
@@ -166,8 +171,7 @@ function rspamd_maps($_action, $_data = null) {
             sleep(1.5);
             touch('/rspamd_custom_maps/' . $map);
           }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, '-'),
@@ -181,14 +185,15 @@ function rspamd_maps($_action, $_data = null) {
           'msg' => array('object_modified', htmlspecialchars($map))
         );
       }
-    break;
+      break;
   }
 }
-function rspamd_actions() {
+function rspamd_actions()
+{
   if (isset($_SESSION["zynerone_cc_role"]) && $_SESSION["zynerone_cc_role"] == "admin") {
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_UNIX_SOCKET_PATH, '/var/lib/rspamd/rspamd.sock');
-    curl_setopt($curl, CURLOPT_URL,"http://rspamd/stat");
+    curl_setopt($curl, CURLOPT_URL, "http://rspamd/stat");
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $data = curl_exec($curl);
     if ($data) {
@@ -200,12 +205,10 @@ function rspamd_actions() {
         $return[] = array($action, $count);
       }
       return $return;
-    }
-    else {
+    } else {
       return false;
     }
-  }
-  else {
+  } else {
     return false;
   }
 }

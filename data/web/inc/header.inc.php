@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_URI'] == '/') {
 
 $hash = $css_minifier->getDataHash();
 $CSSPath = '/tmp/' . $hash . '.css';
-if(!file_exists($CSSPath)) {
+if (!file_exists($CSSPath)) {
   $css_minifier->minify($CSSPath);
   cleanupCSS($hash);
 }
@@ -38,7 +38,7 @@ $globalVariables = [
   'is_master' => preg_match('/y|yes/i', getenv('MASTER')),
   'dual_login' => @$_SESSION['dual-login'],
   'ui_texts' => $UI_TEXTS,
-  'css_path' => '/cache/'.basename($CSSPath),
+  'css_path' => '/cache/' . basename($CSSPath),
   'logo' => customize('get', 'main_logo'),
   'logo_dark' => customize('get', 'main_logo_dark'),
   'available_languages' => $AVAILABLE_LANGUAGES,
