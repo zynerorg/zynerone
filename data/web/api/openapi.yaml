@@ -187,7 +187,7 @@ paths:
                 domain: domain.tld
               properties:
                 username:
-                  description: 'the mailbox an alias should be created for'
+                  description: "the mailbox an alias should be created for"
                   type: string
                 domain:
                   description: "the domain"
@@ -712,7 +712,7 @@ paths:
                   value:
                     token: "591F6D-5C3DD2-7455CD-DAF1C1-AA4FCC"
           description: OK
-          headers: { }
+          headers: {}
       tags:
         - Single Sign-On
       description: >-
@@ -846,7 +846,7 @@ paths:
                         - domain_admin
                         - edit
                         - username: testadmin
-                          active: ["0","1"]
+                          active: ["0", "1"]
                           username_new: testadmin
                           domains: ["domain.tld"]
                           password: "*"
@@ -888,8 +888,8 @@ paths:
                   - testadmin
                 attr:
                   active:
-                    - '0'
-                    - '1'
+                    - "0"
+                    - "1"
                   username_new: testadmin
                   domains: ["domain.tld"]
                   password: supersecurepassword
@@ -2808,8 +2808,8 @@ paths:
                         - delete
                         - tags_mailbox
                         - tags:
-                          - tag1
-                          - tag2
+                            - tag1
+                            - tag2
                           mailbox: info@domain.tld
                         - null
                       msg:
@@ -2875,8 +2875,8 @@ paths:
                         - delete
                         - tags_domain
                         - tags:
-                          - tag1
-                          - tag2
+                            - tag1
+                            - tag2
                           domain: domain.tld
                         - null
                       msg:
@@ -5614,15 +5614,23 @@ paths:
                 response:
                   value:
                     - type: "success"
-                      log: ["cors", "edit", {"allowed_origins": ["*", "mail.zyner.one"], "allowed_methods": ["POST", "GET", "DELETE", "PUT"]}]
+                      log:
+                        [
+                          "cors",
+                          "edit",
+                          {
+                            "allowed_origins": ["*", "mail.zyner.one"],
+                            "allowed_methods": ["POST", "GET", "DELETE", "PUT"],
+                          },
+                        ]
                       msg: "cors_headers_edited"
           description: OK
-          headers: { }
+          headers: {}
       tags:
         - Cross-Origin Resource Sharing (CORS)
       description: >-
-        This endpoint allows you to manage Cross-Origin Resource Sharing (CORS) settings for the API. 
-        CORS is a security feature implemented by web browsers to prevent unauthorized cross-origin requests. 
+        This endpoint allows you to manage Cross-Origin Resource Sharing (CORS) settings for the API.
+        CORS is a security feature implemented by web browsers to prevent unauthorized cross-origin requests.
         By editing the CORS settings, you can specify which domains and which methods are permitted to access the API resources from outside the zynerone domain.
       operationId: Edit Cross-Origin Resource Sharing (CORS) settings
       requestBody:

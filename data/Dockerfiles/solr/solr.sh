@@ -58,4 +58,3 @@ if [[ "${1}" == "--bootstrap" ]]; then
 fi
 
 exec gosu solr solr-foreground
-

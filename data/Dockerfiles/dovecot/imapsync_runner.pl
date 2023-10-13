@@ -51,8 +51,8 @@ sub sig_handler {
   die "sig_handler received signal, preparing to exit...\n";
 };
 
-open my $file, '<', "/etc/sogo/sieve.creds"; 
-my $creds = <$file>; 
+open my $file, '<', "/etc/sogo/sieve.creds";
+my $creds = <$file>;
 close $file;
 my ($master_user, $master_pass) = split /:/, $creds;
 my $sth = $dbh->prepare("SELECT id,

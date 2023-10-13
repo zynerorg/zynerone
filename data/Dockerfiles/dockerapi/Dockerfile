@@ -14,7 +14,7 @@ RUN apk add --update --no-cache python3 \
   uvicorn \
   aiodocker \
   docker \
-  aioredis 
+  aioredis
 RUN mkdir /app/modules
 
 COPY docker-entrypoint.sh /app/

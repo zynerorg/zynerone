@@ -13,10 +13,10 @@ fi
 wantHelp=
 for arg; do
 	case "$arg" in
-		-'?'|--help|--print-defaults|-V|--version)
-			wantHelp=1
-			break
-			;;
+	-'?' | --help | --print-defaults | -V | --version)
+		wantHelp=1
+		break
+		;;
 	esac
 done
 
@@ -36,14 +36,14 @@ file_env() {
 	if [ "${!var:-}" ]; then
 		val="${!var}"
 	elif [ "${!fileVar:-}" ]; then
-		val="$(< "${!fileVar}")"
+		val="$(<"${!fileVar}")"
 	fi
 	export "$var"="$val"
 	unset "$fileVar"
 }
 
 _check_config() {
-	toRun=( "$@" --verbose --help --log-bin-index="$(mktemp -u)" )
+	toRun=("$@" --verbose --help --log-bin-index="$(mktemp -u)")
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 
@@ -60,7 +60,8 @@ _check_config() {
 # We use mysqld --verbose --help instead of my_print_defaults because the
 # latter only show values present in config files, and not server defaults
 _get_config() {
-	local conf="$1"; shift
+	local conf="$1"
+	shift
 	"$@" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null | awk '$1 == "'"$conf"'" { print $2; exit }'
 }
 
@@ -98,10 +99,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		"$@" --skip-networking --socket="${SOCKET}" &
 		pid="$!"
 
-		mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
+		mysql=(mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}")
 
 		for i in {30..0}; do
-			if echo 'SELECT 1' | "${mysql[@]}" &> /dev/null; then
+			if echo 'SELECT 1' | "${mysql[@]}" &>/dev/null; then
 				break
 			fi
 			echo 'MySQL init process in progress...'
@@ -148,13 +149,13 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		EOSQL
 
 		if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
-			mysql+=( -p"${MYSQL_ROOT_PASSWORD}" )
+			mysql+=(-p"${MYSQL_ROOT_PASSWORD}")
 		fi
 
 		file_env 'MYSQL_DATABASE'
 		if [ "$MYSQL_DATABASE" ]; then
 			echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\` ;" | "${mysql[@]}"
-			mysql+=( "$MYSQL_DATABASE" )
+			mysql+=("$MYSQL_DATABASE")
 		fi
 
 		file_env 'MYSQL_USER'
@@ -170,10 +171,21 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo
 		for f in /docker-entrypoint-initdb.d/*; do
 			case "$f" in
-				*.sh)     echo "$0: running $f"; . "$f" ;;
-				*.sql)    echo "$0: running $f"; "${mysql[@]}" < "$f"; echo ;;
-				*.sql.gz) echo "$0: running $f"; gunzip -c "$f" | "${mysql[@]}"; echo ;;
-				*)        echo "$0: ignoring $f" ;;
+			*.sh)
+				echo "$0: running $f"
+				. "$f"
+				;;
+			*.sql)
+				echo "$0: running $f"
+				"${mysql[@]}" <"$f"
+				echo
+				;;
+			*.sql.gz)
+				echo "$0: running $f"
+				gunzip -c "$f" | "${mysql[@]}"
+				echo
+				;;
+			*) echo "$0: ignoring $f" ;;
 			esac
 			echo
 		done

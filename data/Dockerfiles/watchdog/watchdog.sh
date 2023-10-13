@@ -48,19 +48,19 @@ until [[ $(${REDIS_CMDLINE} PING) == "PONG" ]]; do
   sleep 2
 done
 
-${REDIS_CMDLINE} DEL F2B_RES > /dev/null
+${REDIS_CMDLINE} DEL F2B_RES >/dev/null
 
 # Common functions
-get_ipv6(){
+get_ipv6() {
   local IPV6=
   local IPV6_SRCS=
   local TRY=
   IPV6_SRCS[0]="https://only.ipv6.gg"
   IPV6_SRCS[1]="ip6.nevondo.com"
   until [[ ! -z ${IPV6} ]] || [[ ${TRY} -ge 10 ]]; do
-    IPV6=$(curl --connect-timeout 3 -m 10 -L6s ${IPV6_SRCS[$RANDOM % ${#IPV6_SRCS[@]} ]} | grep "^\([0-9a-fA-F]\{0,4\}:\)\{1,7\}[0-9a-fA-F]\{0,4\}$")
+    IPV6=$(curl --connect-timeout 3 -m 10 -L6s ${IPV6_SRCS[$RANDOM % ${#IPV6_SRCS[@]}]} | grep "^\([0-9a-fA-F]\{0,4\}:\)\{1,7\}[0-9a-fA-F]\{0,4\}$")
     [[ ! -z ${TRY} ]] && sleep 1
-    TRY=$((TRY+1))
+    TRY=$((TRY + 1))
   done
   echo ${IPV6}
 }
@@ -82,8 +82,8 @@ progress() {
   [[ -z ${TOTAL} || -z ${CURRENT} ]] && return
   [[ ${CURRENT} -gt ${TOTAL} ]] && return
   [[ ${CURRENT} -lt 0 ]] && CURRENT=0
-  PERCENT=$(( 200 * ${CURRENT} / ${TOTAL} % 2 + 100 * ${CURRENT} / ${TOTAL} ))
-  ${REDIS_CMDLINE} LPUSH WATCHDOG_LOG "{\"time\":\"$(date +%s)\",\"service\":\"${SERVICE}\",\"lvl\":\"${PERCENT}\",\"hpnow\":\"${CURRENT}\",\"hptotal\":\"${TOTAL}\",\"hpdiff\":\"${DIFF}\"}" > /dev/null
+  PERCENT=$((200 * ${CURRENT} / ${TOTAL} % 2 + 100 * ${CURRENT} / ${TOTAL}))
+  ${REDIS_CMDLINE} LPUSH WATCHDOG_LOG "{\"time\":\"$(date +%s)\",\"service\":\"${SERVICE}\",\"lvl\":\"${PERCENT}\",\"hpnow\":\"${CURRENT}\",\"hptotal\":\"${TOTAL}\",\"hpdiff\":\"${DIFF}\"}" >/dev/null
   log_msg "${SERVICE} health level: ${PERCENT}% (${CURRENT}/${TOTAL}), health trend: ${DIFF}" no_redis
   # Return 10 to indicate a dead service
   [ ${CURRENT} -le 0 ] && return 10
@@ -91,8 +91,8 @@ progress() {
 
 log_msg() {
   if [[ ${2} != "no_redis" ]]; then
-    ${REDIS_CMDLINE} LPUSH WATCHDOG_LOG "{\"time\":\"$(date +%s)\",\"message\":\"$(printf '%s' "${1}" | \
-      tr '\r\n%&;$"_[]{}-' ' ')\"}" > /dev/null
+    ${REDIS_CMDLINE} LPUSH WATCHDOG_LOG "{\"time\":\"$(date +%s)\",\"message\":\"$(printf '%s' "${1}" |
+      tr '\r\n%&;$"_[]{}-' ' ')\"}" >/dev/null
   fi
   echo $(date) $(printf '%s\n' "${1}")
 }
@@ -105,7 +105,7 @@ function mail_error() {
   # If exists, mail will be throttled by argument in seconds
   [[ ! -z ${3} ]] && THROTTLE=${3}
   if [[ ! -z ${THROTTLE} ]]; then
-    TTL_LEFT="$(${REDIS_CMDLINE} TTL THROTTLE_${1} 2> /dev/null)"
+    TTL_LEFT="$(${REDIS_CMDLINE} TTL THROTTLE_${1} 2>/dev/null)"
     if [[ "${TTL_LEFT}" == "-2" ]]; then
       # Delay key not found, setting a delay key now
       ${REDIS_CMDLINE} SET THROTTLE_${1} 1 EX ${THROTTLE}
@@ -122,7 +122,7 @@ function mail_error() {
   else
     SUBJECT="${WATCHDOG_SUBJECT}: ${1}"
   fi
-  IFS=',' read -r -a MAIL_RCPTS <<< "${WATCHDOG_NOTIFY_EMAIL}"
+  IFS=',' read -r -a MAIL_RCPTS <<<"${WATCHDOG_NOTIFY_EMAIL}"
   for rcpt in "${MAIL_RCPTS[@]}"; do
     RCPT_DOMAIN=
     RCPT_MX=
@@ -195,7 +195,7 @@ get_container_ip() {
 }
 
 # One-time check
-if grep -qi "$(echo ${IPV6_NETWORK} | cut -d: -f1-3)" <<< "$(ip a s)"; then
+if grep -qi "$(echo ${IPV6_NETWORK} | cut -d: -f1-3)" <<<"$(ip a s)"; then
   if [[ -z "$(get_ipv6)" ]]; then
     mail_error "ipv6-config" "enable_ipv6 is true in docker-compose.yml, but an IPv6 link could not be established. Please verify your IPv6 connection."
   fi
@@ -206,21 +206,23 @@ nginx_checks() {
   diff_c=0
   THRESHOLD=${NGINX_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/nginx-zynerone; echo "$(tail -50 /tmp/nginx-zynerone)" > /tmp/nginx-zynerone
+    touch /tmp/nginx-zynerone
+    echo "$(tail -50 /tmp/nginx-zynerone)" >/tmp/nginx-zynerone
     host_ip=$(get_container_ip nginx-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>> /tmp/nginx-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>>/tmp/nginx-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Nginx" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Nginx" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -231,28 +233,30 @@ unbound_checks() {
   diff_c=0
   THRESHOLD=${UNBOUND_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/unbound-zynerone; echo "$(tail -50 /tmp/unbound-zynerone)" > /tmp/unbound-zynerone
+    touch /tmp/unbound-zynerone
+    echo "$(tail -50 /tmp/unbound-zynerone)" >/tmp/unbound-zynerone
     host_ip=$(get_container_ip unbound-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>> /tmp/unbound-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>>/tmp/unbound-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     DNSSEC=$(dig com +dnssec | egrep 'flags:.+ad')
     if [[ -z ${DNSSEC} ]]; then
-      echo "DNSSEC failure" 2>> /tmp/unbound-zynerone 1>&2
-      err_count=$(( ${err_count} + 1))
+      echo "DNSSEC failure" 2>>/tmp/unbound-zynerone 1>&2
+      err_count=$((${err_count} + 1))
     else
-      echo "DNSSEC check succeeded" 2>> /tmp/unbound-zynerone 1>&2
+      echo "DNSSEC check succeeded" 2>>/tmp/unbound-zynerone 1>&2
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Unbound" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Unbound" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -264,21 +268,23 @@ redis_checks() {
   diff_c=0
   THRESHOLD=${REDIS_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/redis-zynerone; echo "$(tail -50 /tmp/redis-zynerone)" > /tmp/redis-zynerone
+    touch /tmp/redis-zynerone
+    echo "$(tail -50 /tmp/redis-zynerone)" >/tmp/redis-zynerone
     host_ip=$(get_container_ip redis-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H redis-zynerone -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>> /tmp/redis-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H redis-zynerone -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>>/tmp/redis-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Redis" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Redis" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -289,21 +295,24 @@ mysql_checks() {
   diff_c=0
   THRESHOLD=${MYSQL_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/mariadb-zynerone; echo "$(tail -50 /tmp/mariadb-zynerone)" > /tmp/mariadb-zynerone
+    touch /tmp/mariadb-zynerone
+    echo "$(tail -50 /tmp/mariadb-zynerone)" >/tmp/mariadb-zynerone
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_mysql -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} 2>> /tmp/mariadb-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_mysql_query -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} -q "SELECT COUNT(*) FROM information_schema.tables" 2>> /tmp/mariadb-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_mysql -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} 2>>/tmp/mariadb-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_mysql_query -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} -q "SELECT COUNT(*) FROM information_schema.tables" 2>>/tmp/mariadb-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "MySQL/MariaDB" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "MySQL/MariaDB" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -314,20 +323,22 @@ mysql_repl_checks() {
   diff_c=0
   THRESHOLD=${MYSQL_REPLICATION_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/mysql_repl_checks; echo "$(tail -50 /tmp/mysql_repl_checks)" > /tmp/mysql_repl_checks
+    touch /tmp/mysql_repl_checks
+    echo "$(tail -50 /tmp/mysql_repl_checks)" >/tmp/mysql_repl_checks
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_mysql_slavestatus.sh -S /var/run/mysqld/mysqld.sock -u root -p ${DBROOT} 2>> /tmp/mysql_repl_checks 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_mysql_slavestatus.sh -S /var/run/mysqld/mysqld.sock -u root -p ${DBROOT} 2>>/tmp/mysql_repl_checks 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "MySQL/MariaDB replication" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "MySQL/MariaDB replication" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 60
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -338,21 +349,23 @@ sogo_checks() {
   diff_c=0
   THRESHOLD=${SOGO_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/sogo-zynerone; echo "$(tail -50 /tmp/sogo-zynerone)" > /tmp/sogo-zynerone
+    touch /tmp/sogo-zynerone
+    echo "$(tail -50 /tmp/sogo-zynerone)" >/tmp/sogo-zynerone
     host_ip=$(get_container_ip sogo-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u /SOGo.index/ -p 20000 2>> /tmp/sogo-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u /SOGo.index/ -p 20000 2>>/tmp/sogo-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "SOGo" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "SOGo" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -363,22 +376,25 @@ postfix_checks() {
   diff_c=0
   THRESHOLD=${POSTFIX_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/postfix-zynerone; echo "$(tail -50 /tmp/postfix-zynerone)" > /tmp/postfix-zynerone
+    touch /tmp/postfix-zynerone
+    echo "$(tail -50 /tmp/postfix-zynerone)" >/tmp/postfix-zynerone
     host_ip=$(get_container_ip postfix-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -f "watchdog@invalid" -C "RCPT TO:watchdog@localhost" -C DATA -C . -R 250 2>> /tmp/postfix-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -S 2>> /tmp/postfix-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -f "watchdog@invalid" -C "RCPT TO:watchdog@localhost" -C DATA -C . -R 250 2>>/tmp/postfix-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -S 2>>/tmp/postfix-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Postfix" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Postfix" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -389,21 +405,23 @@ clamd_checks() {
   diff_c=0
   THRESHOLD=${CLAMD_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/clamd-zynerone; echo "$(tail -50 /tmp/clamd-zynerone)" > /tmp/clamd-zynerone
+    touch /tmp/clamd-zynerone
+    echo "$(tail -50 /tmp/clamd-zynerone)" >/tmp/clamd-zynerone
     host_ip=$(get_container_ip clamd-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>> /tmp/clamd-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>>/tmp/clamd-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Clamd" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Clamd" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 120 ) + 20 ))
+      sleep $(((RANDOM % 120) + 20))
     fi
   done
   return 1
@@ -414,25 +432,31 @@ dovecot_checks() {
   diff_c=0
   THRESHOLD=${DOVECOT_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/dovecot-zynerone; echo "$(tail -50 /tmp/dovecot-zynerone)" > /tmp/dovecot-zynerone
+    touch /tmp/dovecot-zynerone
+    echo "$(tail -50 /tmp/dovecot-zynerone)" >/tmp/dovecot-zynerone
     host_ip=$(get_container_ip dovecot-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>>/tmp/dovecot-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>>/tmp/dovecot-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>>/tmp/dovecot-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>>/tmp/dovecot-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>>/tmp/dovecot-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Dovecot" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Dovecot" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -444,22 +468,22 @@ dovecot_repl_checks() {
   THRESHOLD=${DOVECOT_REPL_THRESHOLD}
   D_REPL_STATUS=$(redis-cli -h redis -r GET DOVECOT_REPL_HEALTH)
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
     err_c_cur=${err_count}
     D_REPL_STATUS=$(redis-cli --raw -h redis GET DOVECOT_REPL_HEALTH)
     if [[ "${D_REPL_STATUS}" != "1" ]]; then
-      err_count=$(( ${err_count} + 1 ))
+      err_count=$((${err_count} + 1))
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Dovecot replication" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Dovecot replication" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 60
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -470,17 +494,20 @@ cert_checks() {
   diff_c=0
   THRESHOLD=7
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/certcheck; echo "$(tail -50 /tmp/certcheck)" > /tmp/certcheck
+    touch /tmp/certcheck
+    echo "$(tail -50 /tmp/certcheck)" >/tmp/certcheck
     host_ip_postfix=$(get_container_ip postfix)
     host_ip_dovecot=$(get_container_ip dovecot)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -H ${host_ip_postfix} -p 589 -4 -S -D 7 2>> /tmp/certcheck 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -H ${host_ip_dovecot} -p 993 -4 -S -D 7 2>> /tmp/certcheck 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -H ${host_ip_postfix} -p 589 -4 -S -D 7 2>>/tmp/certcheck 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_imap -H ${host_ip_dovecot} -p 993 -4 -S -D 7 2>>/tmp/certcheck 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Primary certificate expiry check" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Primary certificate expiry check" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     # Always sleep 5 minutes, mail notifications are limited
     sleep 300
   done
@@ -492,22 +519,25 @@ phpfpm_checks() {
   diff_c=0
   THRESHOLD=${PHPFPM_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/php-fpm-zynerone; echo "$(tail -50 /tmp/php-fpm-zynerone)" > /tmp/php-fpm-zynerone
+    touch /tmp/php-fpm-zynerone
+    echo "$(tail -50 /tmp/php-fpm-zynerone)" >/tmp/php-fpm-zynerone
     host_ip=$(get_container_ip php-fpm-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>>/tmp/php-fpm-zynerone 1>&2
+    err_count=$((${err_count} + $?))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>>/tmp/php-fpm-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "PHP-FPM" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "PHP-FPM" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -519,27 +549,27 @@ ratelimit_checks() {
   THRESHOLD=${RATELIMIT_THRESHOLD}
   RL_LOG_STATUS=$(redis-cli -h redis LRANGE RL_LOG 0 0 | jq .qid)
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
     err_c_cur=${err_count}
     RL_LOG_STATUS_PREV=${RL_LOG_STATUS}
     RL_LOG_STATUS=$(redis-cli -h redis LRANGE RL_LOG 0 0 | jq .qid)
     if [[ ${RL_LOG_STATUS_PREV} != ${RL_LOG_STATUS} ]]; then
-      err_count=$(( ${err_count} + 1 ))
-      echo 'Last 10 applied ratelimits (may overlap with previous reports).' > /tmp/ratelimit
-      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within Zyner One UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
-      echo >> /tmp/ratelimit
-      redis-cli --raw -h redis LRANGE RL_LOG 0 10 | jq . >> /tmp/ratelimit
+      err_count=$((${err_count} + 1))
+      echo 'Last 10 applied ratelimits (may overlap with previous reports).' >/tmp/ratelimit
+      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within Zyner One UI (see /debug -> Protocols -> Ratelimit):' >>/tmp/ratelimit
+      echo >>/tmp/ratelimit
+      redis-cli --raw -h redis LRANGE RL_LOG 0 10 | jq . >>/tmp/ratelimit
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Ratelimit" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Ratelimit" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -550,25 +580,26 @@ mailq_checks() {
   diff_c=0
   THRESHOLD=${MAILQ_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/mail_queue_status; echo "$(tail -50 /tmp/mail_queue_status)" > /tmp/mail_queue_status
+    touch /tmp/mail_queue_status
+    echo "$(tail -50 /tmp/mail_queue_status)" >/tmp/mail_queue_status
     MAILQ_LOG_STATUS=$(find /var/spool/postfix/deferred -type f | wc -l)
-    echo "Mail queue contains ${MAILQ_LOG_STATUS} items (critical limit is ${MAILQ_CRIT}) at $(date)" >> /tmp/mail_queue_status
+    echo "Mail queue contains ${MAILQ_LOG_STATUS} items (critical limit is ${MAILQ_CRIT}) at $(date)" >>/tmp/mail_queue_status
     err_c_cur=${err_count}
     if [ ${MAILQ_LOG_STATUS} -ge ${MAILQ_CRIT} ]; then
-      err_count=$(( ${err_count} + 1 ))
-      echo "Mail queue contains ${MAILQ_LOG_STATUS} items (critical limit is ${MAILQ_CRIT}) at $(date)" >> /tmp/mail_queue_status
+      err_count=$((${err_count} + 1))
+      echo "Mail queue contains ${MAILQ_LOG_STATUS} items (critical limit is ${MAILQ_CRIT}) at $(date)" >>/tmp/mail_queue_status
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Mail queue" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Mail queue" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 60
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -581,28 +612,28 @@ fail2ban_checks() {
   F2B_LOG_STATUS=($(${REDIS_CMDLINE} --raw HKEYS F2B_ACTIVE_BANS))
   F2B_RES=
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
     err_c_cur=${err_count}
     F2B_LOG_STATUS_PREV=(${F2B_LOG_STATUS[@]})
     F2B_LOG_STATUS=($(${REDIS_CMDLINE} --raw HKEYS F2B_ACTIVE_BANS))
     array_diff F2B_RES F2B_LOG_STATUS F2B_LOG_STATUS_PREV
     if [[ ! -z "${F2B_RES}" ]]; then
-      err_count=$(( ${err_count} + 1 ))
-      echo -n "${F2B_RES[@]}" | tr -cd "[a-fA-F0-9.:/] " | timeout 3s ${REDIS_CMDLINE} -x SET F2B_RES > /dev/null
+      err_count=$((${err_count} + 1))
+      echo -n "${F2B_RES[@]}" | tr -cd "[a-fA-F0-9.:/] " | timeout 3s ${REDIS_CMDLINE} -x SET F2B_RES >/dev/null
       if [ $? -ne 0 ]; then
-         ${REDIS_CMDLINE} -x DEL F2B_RES
+        ${REDIS_CMDLINE} -x DEL F2B_RES
       fi
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Fail2ban" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Fail2ban" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -618,28 +649,28 @@ acme_checks() {
     ACME_LOG_STATUS=0
   fi
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
     err_c_cur=${err_count}
     ACME_LOG_STATUS_PREV=${ACME_LOG_STATUS}
     ACME_LC=0
     until [[ ! -z ${ACME_LOG_STATUS} ]] || [ ${ACME_LC} -ge 3 ]; do
-      ACME_LOG_STATUS=$(redis-cli -h redis GET ACME_FAIL_TIME 2> /dev/null)
+      ACME_LOG_STATUS=$(redis-cli -h redis GET ACME_FAIL_TIME 2>/dev/null)
       sleep 3
-      ACME_LC=$((ACME_LC+1))
+      ACME_LC=$((ACME_LC + 1))
     done
     if [[ ${ACME_LOG_STATUS_PREV} != ${ACME_LOG_STATUS} ]]; then
-      err_count=$(( ${err_count} + 1 ))
+      err_count=$((${err_count} + 1))
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "ACME" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "ACME" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -650,9 +681,10 @@ rspamd_checks() {
   diff_c=0
   THRESHOLD=${RSPAMD_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/rspamd-zynerone; echo "$(tail -50 /tmp/rspamd-zynerone)" > /tmp/rspamd-zynerone
+    touch /tmp/rspamd-zynerone
+    echo "$(tail -50 /tmp/rspamd-zynerone)" >/tmp/rspamd-zynerone
     host_ip=$(get_container_ip rspamd-zynerone)
     err_c_cur=${err_count}
     SCORE=$(echo 'To: null@localhost
@@ -661,27 +693,31 @@ From: watchdog@localhost
 Empty
 ' | usr/bin/curl --max-time 10 -s --data-binary @- --unix-socket /var/lib/rspamd/rspamd.sock http://rspamd/scan | jq -rc .default.required_score)
     if [[ ${SCORE} != "9999" ]]; then
-      echo "Rspamd settings check failed, score returned: ${SCORE}" 2>> /tmp/rspamd-zynerone 1>&2
-      err_count=$(( ${err_count} + 1))
+      echo "Rspamd settings check failed, score returned: ${SCORE}" 2>>/tmp/rspamd-zynerone 1>&2
+      err_count=$((${err_count} + 1))
     else
-      echo "Rspamd settings check succeeded, score returned: ${SCORE}" 2>> /tmp/rspamd-zynerone 1>&2
+      echo "Rspamd settings check succeeded, score returned: ${SCORE}" 2>>/tmp/rspamd-zynerone 1>&2
     fi
     # A dirty hack until a PING PONG event is implemented to worker proxy
     # We expect an empty response, not a timeout
-    if [ "$(curl -s --max-time 10 ${host_ip}:9900 2> /dev/null ; echo $?)" == "28" ]; then
-      echo "Milter check failed" 2>> /tmp/rspamd-zynerone 1>&2; err_count=$(( ${err_count} + 1 ));
+    if [ "$(
+      curl -s --max-time 10 ${host_ip}:9900 2>/dev/null
+      echo $?
+    )" == "28" ]; then
+      echo "Milter check failed" 2>>/tmp/rspamd-zynerone 1>&2
+      err_count=$((${err_count} + 1))
     else
-      echo "Milter check succeeded" 2>> /tmp/rspamd-zynerone 1>&2
+      echo "Milter check succeeded" 2>>/tmp/rspamd-zynerone 1>&2
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Rspamd" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Rspamd" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -692,21 +728,23 @@ olefy_checks() {
   diff_c=0
   THRESHOLD=${OLEFY_THRESHOLD}
   # Reduce error count by 2 after restarting an unhealthy container
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
+  trap "[ ${err_count} -gt 1 ] && err_count=$((${err_count} - 2))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/olefy-zynerone; echo "$(tail -50 /tmp/olefy-zynerone)" > /tmp/olefy-zynerone
+    touch /tmp/olefy-zynerone
+    echo "$(tail -50 /tmp/olefy-zynerone)" >/tmp/olefy-zynerone
     host_ip=$(get_container_ip olefy-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>> /tmp/olefy-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>>/tmp/olefy-zynerone 1>&2
+    err_count=$((${err_count} + $?))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "Olefy" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
+    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$((${err_c_cur} - ${err_count}))
+    progress "Olefy" ${THRESHOLD} $((${THRESHOLD} - ${err_count})) ${diff_c}
     if [[ $? == 10 ]]; then
       diff_c=0
       sleep 1
     else
       diff_c=0
-      sleep $(( ( RANDOM % 60 ) + 20 ))
+      sleep $(((RANDOM % 60) + 20))
     fi
   done
   return 1
@@ -720,224 +758,224 @@ fi
 # Create watchdog agents
 
 (
-while true; do
-  if ! nginx_checks; then
-    log_msg "Nginx hit error limit"
-    echo nginx-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! nginx_checks; then
+      log_msg "Nginx hit error limit"
+      echo nginx-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned nginx_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 if [[ ${WATCHDOG_MYSQL_REPLICATION_CHECKS} =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-(
-while true; do
-  if ! mysql_repl_checks; then
-    log_msg "MySQL replication check hit error limit"
-    echo mysql_repl_checks > /tmp/com_pipe
-  fi
-done
-) &
-PID=$!
-echo "Spawned mysql_repl_checks with PID ${PID}"
-BACKGROUND_TASKS+=(${PID})
+  (
+    while true; do
+      if ! mysql_repl_checks; then
+        log_msg "MySQL replication check hit error limit"
+        echo mysql_repl_checks >/tmp/com_pipe
+      fi
+    done
+  ) &
+  PID=$!
+  echo "Spawned mysql_repl_checks with PID ${PID}"
+  BACKGROUND_TASKS+=(${PID})
 fi
 
 (
-while true; do
-  if ! mysql_checks; then
-    log_msg "MySQL hit error limit"
-    echo mariadb-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! mysql_checks; then
+      log_msg "MySQL hit error limit"
+      echo mariadb-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned mysql_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! redis_checks; then
-    log_msg "Local Redis hit error limit"
-    echo redis-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! redis_checks; then
+      log_msg "Local Redis hit error limit"
+      echo redis-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned redis_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! phpfpm_checks; then
-    log_msg "PHP-FPM hit error limit"
-    echo php-fpm-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! phpfpm_checks; then
+      log_msg "PHP-FPM hit error limit"
+      echo php-fpm-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned phpfpm_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 if [[ "${SKIP_SOGO}" =~ ^([nN][oO]|[nN])+$ ]]; then
-(
-while true; do
-  if ! sogo_checks; then
-    log_msg "SOGo hit error limit"
-    echo sogo-zynerone > /tmp/com_pipe
-  fi
-done
-) &
-PID=$!
-echo "Spawned sogo_checks with PID ${PID}"
-BACKGROUND_TASKS+=(${PID})
+  (
+    while true; do
+      if ! sogo_checks; then
+        log_msg "SOGo hit error limit"
+        echo sogo-zynerone >/tmp/com_pipe
+      fi
+    done
+  ) &
+  PID=$!
+  echo "Spawned sogo_checks with PID ${PID}"
+  BACKGROUND_TASKS+=(${PID})
 fi
 
 if [ ${CHECK_UNBOUND} -eq 1 ]; then
-(
-while true; do
-  if ! unbound_checks; then
-    log_msg "Unbound hit error limit"
-    echo unbound-zynerone > /tmp/com_pipe
-  fi
-done
-) &
-PID=$!
-echo "Spawned unbound_checks with PID ${PID}"
-BACKGROUND_TASKS+=(${PID})
+  (
+    while true; do
+      if ! unbound_checks; then
+        log_msg "Unbound hit error limit"
+        echo unbound-zynerone >/tmp/com_pipe
+      fi
+    done
+  ) &
+  PID=$!
+  echo "Spawned unbound_checks with PID ${PID}"
+  BACKGROUND_TASKS+=(${PID})
 fi
 
 if [[ "${SKIP_CLAMD}" =~ ^([nN][oO]|[nN])+$ ]]; then
-(
-while true; do
-  if ! clamd_checks; then
-    log_msg "Clamd hit error limit"
-    echo clamd-zynerone > /tmp/com_pipe
-  fi
-done
-) &
-PID=$!
-echo "Spawned clamd_checks with PID ${PID}"
-BACKGROUND_TASKS+=(${PID})
+  (
+    while true; do
+      if ! clamd_checks; then
+        log_msg "Clamd hit error limit"
+        echo clamd-zynerone >/tmp/com_pipe
+      fi
+    done
+  ) &
+  PID=$!
+  echo "Spawned clamd_checks with PID ${PID}"
+  BACKGROUND_TASKS+=(${PID})
 fi
 
 (
-while true; do
-  if ! postfix_checks; then
-    log_msg "Postfix hit error limit"
-    echo postfix-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! postfix_checks; then
+      log_msg "Postfix hit error limit"
+      echo postfix-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned postfix_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! mailq_checks; then
-    log_msg "Mail queue hit error limit"
-    echo mail_queue_status > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! mailq_checks; then
+      log_msg "Mail queue hit error limit"
+      echo mail_queue_status >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned mailq_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! dovecot_checks; then
-    log_msg "Dovecot hit error limit"
-    echo dovecot-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! dovecot_checks; then
+      log_msg "Dovecot hit error limit"
+      echo dovecot-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned dovecot_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! dovecot_repl_checks; then
-    log_msg "Dovecot hit error limit"
-    echo dovecot_repl_checks > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! dovecot_repl_checks; then
+      log_msg "Dovecot hit error limit"
+      echo dovecot_repl_checks >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned dovecot_repl_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! rspamd_checks; then
-    log_msg "Rspamd hit error limit"
-    echo rspamd-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! rspamd_checks; then
+      log_msg "Rspamd hit error limit"
+      echo rspamd-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned rspamd_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! ratelimit_checks; then
-    log_msg "Ratelimit hit error limit"
-    echo ratelimit > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! ratelimit_checks; then
+      log_msg "Ratelimit hit error limit"
+      echo ratelimit >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned ratelimit_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! fail2ban_checks; then
-    log_msg "Fail2ban hit error limit"
-    echo fail2ban > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! fail2ban_checks; then
+      log_msg "Fail2ban hit error limit"
+      echo fail2ban >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned fail2ban_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! cert_checks; then
-    log_msg "Cert check hit error limit"
-    echo certcheck > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! cert_checks; then
+      log_msg "Cert check hit error limit"
+      echo certcheck >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned cert_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! olefy_checks; then
-    log_msg "Olefy hit error limit"
-    echo olefy-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! olefy_checks; then
+      log_msg "Olefy hit error limit"
+      echo olefy-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned olefy_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
 
 (
-while true; do
-  if ! acme_checks; then
-    log_msg "ACME client hit error limit"
-    echo acme-zynerone > /tmp/com_pipe
-  fi
-done
+  while true; do
+    if ! acme_checks; then
+      log_msg "ACME client hit error limit"
+      echo acme-zynerone >/tmp/com_pipe
+    fi
+  done
 ) &
 PID=$!
 echo "Spawned acme_checks with PID ${PID}"
@@ -945,31 +983,31 @@ BACKGROUND_TASKS+=(${PID})
 
 # Monitor watchdog agents, stop script when agents fails and wait for respawn by Docker (restart:always:n)
 (
-while true; do
-  for bg_task in ${BACKGROUND_TASKS[*]}; do
-    if ! kill -0 ${bg_task} 1>&2; then
-      log_msg "Worker ${bg_task} died, stopping watchdog and waiting for respawn..."
-      kill -TERM 1
-    fi
-    sleep 10
+  while true; do
+    for bg_task in ${BACKGROUND_TASKS[*]}; do
+      if ! kill -0 ${bg_task} 1>&2; then
+        log_msg "Worker ${bg_task} died, stopping watchdog and waiting for respawn..."
+        kill -TERM 1
+      fi
+      sleep 10
+    done
   done
-done
 ) &
 
 # Monitor dockerapi
 (
-while true; do
-  while nc -z dockerapi 443; do
-    sleep 3
+  while true; do
+    while nc -z dockerapi 443; do
+      sleep 3
+    done
+    log_msg "Cannot find dockerapi-zynerone, waiting to recover..."
+    kill -STOP ${BACKGROUND_TASKS[*]}
+    until nc -z dockerapi 443; do
+      sleep 3
+    done
+    kill -CONT ${BACKGROUND_TASKS[*]}
+    kill -USR1 ${BACKGROUND_TASKS[*]}
   done
-  log_msg "Cannot find dockerapi-zynerone, waiting to recover..."
-  kill -STOP ${BACKGROUND_TASKS[*]}
-  until nc -z dockerapi 443; do
-    sleep 3
-  done
-  kill -CONT ${BACKGROUND_TASKS[*]}
-  kill -USR1 ${BACKGROUND_TASKS[*]}
-done
 ) &
 
 # Actions when threshold limit is reached
@@ -1006,14 +1044,14 @@ while true; do
     # Define $2 to override message text, else print service was restarted at ...
     [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please check acme-zynerone for further information."
   elif [[ ${com_pipe_answer} == "fail2ban" ]]; then
-    F2B_RES=($(timeout 4s ${REDIS_CMDLINE} --raw GET F2B_RES 2> /dev/null))
+    F2B_RES=($(timeout 4s ${REDIS_CMDLINE} --raw GET F2B_RES 2>/dev/null))
     if [[ ! -z "${F2B_RES}" ]]; then
-      ${REDIS_CMDLINE} DEL F2B_RES > /dev/null
+      ${REDIS_CMDLINE} DEL F2B_RES >/dev/null
       host=
       for host in "${F2B_RES[@]}"; do
         log_msg "Banned ${host}"
-        rm /tmp/fail2ban 2> /dev/null
-        timeout 2s whois "${host}" > /tmp/fail2ban
+        rm /tmp/fail2ban 2>/dev/null
+        timeout 2s whois "${host}" >/tmp/fail2ban
         [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && [[ ${WATCHDOG_NOTIFY_BAN} =~ ^([yY][eE][sS]|[yY])+$ ]] && mail_error "${com_pipe_answer}" "IP ban: ${host}"
       done
     fi

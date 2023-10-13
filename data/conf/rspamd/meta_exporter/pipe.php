@@ -9,14 +9,13 @@ ini_set('error_reporting', 0);
 //$dsn = $database_type . ':host=' . $database_host . ';dbname=' . $database_name;
 $dsn = $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
 $opt = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
+  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+  PDO::ATTR_EMULATE_PREPARES => false,
 ];
 try {
   $pdo = new PDO($dsn, $database_user, $database_pass, $opt);
-}
-catch (PDOException $e) {
+} catch (PDOException $e) {
   error_log("QUARANTINE: " . $e . PHP_EOL);
   http_response_code(501);
   exit;
@@ -26,13 +25,16 @@ $redis = new Redis();
 $redis->connect('redis-zynerone', 6379);
 
 // Functions
-function parse_email($email) {
-  if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
+function parse_email($email)
+{
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+    return false;
   $a = strrpos($email, '@');
   return array('local' => substr($email, 0, $a), 'domain' => substr(substr($email, $a), 1));
 }
-if (!function_exists('getallheaders'))  {
-  function getallheaders() {
+if (!function_exists('getallheaders')) {
+  function getallheaders()
+  {
     if (!is_array($_SERVER)) {
       return array();
     }
@@ -50,18 +52,18 @@ $raw_data_content = file_get_contents('php://input');
 $raw_data = mb_convert_encoding($raw_data_content, 'HTML-ENTITIES', "UTF-8");
 $headers = getallheaders();
 
-$qid      = $headers['X-Rspamd-Qid'];
-$fuzzy    = $headers['X-Rspamd-Fuzzy'];
-$subject  = $headers['X-Rspamd-Subject'];
-$score    = $headers['X-Rspamd-Score'];
-$rcpts    = $headers['X-Rspamd-Rcpt'];
-$user     = $headers['X-Rspamd-User'];
-$ip       = $headers['X-Rspamd-Ip'];
-$action   = $headers['X-Rspamd-Action'];
-$sender   = $headers['X-Rspamd-From'];
-$symbols  = $headers['X-Rspamd-Symbols'];
+$qid = $headers['X-Rspamd-Qid'];
+$fuzzy = $headers['X-Rspamd-Fuzzy'];
+$subject = $headers['X-Rspamd-Subject'];
+$score = $headers['X-Rspamd-Score'];
+$rcpts = $headers['X-Rspamd-Rcpt'];
+$user = $headers['X-Rspamd-User'];
+$ip = $headers['X-Rspamd-Ip'];
+$action = $headers['X-Rspamd-Action'];
+$sender = $headers['X-Rspamd-From'];
+$symbols = $headers['X-Rspamd-Symbols'];
 
-$raw_size = (int)$_SERVER['CONTENT_LENGTH'];
+$raw_size = (int) $_SERVER['CONTENT_LENGTH'];
 
 if (empty($sender)) {
   error_log("QUARANTINE: Unknown sender, assuming empty-env-from@localhost" . PHP_EOL);
@@ -73,7 +75,7 @@ if ($fuzzy == 'unknown') {
 }
 
 try {
-  $max_size = (int)$redis->Get('Q_MAX_SIZE');
+  $max_size = (int) $redis->Get('Q_MAX_SIZE');
   if (($max_size * 1048576) < $raw_size) {
     error_log(sprintf("QUARANTINE: Message too large: %d b exceeds %d b", $raw_size, ($max_size * 1048576)) . PHP_EOL);
     http_response_code(505);
@@ -82,9 +84,8 @@ try {
   if ($exclude_domains = $redis->Get('Q_EXCLUDE_DOMAINS')) {
     $exclude_domains = json_decode($exclude_domains, true);
   }
-  $retention_size = (int)$redis->Get('Q_RETENTION_SIZE');
-}
-catch (RedisException $e) {
+  $retention_size = (int) $redis->Get('Q_RETENTION_SIZE');
+} catch (RedisException $e) {
   error_log("QUARANTINE: " . $e . PHP_EOL);
   http_response_code(504);
   exit;
@@ -96,17 +97,16 @@ $rcpt_final_mailboxes = array();
 foreach (json_decode($rcpts, true) as $rcpt) {
   // Remove tag
   $rcpt = preg_replace('/^(.*?)\+.*(@.*)$/', '$1$2', $rcpt);
-  
+
   // Break rcpt into local part and domain part
   $parsed_rcpt = parse_email($rcpt);
-  
+
   // Skip if not a zynerone handled domain
   try {
     if (!$redis->hGet('DOMAIN_MAP', $parsed_rcpt['domain'])) {
       continue;
     }
-  }
-  catch (RedisException $e) {
+  } catch (RedisException $e) {
     error_log("QUARANTINE: " . $e . PHP_EOL);
     http_response_code(504);
     exit;
@@ -130,15 +130,19 @@ foreach (json_decode($rcpts, true) as $rcpt) {
   //
   try {
     $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :rcpt AND `active` = '1'");
-    $stmt->execute(array(
-      ':rcpt' => $rcpt
-    ));
+    $stmt->execute(
+      array(
+        ':rcpt' => $rcpt
+      )
+    );
     $gotos = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
     if (empty($gotos)) {
       $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :rcpt AND `active` = '1'");
-      $stmt->execute(array(
-        ':rcpt' => '@' . $parsed_rcpt['domain']
-      ));
+      $stmt->execute(
+        array(
+          ':rcpt' => '@' . $parsed_rcpt['domain']
+        )
+      );
       $gotos = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
     }
     if (empty($gotos)) {
@@ -167,13 +171,11 @@ foreach (json_decode($rcpts, true) as $rcpt) {
           if (!in_array($username, $rcpt_final_mailboxes)) {
             $rcpt_final_mailboxes[] = $username;
           }
-        }
-        else {
+        } else {
           $parsed_goto = parse_email($goto);
           if (!$redis->hGet('DOMAIN_MAP', $parsed_goto['domain'])) {
             error_log("RCPT RESOVLER:" . $goto . " is not a zynerone handled mailbox or alias address" . PHP_EOL);
-          }
-          else {
+          } else {
             $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :goto AND `active` = '1'");
             $stmt->execute(array(':goto' => $goto));
             $goto_branch = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
@@ -207,10 +209,9 @@ foreach (json_decode($rcpts, true) as $rcpt) {
       // Force exit if loop cannot be solved
       // Postfix does not allow for alias loops, so this should never happen.
       $loop_c++;
-      error_log("RCPT RESOVLER: http pipe: goto array count on loop #". $loop_c . " is " . count($gotos_array) . PHP_EOL);
+      error_log("RCPT RESOVLER: http pipe: goto array count on loop #" . $loop_c . " is " . count($gotos_array) . PHP_EOL);
     }
-  }
-  catch (PDOException $e) {
+  } catch (PDOException $e) {
     error_log("RCPT RESOVLER: " . $e->getMessage() . PHP_EOL);
     http_response_code(502);
     exit;
@@ -222,19 +223,21 @@ foreach ($rcpt_final_mailboxes as $rcpt_final) {
   try {
     $stmt = $pdo->prepare("INSERT INTO `quarantine` (`qid`, `subject`, `score`, `sender`, `rcpt`, `symbols`, `user`, `ip`, `msg`, `action`, `fuzzy_hashes`)
       VALUES (:qid, :subject, :score, :sender, :rcpt, :symbols, :user, :ip, :msg, :action, :fuzzy_hashes)");
-    $stmt->execute(array(
-      ':qid' => $qid,
-      ':subject' => $subject,
-      ':score' => $score,
-      ':sender' => $sender,
-      ':rcpt' => $rcpt_final,
-      ':symbols' => $symbols,
-      ':user' => $user,
-      ':ip' => $ip,
-      ':msg' => $raw_data,
-      ':action' => $action,
-      ':fuzzy_hashes' => $fuzzy
-    ));
+    $stmt->execute(
+      array(
+        ':qid' => $qid,
+        ':subject' => $subject,
+        ':score' => $score,
+        ':sender' => $sender,
+        ':rcpt' => $rcpt_final,
+        ':symbols' => $symbols,
+        ':user' => $user,
+        ':ip' => $ip,
+        ':msg' => $raw_data,
+        ':action' => $action,
+        ':fuzzy_hashes' => $fuzzy
+      )
+    );
     $stmt = $pdo->prepare('DELETE FROM `quarantine` WHERE `rcpt` = :rcpt AND `id` NOT IN (
       SELECT `id`
       FROM (
@@ -243,18 +246,18 @@ foreach ($rcpt_final_mailboxes as $rcpt_final) {
         WHERE `rcpt` = :rcpt2
         ORDER BY id DESC
         LIMIT :retention_size
-      ) x 
+      ) x
     );');
-    $stmt->execute(array(
-      ':rcpt' => $rcpt_final,
-      ':rcpt2' => $rcpt_final,
-      ':retention_size' => $retention_size
-    ));
-  }
-  catch (PDOException $e) {
+    $stmt->execute(
+      array(
+        ':rcpt' => $rcpt_final,
+        ':rcpt2' => $rcpt_final,
+        ':retention_size' => $retention_size
+      )
+    );
+  } catch (PDOException $e) {
     error_log("QUARANTINE: " . $e->getMessage() . PHP_EOL);
     http_response_code(503);
     exit;
   }
 }
-

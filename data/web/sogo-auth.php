@@ -1,9 +1,11 @@
 <?php
 
-$ALLOW_ADMIN_EMAIL_LOGIN = (preg_match(
-  "/^([yY][eE][sS]|[yY])+$/",
-  $_ENV["ALLOW_ADMIN_EMAIL_LOGIN"]
-));
+$ALLOW_ADMIN_EMAIL_LOGIN = (
+  preg_match(
+    "/^([yY][eE][sS]|[yY])+$/",
+    $_ENV["ALLOW_ADMIN_EMAIL_LOGIN"]
+  )
+);
 
 $session_var_user_allowed = 'sogo-sso-user-allowed';
 $session_var_pass = 'sogo-sso-pass';
@@ -19,14 +21,13 @@ if (isset($_SERVER['PHP_AUTH_USER'])) {
   $original_uri = isset($_SERVER['HTTP_X_ORIGINAL_URI']) ? $_SERVER['HTTP_X_ORIGINAL_URI'] : '';
   if (preg_match('/^(\/SOGo|)\/dav.*/', $original_uri) === 1) {
     $is_dav = true;
-  }
-  elseif (preg_match('/^(\/SOGo|)\/Microsoft-Server-ActiveSync.*/', $original_uri) === 1) {
+  } elseif (preg_match('/^(\/SOGo|)\/Microsoft-Server-ActiveSync.*/', $original_uri) === 1) {
     $is_eas = true;
   }
   $login_check = check_login($username, $password, array('dav' => $is_dav, 'eas' => $is_eas));
   if ($login_check === 'user') {
     header("X-User: $username");
-    header("X-Auth: Basic ".base64_encode("$username:$password"));
+    header("X-Auth: Basic " . base64_encode("$username:$password"));
     header("X-Auth-Type: Basic");
     exit;
   } else {
@@ -43,8 +44,10 @@ elseif (isset($_GET['login'])) {
   $is_dual = (!empty($_SESSION["dual-login"]["username"])) ? true : false;
   // check permissions (if dual_login is active, deny sso when acl is not given)
   $login = html_entity_decode(rawurldecode($_GET["login"]));
-  if (isset($_SESSION['zynerone_cc_role']) &&
-    (($_SESSION['acl']['login_as'] == "1" && $ALLOW_ADMIN_EMAIL_LOGIN !== 0) || ($is_dual === false && $login == $_SESSION['zynerone_cc_username']))) {
+  if (
+    isset($_SESSION['zynerone_cc_role']) &&
+    (($_SESSION['acl']['login_as'] == "1" && $ALLOW_ADMIN_EMAIL_LOGIN !== 0) || ($is_dual === false && $login == $_SESSION['zynerone_cc_username']))
+  ) {
     if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
       if (user_get_alias_details($login) !== false) {
         // load master password
@@ -55,10 +58,12 @@ elseif (isset($_GET['login'])) {
         // update sasl logs
         $service = ($app_passwd_data['eas'] === true) ? 'EAS' : 'DAV';
         $stmt = $pdo->prepare("REPLACE INTO sasl_log (`service`, `app_password`, `username`, `real_rip`) VALUES ('SSO', 0, :username, :remote_addr)");
-        $stmt->execute(array(
-          ':username' => $login,
-          ':remote_addr' => ($_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'])
-        ));
+        $stmt->execute(
+          array(
+            ':username' => $login,
+            ':remote_addr' => ($_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'])
+          )
+        );
         // redirect to sogo (sogo will get the correct credentials via nginx auth_request
         header("Location: /SOGo/so/{$login}");
         exit;
@@ -76,22 +81,25 @@ elseif (isset($_SERVER['HTTP_X_ORIGINAL_URI']) && strcasecmp(substr($_SERVER['HT
   // extract email address from "/SOGo/so/user@domain/xy"
   $url_parts = explode("/", $_SERVER['HTTP_X_ORIGINAL_URI']);
   $email_list = array(
-      $url_parts[3],                                // Requested mailbox
-      ($_SESSION['zynerone_cc_username'] ?? ''),     // Current user
-      ($_SESSION["dual-login"]["username"] ?? ''),  // Dual login user
+    $url_parts[3],
+      // Requested mailbox
+    ($_SESSION['zynerone_cc_username'] ?? ''),
+      // Current user
+    ($_SESSION["dual-login"]["username"] ?? ''),
+    // Dual login user
   );
-  foreach($email_list as $email) {
+  foreach ($email_list as $email) {
     // check if this email is in session allowed list
     if (
-        !empty($email) &&
-        filter_var($email, FILTER_VALIDATE_EMAIL) &&
-        is_array($_SESSION[$session_var_user_allowed]) &&
-        in_array($email, $_SESSION[$session_var_user_allowed])
+      !empty($email) &&
+      filter_var($email, FILTER_VALIDATE_EMAIL) &&
+      is_array($_SESSION[$session_var_user_allowed]) &&
+      in_array($email, $_SESSION[$session_var_user_allowed])
     ) {
       $username = $email;
       $password = $_SESSION[$session_var_pass];
       header("X-User: $username");
-      header("X-Auth: Basic ".base64_encode("$username:$password"));
+      header("X-Auth: Basic " . base64_encode("$username:$password"));
       header("X-Auth-Type: Basic");
       exit;
     }

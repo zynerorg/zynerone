@@ -30,7 +30,7 @@
   @media all and (max-width: 480px) {
     .mob {
     display: none;
-    }    
+    }
   }
   </style>
   </head>
