@@ -517,19 +517,19 @@ ratelimit_checks() {
   err_count=0
   diff_c=0
   THRESHOLD=${RATELIMIT_THRESHOLD}
-  RL_LOG_STATUS=$(redis-cli -h redis LRANGE RL_LOG 0 0 | jq .qid)
+  rl_log_v1_STATUS=$(redis-cli -h redis LRANGE rl_log_v1 0 0 | jq .qid)
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
     err_c_cur=${err_count}
-    RL_LOG_STATUS_PREV=${RL_LOG_STATUS}
-    RL_LOG_STATUS=$(redis-cli -h redis LRANGE RL_LOG 0 0 | jq .qid)
-    if [[ ${RL_LOG_STATUS_PREV} != ${RL_LOG_STATUS} ]]; then
+    rl_log_v1_STATUS_PREV=${rl_log_v1_STATUS}
+    rl_log_v1_STATUS=$(redis-cli -h redis LRANGE rl_log_v1 0 0 | jq .qid)
+    if [[ ${rl_log_v1_STATUS_PREV} != ${rl_log_v1_STATUS} ]]; then
       err_count=$(( ${err_count} + 1 ))
       echo 'Last 10 applied ratelimits (may overlap with previous reports).' > /tmp/ratelimit
       echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within Zyner One UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
       echo >> /tmp/ratelimit
-      redis-cli --raw -h redis LRANGE RL_LOG 0 10 | jq . >> /tmp/ratelimit
+      redis-cli --raw -h redis LRANGE rl_log_v1 0 10 | jq . >> /tmp/ratelimit
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))

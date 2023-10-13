@@ -14,8 +14,9 @@
       <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-autodiscover-logs" aria-selected="false" aria-controls="tab-autodiscover-logs" role="tab" data-bs-toggle="tab">Autodiscover</button></li>
       <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-watchdog-logs" aria-selected="false" aria-controls="tab-watchdog-logs" role="tab" data-bs-toggle="tab">Watchdog</button></li>
       <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-acme-logs" aria-selected="false" aria-controls="tab-acme-logs" role="tab" data-bs-toggle="tab">ACME</button></li>
-      <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-api-logs" aria-selected="false" aria-controls="tab-api-logs" role="tab" data-bs-toggle="tab">API</button></li>
-      <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-api-rl" aria-selected="false" aria-controls="tab-api-rl" role="tab" data-bs-toggle="tab">Ratelimits</button></li>
+      <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-api-v2-logs" aria-selected="false" aria-controls="tab-api-v2-logs" role="tab" data-bs-toggle="tab">API v2</button></li>
+      <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-api-v1-logs" aria-selected="false" aria-controls="tab-api-v1-logs" role="tab" data-bs-toggle="tab">API v1</button></li>
+      <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-api-v1-rl" aria-selected="false" aria-controls="tab-api-rl-v1" role="tab" data-bs-toggle="tab">Ratelimits v1</button></li>
       <li role="presentation"><span class="dropdown-header fs-6">{{ lang.debug.external_logs }}</span></li>
       <li role="presentation"><button class="dropdown-item" data-bs-target="#tab-rspamd-history" aria-selected="false" aria-controls="tab-rspamd-history" role="tab" data-bs-toggle="tab">Rspamd</button></li>
       <li role="presentation"><span class="dropdown-header fs-6">{{ lang.debug.static_logs }}</span></li>
@@ -446,6 +447,29 @@
         </div>
       </div>
 
+      <div role="tabpanel" class="tab-pane" id="tab-netfilter-logs">
+        <div class="debug-log-info">{{ lang.debug.log_info|format(log_lines+1)|raw }}</div>
+        <div class="card">
+          <div class="card-header d-flex align-items-center fs-5">
+            <span class="mt-2 ms-2">Netfilter</span>
+            <div class="btn-group ms-auto">
+              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_netfilter_logs" data-table="netfilter_log">{{ lang.admin.refresh }}</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <a class="btn btn-sm btn-secondary dropdown-toggle mb-4" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item add_log_lines" data-post-process="general_syslog" data-table="netfilter_log" data-log-url="netfilter" data-nrows="100" href="#">+ 100</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="general_syslog" data-table="netfilter_log" data-log-url="netfilter" data-nrows="1000" href="#">+ 1000</a></li>
+              <li class="table_collapse_option"><hr class="dropdown-divider"></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="netfilter_log" data-table="netfilter_log" href="#">{{ lang.datatables.expand_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="netfilter_log" data-table="netfilter_log" href="#">{{ lang.datatables.collapse_all }}</a></li>
+            </ul>
+            <table id="netfilter_log" class="table table-striped dt-responsive w-100"></table>
+          </div>
+        </div>
+      </div>
+
       <div role="tabpanel" class="tab-pane" id="tab-rspamd-history">
         <div class="debug-log-info">{{ lang.debug.log_info|format(log_lines+1)|raw }}</div>
         <div class="card">
@@ -543,49 +567,72 @@
         </div>
       </div>
 
-      <div role="tabpanel" class="tab-pane" id="tab-api-logs">
+      <div role="tabpanel" class="tab-pane" id="tab-api-v2-logs">
         <div class="debug-log-info">{{ lang.debug.log_info|format(log_lines+1)|raw }}</div>
         <div class="card">
           <div class="card-header d-flex align-items-center fs-5">
-            <span class="mt-2 ms-2">API</span>
+            <span class="mt-2 ms-2">API v2</span>
             <div class="btn-group ms-auto">
-              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_api_logs" data-table="api_log">{{ lang.admin.refresh }}</button>
+              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_api_v2_logs" data-table="api_v2_log">{{ lang.admin.refresh }}</button>
             </div>
           </div>
           <div class="card-body">
             <a class="btn btn-sm btn-secondary dropdown-toggle mb-4" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item add_log_lines" data-post-process="apilog" data-table="api_log" data-log-url="api" data-nrows="100" href="#">+ 100</a></li>
-              <li><a class="dropdown-item add_log_lines" data-post-process="apilog" data-table="api_log" data-log-url="api" data-nrows="1000" href="#">+ 1000</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="apilogv2" data-table="api_log_v2" data-log-url="api_v2" data-nrows="100" href="#">+ 100</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="apilogv2" data-table="api_log_v2" data-log-url="api_v2" data-nrows="1000" href="#">+ 1000</a></li>
               <li class="table_collapse_option"><hr class="dropdown-divider"></li>
-              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="api_log" data-table="api_log" href="#">{{ lang.datatables.expand_all }}</a></li>
-              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="api_log" data-table="api_log" href="#">{{ lang.datatables.collapse_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="api_log_v2" data-table="api_log_v2" href="#">{{ lang.datatables.expand_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="api_log_v2" data-table="api_log_v2" href="#">{{ lang.datatables.collapse_all }}</a></li>
             </ul>
-            <table id="api_log" class="table table-striped dt-responsive w-100"></table>
+            <table id="api_log_v2" class="table table-striped dt-responsive w-100"></table>
           </div>
         </div>
       </div>
 
-      <div role="tabpanel" class="tab-pane" id="tab-api-rl">
+      <div role="tabpanel" class="tab-pane" id="tab-api-rl-v1">
         <div class="debug-log-info">{{ lang.debug.log_info|format(log_lines+1)|raw }}</div>
         <div class="card">
           <div class="card-header d-flex align-items-center fs-5">
-            <span class="mt-2 ms-2">Ratelimits</span>
+            <span class="mt-2 ms-2">Ratelimits v1</span>
             <div class="btn-group ms-auto">
-              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_rl_logs" data-table="rl_log">{{ lang.admin.refresh }}</button>
+              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_rl_logs_v1" data-table="rl_log_v1">{{ lang.admin.refresh }}</button>
             </div>
           </div>
           <div class="card-body">
             <a class="btn btn-sm btn-secondary dropdown-toggle mb-4" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item add_log_lines" data-post-process="rllog" data-table="rl_log" data-log-url="ratelimited" data-nrows="100" href="#">+ 100</a></li>
-              <li><a class="dropdown-item add_log_lines" data-post-process="rllog" data-table="rl_log" data-log-url="ratelimited" data-nrows="1000" href="#">+ 1000</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="rllog_v1" data-table="rl_log_v1" data-log-url="ratelimited" data-nrows="100" href="#">+ 100</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="rllog_v1" data-table="rl_log_v1" data-log-url="ratelimited" data-nrows="1000" href="#">+ 1000</a></li>
               <li class="table_collapse_option"><hr class="dropdown-divider"></li>
-              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="rl_log" data-table="rl_log" href="#">{{ lang.datatables.expand_all }}</a></li>
-              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="rl_log" data-table="rl_log" href="#">{{ lang.datatables.collapse_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="rl_log_v1" data-table="rl_log_v1" href="#">{{ lang.datatables.expand_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="rl_log_v1" data-table="rl_log_v1" href="#">{{ lang.datatables.collapse_all }}</a></li>
             </ul>
             <p class="text-muted">{{ lang.admin.hash_remove_info|raw }}</p>
-            <table id="rl_log" class="table table-striped dt-responsive w-100"></table>
+            <table id="rl_log_v1_v1" class="table table-striped dt-responsive w-100"></table>
+          </div>
+        </div>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="tab-api-v1-logs">
+        <div class="debug-log-info">{{ lang.debug.log_info|format(log_lines+1)|raw }}</div>
+        <div class="card">
+          <div class="card-header d-flex align-items-center fs-5">
+            <span class="mt-2 ms-2">API v1</span>
+            <div class="btn-group ms-auto">
+              <button class="btn btn-sm btn-secondary refresh_table" data-draw="draw_api_logs" data-table="api_log_v2">{{ lang.admin.refresh }}</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <a class="btn btn-sm btn-secondary dropdown-toggle mb-4" data-bs-toggle="dropdown" href="#">{{ lang.mailbox.quick_actions }}</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item add_log_lines" data-post-process="apilog_v2" data-table="api_log_v2" data-log-url="api" data-nrows="100" href="#">+ 100</a></li>
+              <li><a class="dropdown-item add_log_lines" data-post-process="apilog_v2" data-table="api_log_v2" data-log-url="api" data-nrows="1000" href="#">+ 1000</a></li>
+              <li class="table_collapse_option"><hr class="dropdown-divider"></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-expand="api_log_v2" data-table="api_log_v2" href="#">{{ lang.datatables.expand_all }}</a></li>
+              <li class="table_collapse_option"><a class="dropdown-item" data-datatables-collapse="api_log_v2" data-table="api_log_v2" href="#">{{ lang.datatables.collapse_all }}</a></li>
+            </ul>
+            <table id="api_log_v2" class="table table-striped dt-responsive w-100"></table>
           </div>
         </div>
       </div>
