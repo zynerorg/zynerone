@@ -5,7 +5,7 @@
 version: '2.1'
 services:
 
-    dovecot-mailcow:
+    dovecot-zynerone:
       ports:
         - "${IMAP_PORT_HAPROXY:-127.0.0.1:10143}:10143"
         - "${IMAPS_PORT_HAPROXY:-127.0.0.1:10993}:10993"
@@ -13,7 +13,7 @@ services:
         - "${POPS_PORT_HAPROXY:-127.0.0.1:10995}:10995"
         - "${SIEVE_PORT_HAPROXY:-127.0.0.1:14190}:14190"
 
-    postfix-mailcow:
+    postfix-zynerone:
       ports:
         - "${SMTP_PORT_HAPROXY:-127.0.0.1:10025}:10025"
         - "${SMTPS_PORT_HAPROXY:-127.0.0.1:10465}:10465"

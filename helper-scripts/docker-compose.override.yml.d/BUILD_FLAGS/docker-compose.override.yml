@@ -42,3 +42,6 @@ services:
 
   olefy-zynerone:
     build: ./data/Dockerfiles/olefy
+
+  api-zynerone:
+    build: ./data/Dockerfiles/api

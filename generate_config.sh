@@ -33,7 +33,7 @@ if docker compose > /dev/null 2>&1; then
       sleep 2
       echo -e "\e[33mNotice: You´ll have to update this Compose Version via your Package Manager manually!\e[0m"
     else
-      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
       echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
@@ -46,14 +46,14 @@ elif docker-compose > /dev/null 2>&1; then
       sleep 2
       echo -e "\e[33mNotice: For an automatic update of docker-compose please use the update_compose.sh scripts located at the helper-scripts folder.\e[0m"
     else
-      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
       echo -e "\e[31mPlease update/install manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
   fi
 
 else
-  echo -e "\e[31mCannot find Docker Compose.\e[0m" 
+  echo -e "\e[31mCannot find Docker Compose.\e[0m"
   echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
   exit 1
 fi
@@ -216,7 +216,7 @@ else
   echo -e "\033[31mCould not determine branch input..."
   echo -e "\033[31mExiting."
   exit 1
-fi  
+fi
 
 if [ ! -z "${ZYNERONE_BRANCH}" ]; then
   git_branch=${ZYNERONE_BRANCH}
@@ -288,6 +288,7 @@ DOVEADM_PORT=127.0.0.1:19991
 SQL_PORT=127.0.0.1:13306
 SOLR_PORT=127.0.0.1:18983
 REDIS_PORT=127.0.0.1:7654
+API_PORT=127.0.0.1:8080
 
 # Your timezone
 # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for a list of timezones
@@ -469,7 +470,7 @@ WEBAUTHN_ONLY_TRUSTED_VENDORS=n
 
 # Spamhaus Data Query Service Key
 # Optional: Leave empty for none
-# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist. 
+# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist.
 # If empty, it will completely disable Spamhaus blocklists if it detects that you are running on a server using a blocked AS.
 # Otherwise it will work normally.
 SPAMHAUS_DQS_KEY=

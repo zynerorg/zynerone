@@ -1,31 +1,35 @@
 version: '2.1'
 services:
 
-    php-fpm-mailcow:
+    php-fpm-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    sogo-mailcow:
+    sogo-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    dovecot-mailcow:
+    dovecot-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    postfix-mailcow:
+    postfix-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    acme-mailcow:
+    acme-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    watchdog-mailcow:
+    watchdog-zynerone:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
-    mysql-mailcow:
+    api-zynerone:
+      volumes:
+        - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
+
+    mysql-zynerone:
       image: alpine:3.18
       command: /bin/true
       restart: "no"
