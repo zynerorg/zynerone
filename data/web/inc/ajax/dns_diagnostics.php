@@ -23,7 +23,7 @@ if (isset($_SESSION['zynerone_cc_role']) && ($_SESSION['zynerone_cc_role'] == "a
     }
   }
 
-  $ch = curl_init('http://ip4.zyner.one');
+  $ch = curl_init('http://ip4.mailcow.email');
   curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
   curl_setopt($ch, CURLOPT_VERBOSE, false);
   curl_setopt($ch, CURLOPT_HEADER, false);
@@ -32,7 +32,7 @@ if (isset($_SESSION['zynerone_cc_role']) && ($_SESSION['zynerone_cc_role'] == "a
   $ip = curl_exec($ch);
   curl_close($ch);
 
-  $ch = curl_init('http://ip6.zyner.one');
+  $ch = curl_init('http://ip6.mailcow.email');
   curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V6);
   curl_setopt($ch, CURLOPT_VERBOSE, false);
   curl_setopt($ch, CURLOPT_HEADER, false);
