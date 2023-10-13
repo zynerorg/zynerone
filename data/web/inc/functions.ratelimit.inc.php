@@ -195,11 +195,11 @@ function ratelimit($_action, $_scope, $_data = null)
         return false;
       }
       try {
-        $data_rllog_v1 = $redis->lRange('rl_log_v1', 0, -1);
-        if ($data_rllog_v1) {
-          foreach ($data_rllog_v1 as $json_line) {
+        $data_rllog = $redis->lRange('RL_LOG', 0, -1);
+        if ($data_rllog) {
+          foreach ($data_rllog as $json_line) {
             if (preg_match('/' . $data['hash'] . '/i', $json_line)) {
-              $redis->lRem('rl_log_v1', $json_line, 0);
+              $redis->lRem('RL_LOG', $json_line, 0);
             }
           }
         }
