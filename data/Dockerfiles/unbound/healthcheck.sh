@@ -1,6 +1,6 @@
 #!/bin/bash
 
-nslookup zyner.one 127.0.0.1 1>/dev/null
+nslookup zyner.one 127.0.0.1 1> /dev/null
 
 if [ $? == 0 ]; then
     echo "DNS resolution is working!"

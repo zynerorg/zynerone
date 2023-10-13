@@ -6,13 +6,16 @@ if (isset($_SESSION['zynerone_cc_role']) && isset($_SESSION['oauth2_request'])) 
   unset($_SESSION['oauth2_request']);
   header('Location: ' . $oauth2_request);
   exit();
-} elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'admin') {
+}
+elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'admin') {
   header('Location: /debug');
   exit();
-} elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'domainadmin') {
+}
+elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'domainadmin') {
   header('Location: /mailbox');
   exit();
-} elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'user') {
+}
+elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'user') {
   header('Location: /user');
   exit();
 }

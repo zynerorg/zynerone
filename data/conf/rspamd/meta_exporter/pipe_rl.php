@@ -10,10 +10,12 @@ $redis = new Redis();
 try {
   if (!empty(getenv('REDIS_SLAVEOF_IP'))) {
     $redis->connect(getenv('REDIS_SLAVEOF_IP'), getenv('REDIS_SLAVEOF_PORT'));
-  } else {
+  }
+  else {
     $redis->connect('redis-zynerone', 6379);
   }
-} catch (Exception $e) {
+}
+catch (Exception $e) {
   exit;
 }
 
@@ -30,7 +32,8 @@ preg_match('/(.+)\((.+)\)/i', $data['rl_info'], $rl_matches);
 if (!empty($rl_matches[1]) && !empty($rl_matches[2])) {
   $data['rl_name'] = $rl_matches[1];
   $data['rl_hash'] = $rl_matches[2];
-} else {
+}
+else {
   $data['rl_name'] = 'err';
   $data['rl_hash'] = 'err';
 }
@@ -42,3 +45,4 @@ $data['header_from'] = implode(', ', $raw_data_decoded['header_from']);
 
 $redis->lpush('RL_LOG', json_encode($data));
 exit;
+

@@ -19,12 +19,9 @@
           <img class="main-logo-dark" src="{{ logo_dark|default('/img/zynerone.svg') }}" alt="zynerone-logo-dark">
         </div>
         {% if ui_texts.ui_announcement_text and ui_texts.ui_announcement_active %}
-        <div class="my-4 alert alert-{{ ui_texts.ui_announcement_type }} rot-enc ui-announcement-alert">{{
-          ui_texts.ui_announcement_text|rot13 }}</div>
+        <div class="my-4 alert alert-{{ ui_texts.ui_announcement_type }} rot-enc ui-announcement-alert">{{ ui_texts.ui_announcement_text|rot13 }}</div>
         {% endif %}
-        <legend>{% if oauth2_request %}{{ lang.oauth2.authorize_app }}{% else %}{{ ui_texts.main_name|raw }}{% endif %}
-        </legend>
-        <hr />
+        <legend>{% if oauth2_request %}{{ lang.oauth2.authorize_app }}{% else %}{{ ui_texts.main_name|raw }}{% endif %}</legend><hr />
         {% if is_mobileconfig %}
         <div class="my-4 alert alert-info ">{{ lang.login.mobileconfig_info }}</div>
         {% endif %}
@@ -33,66 +30,55 @@
             <label class="visually-hidden" for="login_user">{{ lang.login.username }}</label>
             <div class="input-group">
               <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-              <input name="login_user" autocorrect="off" autocapitalize="none"
-                type="{% if is_mobileconfig %}email{% else %}text{% endif %}" id="login_user" class="form-control"
-                placeholder="{{ lang.login.username }}" required="" autofocus="" autocomplete="username">
+              <input name="login_user" autocorrect="off" autocapitalize="none" type="{% if is_mobileconfig %}email{% else %}text{% endif %}" id="login_user" class="form-control" placeholder="{{ lang.login.username }}" required="" autofocus="" autocomplete="username">
             </div>
           </div>
           <div class="d-flex mt-3">
             <label class="visually-hidden" for="pass_user">{{ lang.login.password }}</label>
             <div class="input-group">
               <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-              <input name="pass_user" type="password" id="pass_user" class="form-control"
-                placeholder="{{ lang.login.password }}" required="" autocomplete="current-password">
+              <input name="pass_user" type="password" id="pass_user" class="form-control" placeholder="{{ lang.login.password }}" required="" autocomplete="current-password">
             </div>
           </div>
           <div class="d-flex justify-content-between mt-4" style="position: relative">
             <div class="d-grid gap-2 d-sm-block">
               <button type="submit" class="btn btn-xs-lg btn-success" value="Login">{{ lang.login.login }}</button>
-              <button type="button" class="btn btn-xs-lg btn-success" id="fido2-login"><i
-                  class="bi bi-shield-fill-check"></i> {{ lang.login.fido2_webauthn }}</button>
+              <button type="button" class="btn btn-xs-lg btn-success" id="fido2-login"><i class="bi bi-shield-fill-check"></i> {{ lang.login.fido2_webauthn }}</button>
             </div>
             {% if not oauth2_request %}
             <div class="d-grid d-sm-block">
-              <button type="button" {% if available_languages|length==1 %}disabled="true" {% endif %}
-                class="btn btn-secondary ms-auto dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                <span class="flag-icon flag-icon-{{ zynerone_locale[-2:] }}"></span>
-              </button>
-              <ul class="dropdown-menu ms-auto login">
-                {% for key, val in available_languages %}
+            <button type="button" {% if available_languages|length == 1 %}disabled="true"{% endif %} class="btn btn-secondary ms-auto dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="flag-icon flag-icon-{{ zynerone_locale[-2:] }}"></span>
+            </button>
+            <ul class="dropdown-menu ms-auto login">
+              {% for key, val in available_languages %}
                 <li>
-                  <a class="dropdown-item {% if zynerone_locale == key %}active{% endif %}"
-                    href="?{{ query_string({'lang': key}) }}">
+                  <a class="dropdown-item {% if zynerone_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
                     <span class="flag-icon flag-icon-{{ key[-2:] }}"></span>{{ val }}
                   </a>
                 </li>
-                {% endfor %}
-              </ul>
+              {% endfor %}
+            </ul>
             </div>
             {% endif %}
           </div>
         </form>
         {% if login_delay %}
-        <p>
-        <div class="my-4 alert alert-info">{{ lang.login.delayed|format(login_delay) }}</b></div>
-        </p>
+        <p><div class="my-4 alert alert-info">{{ lang.login.delayed|format(login_delay) }}</b></div></p>
         {% endif %}
         <div class="my-4" id="fido2-alerts"></div>
         {% if not oauth2_request and (zynerone_apps or app_links) %}
-        <legend><i class="bi bi-link-45deg"></i> {{ ui_texts.apps_name|raw }}</legend>
-        <hr />
+        <legend><i class="bi bi-link-45deg"></i> {{ ui_texts.apps_name|raw }}</legend><hr />
         <div class="my-2 d-grid gap-2 d-sm-block apps">
           {% for app in zynerone_apps %}
-          {% if not skip_sogo or not is_uri('SOGo', app.link) %}
-          <a href="{{ app.link }}" role="button" {% if app.description %}title="{{ app.description }}" {% endif %}
-            class="btn btn-primary">{{ app.name }}</a>
-          {% endif %}
+            {% if not skip_sogo or not is_uri('SOGo', app.link) %}
+              <a href="{{ app.link }}" role="button" {% if app.description %}title="{{ app.description }}"{% endif %} class="btn btn-primary">{{ app.name }}</a>
+            {% endif %}
           {% endfor %}
           {% for row in app_links %}
-          {% for key, val in row %}
-          <a href="{{ val }}" role="button" class="btn btn-primary">{{ key }}</a>
-          {% endfor %}
+            {% for key, val in row %}
+              <a href="{{ val }}" role="button" class="btn btn-primary">{{ key }}</a>
+            {% endfor %}
           {% endfor %}
         </div>
         {% endif %}
@@ -105,8 +91,7 @@
   <div class="col-12 col-md-7 col-lg-6 col-xl-5 ms-auto me-auto">
     <div class="card">
       <div class="card-header">
-        <a class="btn btn-link" data-bs-toggle="collapse" href="#collapse1"><i class="bi bi-patch-question-fill"></i> {{
-          lang.start.help }}</a>
+        <a class="btn btn-link" data-bs-toggle="collapse" href="#collapse1"><i class="bi bi-patch-question-fill"></i> {{ lang.start.help }}</a>
       </div>
       <div id="collapse1" class="card-collapse collapse">
         <div class="card-body">

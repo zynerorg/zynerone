@@ -10,7 +10,7 @@ if [[ -z ${MAX_AGE} ]]; then
 fi
 
 NUM_REGEXP='^[0-9]+$'
-if ! [[ ${MAX_AGE} =~ ${NUM_REGEXP} ]]; then
+if ! [[ ${MAX_AGE} =~ ${NUM_REGEXP} ]] ; then
   echo "Max age for quarantine items invalid"
   exit 1
 fi

@@ -12,7 +12,7 @@ fi
 # Is replication active?
 # grep on file is less expensive than doveconf
 if ! grep -qi mail_replica /etc/dovecot/dovecot.conf; then
-  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH 1 >/dev/null
+  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH 1 > /dev/null
   exit
 fi
 
@@ -22,7 +22,7 @@ FAILED_SYNCS=$(doveadm replicator status | grep "Waiting 'failed' requests" | gr
 # 1 failed job for zynerone.local is expected and healthy
 if [[ "${FAILED_SYNCS}" != 0 ]] && [[ "${FAILED_SYNCS}" != 1 ]]; then
   printf "Dovecot replicator has %d failed jobs\n" "${FAILED_SYNCS}"
-  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH "${FAILED_SYNCS}" >/dev/null
+  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH "${FAILED_SYNCS}" > /dev/null
 else
-  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH 1 >/dev/null
+  ${REDIS_CMDLINE} SET DOVECOT_REPL_HEALTH 1 > /dev/null
 fi

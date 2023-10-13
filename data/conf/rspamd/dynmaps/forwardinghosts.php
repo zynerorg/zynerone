@@ -5,8 +5,7 @@ ini_set('error_reporting', 0);
 $redis = new Redis();
 $redis->connect('redis-zynerone', 6379);
 
-function in_net($addr, $net)
-{
+function in_net($addr, $net) {
   $net = explode('/', $net);
   if (count($net) > 1) {
     $mask = $net[1];
@@ -23,8 +22,8 @@ function in_net($addr, $net)
   $addr_bin = '';
   $net_bin = '';
   for ($i = 0; $i < $length; ++$i) {
-    $addr_bin .= str_pad(decbin(ord(substr($addr, $i, $i + 1))), 8, '0', STR_PAD_LEFT);
-    $net_bin .= str_pad(decbin(ord(substr($net, $i, $i + 1))), 8, '0', STR_PAD_LEFT);
+    $addr_bin .= str_pad(decbin(ord(substr($addr, $i, $i+1))), 8, '0', STR_PAD_LEFT);
+    $net_bin .= str_pad(decbin(ord(substr($net, $i, $i+1))), 8, '0', STR_PAD_LEFT);
   }
   return substr($addr_bin, 0, $mask) == substr($net_bin, 0, $mask);
 }
@@ -38,7 +37,8 @@ if (isset($_GET['host'])) {
       }
     }
     echo '200 DUNNO';
-  } catch (RedisException $e) {
+  }
+  catch (RedisException $e) {
     echo '200 DUNNO';
     exit;
   }
@@ -48,7 +48,8 @@ if (isset($_GET['host'])) {
     foreach ($redis->hGetAll('WHITELISTED_FWD_HOST') as $host => $source) {
       echo $host . PHP_EOL;
     }
-  } catch (RedisException $e) {
+  }
+  catch (RedisException $e) {
     echo '240.240.240.240' . PHP_EOL;
     exit;
   }

@@ -11,18 +11,18 @@ RUN apt-get update && apt-get install -y \
   gnupg2 \
   apt-transport-https \
   dnsutils \
-  netcat &&
-  apt-key adv --fetch-keys https://rspamd.com/apt-stable/gpg.key &&
-  echo "deb [arch=amd64] https://rspamd.com/apt-stable/ $CODENAME main" >/etc/apt/sources.list.d/rspamd.list &&
-  apt-get update &&
-  apt-get --no-install-recommends -y install rspamd redis-tools procps nano &&
-  rm -rf /var/lib/apt/lists/* &&
-  apt-get autoremove --purge &&
-  apt-get clean &&
-  mkdir -p /run/rspamd &&
-  chown _rspamd:_rspamd /run/rspamd &&
-  echo 'alias ll="ls -la --color"' >>~/.bashrc &&
-  sed -i 's/#analysis_keyword_table > 0/analysis_cat_table.macro_exist == "M"/g' /usr/share/rspamd/lualib/lua_scanners/oletools.lua
+  netcat \
+  && apt-key adv --fetch-keys https://rspamd.com/apt-stable/gpg.key \
+  && echo "deb [arch=amd64] https://rspamd.com/apt-stable/ $CODENAME main" > /etc/apt/sources.list.d/rspamd.list \
+  && apt-get update \
+  && apt-get --no-install-recommends -y install rspamd redis-tools procps nano \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get autoremove --purge \
+  && apt-get clean \
+  && mkdir -p /run/rspamd \
+  && chown _rspamd:_rspamd /run/rspamd \
+  && echo 'alias ll="ls -la --color"' >> ~/.bashrc \
+  && sed -i 's/#analysis_keyword_table > 0/analysis_cat_table.macro_exist == "M"/g' /usr/share/rspamd/lualib/lua_scanners/oletools.lua
 
 COPY settings.conf /etc/rspamd/settings.conf
 COPY metadata_exporter.lua /usr/share/rspamd/plugins/metadata_exporter.lua
