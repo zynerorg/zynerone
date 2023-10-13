@@ -195,7 +195,8 @@ function domain_admin($_action, $_data = null) {
               ));
             }
           }
-          if (strlen($password) <= 1) {
+          // We need to check both since $password seems to always have a value
+          if (!empty($password) && !empty($password2)) {
             if (password_check($password, $password2) !== true) {
               return false;
             }
