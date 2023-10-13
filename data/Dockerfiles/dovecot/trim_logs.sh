@@ -1,7 +1,7 @@
 #!/bin/bash
 catch_non_zero() {
   CMD=${1}
-  ${CMD} >/dev/null
+  ${CMD} > /dev/null
   EC=$?
   if [ ${EC} -ne 0 ]; then
     echo "Command ${CMD} failed to execute, exit code was ${EC}"

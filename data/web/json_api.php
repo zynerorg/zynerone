@@ -7,8 +7,7 @@ cors("set_headers");
 header('Content-Type: application/json');
 error_reporting(0);
 
-function api_log($_data)
-{
+function api_log($_data) {
   global $redis;
   $data_var = array();
   foreach ($_data as $data => &$value) {
@@ -16,16 +15,15 @@ function api_log($_data)
       continue;
     }
 
-    $value = json_decode($value, true);
+    $value = json_decode($value, true);     
     if ($value) {
-      if (is_array($value))
-        unset($value["csrf_token"]);
+      if (is_array($value)) unset($value["csrf_token"]);
       foreach ($value as $key => &$val) {
-        if (preg_match("/pass/i", $key)) {
+        if(preg_match("/pass/i", $key)) {
           $val = '*';
         }
       }
-      $value = json_encode($value);
+      $value = json_encode($value);  
     }
     $data_var[] = $data . "='" . $value . "'";
   }
@@ -39,37 +37,36 @@ function api_log($_data)
       'data' => implode(', ', $data_var)
     );
     $redis->lPush('API_LOG', json_encode($log_line));
-  } catch (RedisException $e) {
+  }
+  catch (RedisException $e) {
     $_SESSION['return'][] = array(
       'type' => 'danger',
-      'msg' => 'Redis: ' . $e
+      'msg' => 'Redis: '.$e
     );
     return false;
-  }
+  }     
 }
 
 if (isset($_GET['query'])) {
 
   $query = explode('/', $_GET['query']);
-  $action = (isset($query[0])) ? $query[0] : null;
-  $category = (isset($query[1])) ? $query[1] : null;
-  $object = (isset($query[2])) ? $query[2] : null;
-  $extra = (isset($query[3])) ? $query[3] : null;
+  $action =     (isset($query[0])) ? $query[0] : null;
+  $category =   (isset($query[1])) ? $query[1] : null;
+  $object =     (isset($query[2])) ? $query[2] : null;
+  $extra =      (isset($query[3])) ? $query[3] : null;
 
   // accept json in request body
-  if (strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false) {
+  if(strpos($_SERVER['HTTP_CONTENT_TYPE'], 'application/json') !== false) {
     $request = file_get_contents('php://input');
     $requestDecoded = json_decode($request, true);
 
     // check for valid json
     if ($action != 'get' && $requestDecoded === null) {
       http_response_code(400);
-      echo json_encode(
-        array(
+      echo json_encode(array(
           'type' => 'error',
           'msg' => 'Request body doesn\'t contain valid json!'
-        )
-      );
+      ));
       exit;
     }
 
@@ -80,7 +77,7 @@ if (isset($_GET['query'])) {
 
     // edit
     if ($action == 'edit') {
-      $_POST['attr'] = json_encode($requestDecoded['attr']);
+      $_POST['attr']  = json_encode($requestDecoded['attr']);
       $_POST['items'] = json_encode($requestDecoded['items']);
     }
 
@@ -92,63 +89,54 @@ if (isset($_GET['query'])) {
   api_log($_POST);
 
 
-  $request_incomplete = json_encode(
-    array(
-      'type' => 'error',
-      'msg' => 'Cannot find attributes in post data'
-    )
-  );
+  $request_incomplete = json_encode(array(
+    'type' => 'error',
+    'msg' => 'Cannot find attributes in post data'
+  ));
 
   switch ($action) {
     case "add":
       if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username'])) {
         http_response_code(403);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'API read/write access denied'
-          )
-        );
+        ));
         exit();
       }
-      function process_add_return($return)
-      {
-        $generic_failure = json_encode(
-          array(
-            'type' => 'error',
-            'msg' => 'Cannot add item'
-          )
-        );
-        $generic_success = json_encode(
-          array(
-            'type' => 'success',
-            'msg' => 'Task completed'
-          )
-        );
+      function process_add_return($return) {
+        $generic_failure = json_encode(array(
+          'type' => 'error',
+          'msg' => 'Cannot add item'
+        ));
+        $generic_success = json_encode(array(
+          'type' => 'success',
+          'msg' => 'Task completed'
+        ));
         if ($return === false) {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_failure;
-        } else {
+        }
+        else {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_success;
         }
       }
       if (!isset($_POST['attr']) && $category != "fido2-registration" && $category != "webauthn-tfa-registration") {
         echo $request_incomplete;
         exit;
-      } else {
+      }
+      else {
         if ($category != "fido2-registration" && $category != "webauthn-tfa-registration") {
-          $attr = (array) json_decode($_POST['attr'], true);
+          $attr = (array)json_decode($_POST['attr'], true);
         }
         unset($attr['csrf_token']);
       }
       // only allow POST requests to POST API endpoints
       if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         http_response_code(405);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'only POST method is allowed'
-          )
-        );
+        ));
         exit();
       }
 
@@ -166,7 +154,8 @@ if (isset($_GET['query'])) {
             $challenge = $_SESSION['challenge'];
             try {
               $data = $WebAuthn->processCreate($clientDataJSON, $attestationObject, $challenge, $GLOBALS['FIDO2_UV_FLAG_REGISTER'], $GLOBALS['FIDO2_USER_PRESENT_FLAG']);
-            } catch (Throwable $ex) {
+            }
+            catch (Throwable $ex) {
               $return = new stdClass();
               $return->success = false;
               $return->msg = $ex->getMessage();
@@ -178,177 +167,175 @@ if (isset($_GET['query'])) {
             $return->success = true;
             echo json_encode($return);
             exit;
-          } else {
+          }
+          else {
             echo $request_incomplete;
             exit;
           }
-          break;
+        break;
         case "webauthn-tfa-registration":
-          if (isset($_SESSION["zynerone_cc_role"])) {
-            // parse post data
-            $post = trim(file_get_contents('php://input'));
-            if ($post)
-              $post = json_decode($post);
+            if (isset($_SESSION["zynerone_cc_role"])) {
+              // parse post data
+              $post = trim(file_get_contents('php://input'));
+              if ($post) $post = json_decode($post);
+              
+              // process registration data from authenticator
+              try {
+                // decode base64 strings
+                $clientDataJSON = base64_decode($post->clientDataJSON);
+                $attestationObject = base64_decode($post->attestationObject);   
 
-            // process registration data from authenticator
-            try {
-              // decode base64 strings
-              $clientDataJSON = base64_decode($post->clientDataJSON);
-              $attestationObject = base64_decode($post->attestationObject);
+                // processCreate($clientDataJSON, $attestationObject, $challenge, $requireUserVerification=false, $requireUserPresent=true, $failIfRootMismatch=true)
+                $data = $WebAuthn->processCreate($clientDataJSON, $attestationObject, $_SESSION['challenge'], false, true);
 
-              // processCreate($clientDataJSON, $attestationObject, $challenge, $requireUserVerification=false, $requireUserPresent=true, $failIfRootMismatch=true)
-              $data = $WebAuthn->processCreate($clientDataJSON, $attestationObject, $_SESSION['challenge'], false, true);
+                // safe authenticator in mysql `tfa` table
+                $_data['tfa_method'] = $post->tfa_method;
+                $_data['key_id'] = $post->key_id;
+                $_data['confirm_password'] = $post->confirm_password;
+                $_data['registration'] = $data;
+                set_tfa($_data);
+              }
+              catch (Throwable $ex) {
+                // err
+                $return = new stdClass();
+                $return->success = false;
+                $return->msg = $ex->getMessage();
+                echo json_encode($return);
+                exit;
+              }
 
-              // safe authenticator in mysql `tfa` table
-              $_data['tfa_method'] = $post->tfa_method;
-              $_data['key_id'] = $post->key_id;
-              $_data['confirm_password'] = $post->confirm_password;
-              $_data['registration'] = $data;
-              set_tfa($_data);
-            } catch (Throwable $ex) {
-              // err
+
+              // send response
               $return = new stdClass();
-              $return->success = false;
-              $return->msg = $ex->getMessage();
+              $return->success = true;
               echo json_encode($return);
               exit;
             }
-
-
-            // send response
-            $return = new stdClass();
-            $return->success = true;
-            echo json_encode($return);
-            exit;
-          } else {
-            // err - request incomplete
-            echo $request_incomplete;
-            exit;
-          }
-          break;
+            else {
+              // err - request incomplete
+              echo $request_incomplete;
+              exit;
+            }
+        break;
         case "time_limited_alias":
           process_add_return(mailbox('add', 'time_limited_alias', $attr));
-          break;
+        break;
         case "relayhost":
           process_add_return(relayhost('add', $attr));
-          break;
+        break;
         case "transport":
           process_add_return(transport('add', $attr));
-          break;
+        break;
         case "rsetting":
           process_add_return(rsettings('add', $attr));
-          break;
+        break;
         case "mailbox":
           switch ($object) {
             case "template":
               process_add_return(mailbox('add', 'mailbox_templates', $attr));
-              break;
+            break;
             default:
               process_add_return(mailbox('add', 'mailbox', $attr));
-              break;
+            break;
           }
-          break;
+        break;
         case "oauth2-client":
           process_add_return(oauth2('add', 'client', $attr));
-          break;
+        break;
         case "domain":
           switch ($object) {
             case "template":
               process_add_return(mailbox('add', 'domain_templates', $attr));
-              break;
+            break;
             default:
               process_add_return(mailbox('add', 'domain', $attr));
-              break;
-          }
-          break;
+            break;
+          }  
+        break;
         case "resource":
           process_add_return(mailbox('add', 'resource', $attr));
-          break;
+        break;
         case "alias":
           process_add_return(mailbox('add', 'alias', $attr));
-          break;
+        break;
         case "filter":
           process_add_return(mailbox('add', 'filter', $attr));
-          break;
+        break;
         case "global-filter":
           process_add_return(mailbox('add', 'global_filter', $attr));
-          break;
+        break;
         case "domain-policy":
           process_add_return(policy('add', 'domain', $attr));
-          break;
+        break;
         case "mailbox-policy":
           process_add_return(policy('add', 'mailbox', $attr));
-          break;
+        break;
         case "alias-domain":
           process_add_return(mailbox('add', 'alias_domain', $attr));
-          break;
+        break;
         case "fwdhost":
           process_add_return(fwdhost('add', $attr));
-          break;
+        break;
         case "dkim":
           process_add_return(dkim('add', $attr));
-          break;
+        break;
         case "dkim_duplicate":
           process_add_return(dkim('duplicate', $attr));
-          break;
+        break;
         case "dkim_import":
           process_add_return(dkim('import', $attr));
-          break;
+        break;
         case "domain-admin":
           process_add_return(domain_admin('add', $attr));
-          break;
+        break;
         case "sso":
           switch ($object) {
             case "domain-admin":
               $data = domain_admin_sso('issue', $attr);
-              if ($data) {
+              if($data) {
                 echo json_encode($data);
                 exit(0);
               }
               process_add_return($data);
-              break;
+            break;
           }
-          break;
+        break;
         case "admin":
           process_add_return(admin('add', $attr));
-          break;
+        break;
         case "syncjob":
           process_add_return(mailbox('add', 'syncjob', $attr));
-          break;
+        break;
         case "bcc":
           process_add_return(bcc('add', $attr));
-          break;
+        break;
         case "recipient_map":
           process_add_return(recipient_map('add', $attr));
-          break;
+        break;
         case "tls-policy-map":
           process_add_return(tls_policy_maps('add', $attr));
-          break;
+        break;
         case "app-passwd":
           process_add_return(app_passwd('add', $attr));
-          break;
+        break;
         // return no route found if no case is matched
         default:
           http_response_code(404);
-          echo json_encode(
-            array(
-              'type' => 'error',
-              'msg' => 'route not found'
-            )
-          );
+          echo json_encode(array(
+            'type' => 'error',
+            'msg' => 'route not found'
+          ));
           exit();
       }
-      break;
+    break;
     case "process":
       // only allow POST requests to process API endpoints
       if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         http_response_code(405);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'only POST method is allowed'
-          )
-        );
+        ));
         exit();
       }
       switch ($category) {
@@ -372,7 +359,8 @@ if (isset($_GET['query'])) {
           }
           try {
             $WebAuthn->processGet($clientDataJSON, $authenticatorData, $signature, $process_fido2['pub_key'], $challenge, null, $GLOBALS['FIDO2_UV_FLAG_LOGIN'], $GLOBALS['FIDO2_USER_PRESENT_FLAG']);
-          } catch (Throwable $ex) {
+          }
+          catch (Throwable $ex) {
             unset($process_fido2);
             $return = new stdClass();
             $return->success = false;
@@ -386,9 +374,11 @@ if (isset($_GET['query'])) {
           $obj_props = $stmt->fetch(PDO::FETCH_ASSOC);
           if ($obj_props['superadmin'] === 1) {
             $_SESSION["zynerone_cc_role"] = "admin";
-          } elseif ($obj_props['superadmin'] === 0) {
+          }
+          elseif ($obj_props['superadmin'] === 0) {
             $_SESSION["zynerone_cc_role"] = "domainadmin";
-          } else {
+          }
+          else {
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE `username` = :username");
             $stmt->execute(array(':username' => $process_fido2['username']));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -404,21 +394,21 @@ if (isset($_GET['query'])) {
           $_SESSION["zynerone_cc_username"] = $process_fido2['username'];
           $_SESSION["fido2_cid"] = $process_fido2['cid'];
           unset($_SESSION["challenge"]);
-          $_SESSION['return'][] = array(
+          $_SESSION['return'][] =  array(
             'type' => 'success',
             'log' => array("fido2_login"),
             'msg' => array('logged_in_as', $process_fido2['username'])
           );
           echo json_encode($return);
-          break;
+        break;
       }
-      break;
+    break;
     case "get":
-      function process_get_return($data, $object = true)
-      {
+      function process_get_return($data, $object = true) {
         if ($object === true) {
           $ret_str = '{}';
-        } else {
+        }
+        else {
           $ret_str = '[]';
         }
         echo (!isset($data) || empty($data)) ? $ret_str : json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -426,12 +416,10 @@ if (isset($_GET['query'])) {
       // only allow GET requests to GET API endpoints
       if ($_SERVER['REQUEST_METHOD'] != 'GET') {
         http_response_code(405);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'only GET method is allowed'
-          )
-        );
+        ));
         exit();
       }
       switch ($category) {
@@ -439,22 +427,23 @@ if (isset($_GET['query'])) {
         case "fido2-registration":
           header('Content-Type: application/json');
           if (isset($_SESSION["zynerone_cc_role"])) {
-            // Exclude existing CredentialIds, if any
-            $excludeCredentialIds = fido2(array("action" => "get_user_cids"));
-            $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, true, $GLOBALS['FIDO2_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
-            print(json_encode($createArgs));
-            $_SESSION['challenge'] = $WebAuthn->getChallenge();
-            return;
-          } else {
+              // Exclude existing CredentialIds, if any
+              $excludeCredentialIds = fido2(array("action" => "get_user_cids"));
+              $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, true, $GLOBALS['FIDO2_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
+              print(json_encode($createArgs));
+              $_SESSION['challenge'] = $WebAuthn->getChallenge();
+              return;
+          }
+          else {
             return;
           }
-          break;
+        break;
         case "fido2-get-args":
           header('Content-Type: application/json');
           // Login without username, no ids!
           // $ids = fido2(array("action" => "get_all_cids"));
           // if (count($ids) == 0) {
-          // return;
+            // return;
           // }
           $ids = NULL;
 
@@ -462,64 +451,59 @@ if (isset($_GET['query'])) {
           print(json_encode($getArgs));
           $_SESSION['challenge'] = $WebAuthn->getChallenge();
           return;
-          break;
+        break;
         // webauthn two factor authentication
         case "webauthn-tfa-registration":
           if (isset($_SESSION["zynerone_cc_role"])) {
-            // Exclude existing CredentialIds, if any
-            $stmt = $pdo->prepare("SELECT `keyHandle` FROM `tfa` WHERE username = :username AND authmech = :authmech");
-            $stmt->execute(
-              array(
+              // Exclude existing CredentialIds, if any
+              $stmt = $pdo->prepare("SELECT `keyHandle` FROM `tfa` WHERE username = :username AND authmech = :authmech");
+              $stmt->execute(array(
                 ':username' => $_SESSION['zynerone_cc_username'],
                 ':authmech' => 'webauthn'
-              )
-            );
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            while ($row = array_shift($rows)) {
-              $excludeCredentialIds[] = base64_decode($row['keyHandle']);
-            }
-            // getCreateArgs($userId, $userName, $userDisplayName, $timeout=20, $requireResidentKey=false, $requireUserVerification=false, $crossPlatformAttachment=null, $excludeCredentialIds=array())
-            // cross-platform: true, if type internal is not allowed
-            //        false, if only internal is allowed
-            //        null, if internal and cross-platform is allowed
-            $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, false, $GLOBALS['WEBAUTHN_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
+              ));
+              $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+              while($row = array_shift($rows)) {
+                $excludeCredentialIds[] = base64_decode($row['keyHandle']);
+              }
+              // getCreateArgs($userId, $userName, $userDisplayName, $timeout=20, $requireResidentKey=false, $requireUserVerification=false, $crossPlatformAttachment=null, $excludeCredentialIds=array())
+              // cross-platform: true, if type internal is not allowed
+              //        false, if only internal is allowed
+              //        null, if internal and cross-platform is allowed
+              $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, false, $GLOBALS['WEBAUTHN_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
+              
+              print(json_encode($createArgs));
+              $_SESSION['challenge'] = $WebAuthn->getChallenge();
+              return;
 
-            print(json_encode($createArgs));
-            $_SESSION['challenge'] = $WebAuthn->getChallenge();
-            return;
-
-          } else {
+          }
+          else {
             return;
           }
-          break;
+        break;
         case "webauthn-tfa-get-args":
           $stmt = $pdo->prepare("SELECT `keyHandle` FROM `tfa` WHERE username = :username AND authmech = :authmech");
-          $stmt->execute(
-            array(
-              ':username' => $_SESSION['pending_zynerone_cc_username'],
-              ':authmech' => 'webauthn'
-            )
-          );
+          $stmt->execute(array(
+            ':username' => $_SESSION['pending_zynerone_cc_username'],
+            ':authmech' => 'webauthn'
+          ));
           $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
           if (count($rows) == 0) {
-            print(json_encode(
-              array(
+            print(json_encode(array(
                 'type' => 'error',
                 'msg' => 'Cannot find matching credentialIds'
-              )
-            ));
+            )));
             exit;
           }
-          while ($row = array_shift($rows)) {
+          while($row = array_shift($rows)) {
             $cids[] = base64_decode($row['keyHandle']);
           }
 
           $getArgs = $WebAuthn->getGetArgs($cids, 30, false, false, false, false, $GLOBALS['WEBAUTHN_UV_FLAG_LOGIN']);
-          $getArgs->publicKey->extensions = array('appid' => "https://" . $getArgs->publicKey->rpId);
+          $getArgs->publicKey->extensions = array('appid' => "https://".$getArgs->publicKey->rpId);
           print(json_encode($getArgs));
           $_SESSION['challenge'] = $WebAuthn->getChallenge();
           return;
-          break;
+        break;
       }
       if (isset($_SESSION['zynerone_cc_role'])) {
         switch ($category) {
@@ -529,18 +513,19 @@ if (isset($_GET['query'])) {
                 $data = rspamd_actions();
                 if ($data) {
                   echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
             }
-            break;
+          break;
 
           case "domain":
             switch ($object) {
               case "all":
                 $tags = null;
-                if (isset($_GET['tags']) && $_GET['tags'] != '')
+                if (isset($_GET['tags']) && $_GET['tags'] != '') 
                   $tags = explode(',', $_GET['tags']);
 
                 $domains = mailbox('get', 'domains', null, $tags);
@@ -549,31 +534,33 @@ if (isset($_GET['query'])) {
                   foreach ($domains as $domain) {
                     if ($details = mailbox('get', 'domain_details', $domain)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               case "template":
-                switch ($extra) {
+                switch ($extra){
                   case "all":
                     process_get_return(mailbox('get', 'domain_templates'));
-                    break;
+                  break;
                   default:
                     process_get_return(mailbox('get', 'domain_templates', $extra));
-                    break;
+                  break;
                 }
-                break;
+              break;
               default:
                 $data = mailbox('get', 'domain_details', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "passwordpolicy":
             switch ($object) {
@@ -581,27 +568,30 @@ if (isset($_GET['query'])) {
                 $password_complexity_rules = password_complexity('html');
                 if ($password_complexity_rules !== false) {
                   process_get_return($password_complexity_rules);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               default:
                 $password_complexity_rules = password_complexity('get');
                 if ($password_complexity_rules !== false) {
                   process_get_return($password_complexity_rules);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
             }
-            break;
+          break;
 
           case "app-passwd":
             switch ($object) {
               case "all":
                 if (empty($extra)) {
                   $app_passwds = app_passwd('get');
-                } else {
+                }
+                else {
                   $app_passwds = app_passwd('get', array('username' => $extra));
                 }
                 if (!empty($app_passwds)) {
@@ -609,22 +599,24 @@ if (isset($_GET['query'])) {
                     $details = app_passwd('details', $app_passwd['id']);
                     if ($details !== false) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = app_passwd('details', array('id' => $object['id']));
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "mailq":
             switch ($object) {
@@ -632,21 +624,22 @@ if (isset($_GET['query'])) {
                 $mailq = mailq('get');
                 if (!empty($mailq)) {
                   echo $mailq;
-                } else {
+                }
+                else {
                   echo '[]';
                 }
-                break;
+              break;
             }
-            break;
+          break;
 
           case "postcat":
             switch ($object) {
               default:
                 $data = mailq('cat', array('qid' => $object));
                 echo $data;
-                break;
+              break;
             }
-            break;
+          break;
 
           case "global_filters":
             $global_filters = mailbox('get', 'global_filter_details');
@@ -654,26 +647,29 @@ if (isset($_GET['query'])) {
               case "all":
                 if (!empty($global_filters)) {
                   process_get_return($global_filters);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               case "prefilter":
                 if (!empty($global_filters['prefilter'])) {
                   process_get_return($global_filters['prefilter']);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               case "postfilter":
                 if (!empty($global_filters['postfilter'])) {
                   process_get_return($global_filters['postfilter']);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
             }
-            break;
+          break;
 
           case "rl-domain":
             switch ($object) {
@@ -684,22 +680,24 @@ if (isset($_GET['query'])) {
                     if ($details = ratelimit('get', 'domain', $domain)) {
                       $details['domain'] = $domain;
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = ratelimit('get', 'domain', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "rl-mbox":
             switch ($object) {
@@ -713,24 +711,26 @@ if (isset($_GET['query'])) {
                         if ($details = ratelimit('get', 'mailbox', $mailbox)) {
                           $details['mailbox'] = $mailbox;
                           $data[] = $details;
-                        } else {
+                        }
+                        else {
                           continue;
                         }
                       }
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = ratelimit('get', 'mailbox', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "relayhost":
             switch ($object) {
@@ -740,34 +740,37 @@ if (isset($_GET['query'])) {
                   foreach ($relayhosts as $relayhost) {
                     if ($details = relayhost('details', $relayhost['id'])) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = relayhost('details', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "last-login":
             if ($object) {
               // extra == days
               if (isset($extra) && intval($extra) >= 1) {
                 $data = last_login('get', $object, intval($extra));
-              } else {
+              }
+              else {
                 $data = last_login('get', $object);
               }
               process_get_return($data);
             }
-            break;
+          break;
 
           // Todo: move to delete
           case "reset-last-login":
@@ -775,7 +778,7 @@ if (isset($_GET['query'])) {
               $data = last_login('reset', $object);
               process_get_return($data);
             }
-            break;
+          break;
 
           case "transport":
             switch ($object) {
@@ -785,22 +788,24 @@ if (isset($_GET['query'])) {
                   foreach ($transports as $transport) {
                     if ($details = transport('details', $transport['id'])) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = transport('details', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "rsetting":
             switch ($object) {
@@ -810,22 +815,24 @@ if (isset($_GET['query'])) {
                   foreach ($rsettings as $rsetting) {
                     if ($details = rsettings('details', $rsetting['id'])) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = rsettings('details', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "oauth2-client":
             switch ($object) {
@@ -835,22 +842,24 @@ if (isset($_GET['query'])) {
                   foreach ($clients as $client) {
                     if ($details = oauth2('details', 'client', $client)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $data = oauth2('details', 'client', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
 
           case "logs":
             switch ($object) {
@@ -859,180 +868,187 @@ if (isset($_GET['query'])) {
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('dovecot-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('dovecot-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "ratelimited":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('ratelimited', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('ratelimited');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "netfilter":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('netfilter-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('netfilter-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "postfix":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('postfix-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('postfix-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "autodiscover":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('autodiscover-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('autodiscover-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "sogo":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('sogo-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('sogo-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "ui":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('zynerone-ui', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('zynerone-ui');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "sasl":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('sasl', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('sasl');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "watchdog":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('watchdog-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('watchdog-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "acme":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('acme-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('acme-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "api":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('api-zynerone', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('api-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "rspamd-history":
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
                   $logs = get_logs('rspamd-history', $extra);
-                } else {
+                }
+                else {
                   $logs = get_logs('rspamd-history');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               case "rspamd-stats":
                 $logs = get_logs('rspamd-stats');
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
-                break;
+              break;
               // return no route found if no case is matched
               default:
                 http_response_code(404);
-                echo json_encode(
-                  array(
-                    'type' => 'error',
-                    'msg' => 'route not found'
-                  )
-                );
+                echo json_encode(array(
+                  'type' => 'error',
+                  'msg' => 'route not found'
+                ));
                 exit();
             }
-            break;
+          break;
           case "mailbox":
             switch ($object) {
               case "all":
               case "reduced":
                 $tags = null;
-                if (isset($_GET['tags']) && $_GET['tags'] != '')
+                if (isset($_GET['tags']) && $_GET['tags'] != '') 
                   $tags = explode(',', $_GET['tags']);
 
-                if (empty($extra))
-                  $domains = mailbox('get', 'domains');
-                else
-                  $domains = explode(',', $extra);
+                if (empty($extra)) $domains = mailbox('get', 'domains');
+                else $domains = explode(',', $extra);
 
                 if (!empty($domains)) {
                   foreach ($domains as $domain) {
                     $mailboxes = mailbox('get', 'mailboxes', $domain, $tags);
                     if (!empty($mailboxes)) {
                       foreach ($mailboxes as $mailbox) {
-                        if ($details = mailbox('get', 'mailbox_details', $mailbox, $object))
-                          $data[] = $details;
-                        else
-                          continue;
+                        if ($details = mailbox('get', 'mailbox_details', $mailbox, $object)) $data[] = $details;
+                        else continue;
                       }
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               case "template":
-                switch ($extra) {
+                switch ($extra){
                   case "all":
                     process_get_return(mailbox('get', 'mailbox_templates'));
-                    break;
+                  break;
                   default:
                     process_get_return(mailbox('get', 'mailbox_templates', $extra));
-                    break;
+                  break;
                 }
-                break;
+              break;
               default:
                 $tags = null;
-                if (isset($_GET['tags']) && $_GET['tags'] != '')
+                if (isset($_GET['tags']) && $_GET['tags'] != '') 
                   $tags = explode(',', $_GET['tags']);
 
                 if ($tags === null) {
@@ -1042,15 +1058,15 @@ if (isset($_GET['query'])) {
                   $mailboxes = mailbox('get', 'mailboxes', $object, $tags);
                   if (is_array($mailboxes)) {
                     foreach ($mailboxes as $mailbox) {
-                      if ($details = mailbox('get', 'mailbox_details', $mailbox))
+                      if ($details = mailbox('get', 'mailbox_details', $mailbox)) 
                         $data[] = $details;
                     }
                   }
                   process_get_return($data, false);
                 }
-                break;
+              break;
             }
-            break;
+          break;
           case "bcc-destination-options":
             $domains = mailbox('get', 'domains');
             $alias_domains = mailbox('get', 'alias_domains');
@@ -1077,7 +1093,7 @@ if (isset($_GET['query'])) {
               }
             }
             process_get_return($data);
-            break;
+          break;
           case "syncjobs":
             switch ($object) {
               case "all":
@@ -1092,12 +1108,14 @@ if (isset($_GET['query'])) {
                           foreach ($syncjobs as $syncjob) {
                             if (isset($extra)) {
                               $details = mailbox('get', 'syncjob_details', $syncjob, explode(',', $extra));
-                            } else {
+                            }
+                            else {
                               $details = mailbox('get', 'syncjob_details', $syncjob);
                             }
                             if ($details) {
                               $data[] = $details;
-                            } else {
+                            }
+                            else {
                               continue;
                             }
                           }
@@ -1106,10 +1124,11 @@ if (isset($_GET['query'])) {
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $syncjobs = mailbox('get', 'syncjobs', $object);
@@ -1117,20 +1136,22 @@ if (isset($_GET['query'])) {
                   foreach ($syncjobs as $syncjob) {
                     if (isset($extra)) {
                       $details = mailbox('get', 'syncjob_details', $syncjob, explode(',', $extra));
-                    } else {
+                    }
+                    else {
                       $details = mailbox('get', 'syncjob_details', $syncjob);
                     }
                     if ($details) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "active-user-sieve":
             if (isset($object)) {
               $sieve_filter = mailbox('get', 'active_user_sieve', $object);
@@ -1139,7 +1160,7 @@ if (isset($_GET['query'])) {
               }
             }
             process_get_return($data);
-            break;
+          break;
           case "filters":
             switch ($object) {
               case "all":
@@ -1154,7 +1175,8 @@ if (isset($_GET['query'])) {
                           foreach ($filters as $filter) {
                             if ($details = mailbox('get', 'filter_details', $filter)) {
                               $data[] = $details;
-                            } else {
+                            }
+                            else {
                               continue;
                             }
                           }
@@ -1163,10 +1185,11 @@ if (isset($_GET['query'])) {
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 $filters = mailbox('get', 'filters', $object);
@@ -1174,15 +1197,16 @@ if (isset($_GET['query'])) {
                   foreach ($filters as $filter) {
                     if ($details = mailbox('get', 'filter_details', $filter)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "bcc":
             switch ($object) {
               case "all":
@@ -1191,22 +1215,23 @@ if (isset($_GET['query'])) {
                   foreach ($bcc_items as $bcc_item) {
                     if ($details = bcc('details', $bcc_item)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
               default:
                 $data = bcc('details', $object);
                 if (!empty($data)) {
                   $data[] = $details;
                 }
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "recipient_map":
             switch ($object) {
               case "all":
@@ -1215,22 +1240,23 @@ if (isset($_GET['query'])) {
                   foreach ($recipient_map_items as $recipient_map_item) {
                     if ($details = recipient_map('details', $recipient_map_item)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
               default:
                 $data = recipient_map('details', $object);
                 if (!empty($data)) {
                   $data[] = $details;
                 }
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "tls-policy-map":
             switch ($object) {
               case "all":
@@ -1239,70 +1265,71 @@ if (isset($_GET['query'])) {
                   foreach ($tls_policy_maps_items as $tls_policy_maps_item) {
                     if ($details = tls_policy_maps('details', $tls_policy_maps_item)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
               default:
                 $data = tls_policy_maps('details', $object);
                 if (!empty($data)) {
                   $data[] = $details;
                 }
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "policy_wl_mailbox":
             switch ($object) {
               default:
                 $data = policy('get', 'mailbox', $object)['whitelist'];
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "policy_bl_mailbox":
             switch ($object) {
               default:
                 $data = policy('get', 'mailbox', $object)['blacklist'];
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "policy_wl_domain":
             switch ($object) {
               default:
                 $data = policy('get', 'domain', $object)['whitelist'];
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "policy_bl_domain":
             switch ($object) {
               default:
                 $data = policy('get', 'domain', $object)['blacklist'];
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "time_limited_aliases":
             switch ($object) {
               default:
                 $data = mailbox('get', 'time_limited_aliases', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "fail2ban":
             switch ($object) {
               default:
                 $data = fail2ban('get');
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "resource":
             switch ($object) {
               case "all":
@@ -1314,44 +1341,46 @@ if (isset($_GET['query'])) {
                       foreach ($resources as $resource) {
                         if ($details = mailbox('get', 'resource_details', $resource)) {
                           $data[] = $details;
-                        } else {
+                        }
+                        else {
                           continue;
                         }
                       }
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
               default:
                 $data = mailbox('get', 'resource_details', $object);
                 process_get_return($data);
-                break;
+              break;
             }
-            break;
+          break;
           case "fwdhost":
             switch ($object) {
               case "all":
                 process_get_return(fwdhost('get'));
-                break;
+              break;
               default:
                 process_get_return(fwdhost('details', $object));
-                break;
+              break;
             }
-            break;
+          break;
           case "quarantine":
             // "all" will not print details
             switch ($object) {
               case "all":
                 process_get_return(quarantine('get'), false);
-                break;
+              break;
               default:
                 process_get_return(quarantine('details', $object), false);
-                break;
+              break;
             }
-            break;
+          break;
           case "alias-domain":
             switch ($object) {
               case "all":
@@ -1360,24 +1389,26 @@ if (isset($_GET['query'])) {
                   foreach ($alias_domains as $alias_domain) {
                     if ($details = mailbox('get', 'alias_domain_details', $alias_domain)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                 }
                 process_get_return($data);
-                break;
+              break;
               default:
                 process_get_return(mailbox('get', 'alias_domain_details', $object));
-                break;
+              break;
             }
-            break;
+          break;
           case "alias":
             switch ($object) {
               case "all":
                 if (empty($extra)) {
                   $domains = array_merge(mailbox('get', 'domains'), mailbox('get', 'alias_domains'));
-                } else {
+                }
+                else {
                   $domains = explode(',', $extra);
                 }
                 if (!empty($domains)) {
@@ -1387,23 +1418,25 @@ if (isset($_GET['query'])) {
                       foreach ($aliases as $alias) {
                         if ($details = mailbox('get', 'alias_details', $alias)) {
                           $data[] = $details;
-                        } else {
+                        }
+                        else {
                           continue;
                         }
                       }
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 process_get_return(mailbox('get', 'alias_details', $object));
-                break;
+              break;
             }
-            break;
+          break;
           case "domain-admin":
             switch ($object) {
               case "all":
@@ -1412,21 +1445,23 @@ if (isset($_GET['query'])) {
                   foreach ($domain_admins as $domain_admin) {
                     if ($details = domain_admin('details', $domain_admin)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 process_get_return(domain_admin('details', $object));
-                break;
+              break;
             }
-            break;
+          break;
           case "admin":
             switch ($object) {
               case "all":
@@ -1435,21 +1470,23 @@ if (isset($_GET['query'])) {
                   foreach ($admins as $admin) {
                     if ($details = admin('details', $admin)) {
                       $data[] = $details;
-                    } else {
+                    }
+                    else {
                       continue;
                     }
                   }
                   process_get_return($data);
-                } else {
+                }
+                else {
                   echo '{}';
                 }
-                break;
+              break;
 
               default:
                 process_get_return(admin('details', $object));
-                break;
+              break;
             }
-            break;
+          break;
           case "dkim":
             switch ($object) {
               default:
@@ -1457,17 +1494,17 @@ if (isset($_GET['query'])) {
                 process_get_return($data);
                 break;
             }
-            break;
+          break;
           case "presets":
             switch ($object) {
               case "rspamd":
                 process_get_return(presets('get', 'rspamd'));
-                break;
+              break;
               case "sieve":
                 process_get_return(presets('get', 'sieve'));
-                break;
+              break;
             }
-            break;
+          break;
           case "status":
             if ($_SESSION['zynerone_cc_role'] == "admin") {
               switch ($object) {
@@ -1487,11 +1524,11 @@ if (isset($_GET['query'])) {
                     );
                   }
                   echo json_encode($temp, JSON_UNESCAPED_SLASHES);
-                  break;
+                break;
                 case "container":
                   $container_stats = docker('container_stats', $extra);
                   echo json_encode($container_stats);
-                  break;
+                break;
                 case "vmail":
                   $exec_fields_vmail = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
                   $vmail_df = explode(',', json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields_vmail), true));
@@ -1499,36 +1536,36 @@ if (isset($_GET['query'])) {
                     'type' => 'info',
                     'disk' => $vmail_df[0],
                     'used' => $vmail_df[2],
-                    'total' => $vmail_df[1],
+                    'total'=> $vmail_df[1],
                     'used_percent' => $vmail_df[4]
                   );
                   echo json_encode($temp, JSON_UNESCAPED_SLASHES);
-                  break;
+                break;
                 case "solr":
                   $solr_status = solr_status();
                   $solr_size = ($solr_status['status']['dovecot-fts']['index']['size']);
                   $solr_documents = ($solr_status['status']['dovecot-fts']['index']['numDocs']);
                   if (strtolower(getenv('SKIP_SOLR')) != 'n') {
                     $solr_enabled = false;
-                  } else {
+                  }
+                  else {
                     $solr_enabled = true;
                   }
-                  echo json_encode(
-                    array(
-                      'type' => 'info',
-                      'solr_enabled' => $solr_enabled,
-                      'solr_size' => $solr_size,
-                      'solr_documents' => $solr_documents
-                    )
-                  );
-                  break;
+                  echo json_encode(array(
+                    'type' => 'info',
+                    'solr_enabled' => $solr_enabled,
+                    'solr_size' => $solr_size,
+                    'solr_documents' => $solr_documents
+                  ));
+                break;  
                 case "host":
-                  if (!$extra) {
+                  if (!$extra){
                     $stats = docker("host_stats");
                     echo json_encode($stats);
-                  } else if ($extra == "ip") {
+                  } 
+                  else if ($extra == "ip") {
                     // get public ips
-
+                    
                     $curl = curl_init();
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
                     curl_setopt($curl, CURLOPT_POST, 0);
@@ -1545,416 +1582,393 @@ if (isset($_GET['query'])) {
                     curl_close($curl);
                     echo json_encode($ips);
                   }
-                  break;
+                break;
                 case "version":
-                  echo json_encode(
-                    array(
-                      'version' => $GLOBALS['ZYNERONE_GIT_VERSION']
-                    )
-                  );
-                  break;
+                  echo json_encode(array(
+                    'version' => $GLOBALS['ZYNERONE_GIT_VERSION']
+                  ));
+                break;
               }
             }
-            break;
-            break;
-          // return no route found if no case is matched
-          default:
-            http_response_code(404);
-            echo json_encode(
-              array(
-                'type' => 'error',
-                'msg' => 'route not found'
-              )
-            );
-            exit();
+          break;
+        break;
+        // return no route found if no case is matched
+        default:
+          http_response_code(404);
+          echo json_encode(array(
+            'type' => 'error',
+            'msg' => 'route not found'
+          ));
+          exit();
         }
       }
-      break;
+    break;
     case "delete":
       if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username']) || !isset($_SESSION["zynerone_cc_username"])) {
         http_response_code(403);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'API read/write access denied'
-          )
-        );
+        ));
         exit();
       }
-      function process_delete_return($return)
-      {
-        $generic_failure = json_encode(
-          array(
-            'type' => 'error',
-            'msg' => 'Cannot delete item'
-          )
-        );
-        $generic_success = json_encode(
-          array(
-            'type' => 'success',
-            'msg' => 'Task completed'
-          )
-        );
+      function process_delete_return($return) {
+        $generic_failure = json_encode(array(
+          'type' => 'error',
+          'msg' => 'Cannot delete item'
+        ));
+        $generic_success = json_encode(array(
+          'type' => 'success',
+          'msg' => 'Task completed'
+        ));
         if ($return === false) {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_failure;
-        } else {
+        }
+        else {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_success;
         }
       }
       if (!isset($_POST['items'])) {
         echo $request_incomplete;
         exit;
-      } else {
-        $items = (array) json_decode($_POST['items'], true);
+      }
+      else {
+        $items = (array)json_decode($_POST['items'], true);
       }
       // only allow POST requests to POST API endpoints
       if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         http_response_code(405);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'only POST method is allowed'
-          )
-        );
+        ));
         exit();
       }
       switch ($category) {
         case "alias":
           process_delete_return(mailbox('delete', 'alias', array('id' => $items)));
-          break;
+        break;
         case "oauth2-client":
           process_delete_return(oauth2('delete', 'client', array('id' => $items)));
-          break;
+        break;
         case "app-passwd":
           process_delete_return(app_passwd('delete', array('id' => $items)));
-          break;
+        break;
         case "relayhost":
           process_delete_return(relayhost('delete', array('id' => $items)));
-          break;
+        break;
         case "transport":
           process_delete_return(transport('delete', array('id' => $items)));
-          break;
+        break;
         case "rsetting":
           process_delete_return(rsettings('delete', array('id' => $items)));
-          break;
+        break;
         case "syncjob":
           process_delete_return(mailbox('delete', 'syncjob', array('id' => $items)));
-          break;
+        break;
         case "filter":
           process_delete_return(mailbox('delete', 'filter', array('id' => $items)));
-          break;
+        break;
         case "mailq":
           process_delete_return(mailq('delete', array('qid' => $items)));
-          break;
+        break;
         case "qitem":
           process_delete_return(quarantine('delete', array('id' => $items)));
-          break;
+        break;
         case "bcc":
           process_delete_return(bcc('delete', array('id' => $items)));
-          break;
+        break;
         case "recipient_map":
           process_delete_return(recipient_map('delete', array('id' => $items)));
-          break;
+        break;
         case "tls-policy-map":
           process_delete_return(tls_policy_maps('delete', array('id' => $items)));
-          break;
+        break;
         case "fwdhost":
           process_delete_return(fwdhost('delete', array('forwardinghost' => $items)));
-          break;
+        break;
         case "dkim":
           process_delete_return(dkim('delete', array('domains' => $items)));
-          break;
+        break;
         case "domain":
-          switch ($object) {
+          switch ($object){
             case "tag":
               process_delete_return(mailbox('delete', 'tags_domain', array('tags' => $items, 'domain' => $extra)));
-              break;
+            break;
             case "template":
               process_delete_return(mailbox('delete', 'domain_templates', array('ids' => $items)));
-              break;
+            break;
             default:
               process_delete_return(mailbox('delete', 'domain', array('domain' => $items)));
           }
-          break;
+        break;
         case "alias-domain":
           process_delete_return(mailbox('delete', 'alias_domain', array('alias_domain' => $items)));
-          break;
+        break;
         case "mailbox":
-          switch ($object) {
+          switch ($object){
             case "tag":
               process_delete_return(mailbox('delete', 'tags_mailbox', array('tags' => $items, 'username' => $extra)));
-              break;
+            break;
             case "template":
               process_delete_return(mailbox('delete', 'mailbox_templates', array('ids' => $items)));
-              break;
+            break;
             default:
               process_delete_return(mailbox('delete', 'mailbox', array('username' => $items)));
           }
-          break;
+        break;
         case "resource":
           process_delete_return(mailbox('delete', 'resource', array('name' => $items)));
-          break;
+        break;
         case "mailbox-policy":
           process_delete_return(policy('delete', 'mailbox', array('prefid' => $items)));
-          break;
+        break;
         case "domain-policy":
           process_delete_return(policy('delete', 'domain', array('prefid' => $items)));
-          break;
+        break;
         case "time_limited_alias":
           process_delete_return(mailbox('delete', 'time_limited_alias', array('address' => $items)));
-          break;
+        break;
         case "eas_cache":
           process_delete_return(mailbox('delete', 'eas_cache', array('username' => $items)));
-          break;
+        break;
         case "sogo_profile":
           process_delete_return(mailbox('delete', 'sogo_profile', array('username' => $items)));
-          break;
+        break;
         case "domain-admin":
           process_delete_return(domain_admin('delete', array('username' => $items)));
-          break;
+        break;
         case "admin":
           process_delete_return(admin('delete', array('username' => $items)));
-          break;
+        break;
         case "rlhash":
           echo ratelimit('delete', null, implode($items));
-          break;
+        break;
         // return no route found if no case is matched
         default:
           http_response_code(404);
-          echo json_encode(
-            array(
-              'type' => 'error',
-              'msg' => 'route not found'
-            )
-          );
+          echo json_encode(array(
+            'type' => 'error',
+            'msg' => 'route not found'
+          ));
           exit();
       }
-      break;
+    break;
     case "edit":
       if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username']) || !isset($_SESSION["zynerone_cc_username"])) {
         http_response_code(403);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'API read/write access denied'
-          )
-        );
+        ));
         exit();
       }
-      function process_edit_return($return)
-      {
-        $generic_failure = json_encode(
-          array(
-            'type' => 'error',
-            'msg' => 'Cannot edit item'
-          )
-        );
-        $generic_success = json_encode(
-          array(
-            'type' => 'success',
-            'msg' => 'Task completed'
-          )
-        );
+      function process_edit_return($return) {
+        $generic_failure = json_encode(array(
+          'type' => 'error',
+          'msg' => 'Cannot edit item'
+        ));
+        $generic_success = json_encode(array(
+          'type' => 'success',
+          'msg' => 'Task completed'
+        ));
         if ($return === false) {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_failure;
-        } else {
+        }
+        else {
           echo isset($_SESSION['return']) ? json_encode($_SESSION['return']) : $generic_success;
         }
       }
       if (!isset($_POST['attr'])) {
         echo $request_incomplete;
         exit;
-      } else {
-        $attr = (array) json_decode($_POST['attr'], true);
+      }
+      else {
+        $attr = (array)json_decode($_POST['attr'], true);
         unset($attr['csrf_token']);
-        $items = isset($_POST['items']) ? (array) json_decode($_POST['items'], true) : null;
+        $items = isset($_POST['items']) ? (array)json_decode($_POST['items'], true) : null;
       }
       // only allow POST requests to POST API endpoints
       if ($_SERVER['REQUEST_METHOD'] != 'POST') {
         http_response_code(405);
-        echo json_encode(
-          array(
+        echo json_encode(array(
             'type' => 'error',
             'msg' => 'only POST method is allowed'
-          )
-        );
+        ));
         exit();
       }
       switch ($category) {
         case "bcc":
           process_edit_return(bcc('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "pushover":
           process_edit_return(pushover('edit', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "pushover-test":
           process_edit_return(pushover('test', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "oauth2-client":
           process_edit_return(oauth2('edit', 'client', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "recipient_map":
           process_edit_return(recipient_map('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "app-passwd":
           process_edit_return(app_passwd('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "tls-policy-map":
           process_edit_return(tls_policy_maps('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "alias":
           process_edit_return(mailbox('edit', 'alias', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "rspamd-map":
           process_edit_return(rspamd_maps('edit', array_merge(array('map' => $items), $attr)));
-          break;
+        break;
         case "fido2-fn":
           process_edit_return(fido2(array('action' => 'edit_fn', 'fido2_attrs' => $attr)));
-          break;
+        break;
         case "app_links":
           process_edit_return(customize('edit', 'app_links', $attr));
-          break;
+        break;
         case "passwordpolicy":
           process_edit_return(password_complexity('edit', $attr));
-          break;
+        break;
         case "relayhost":
           process_edit_return(relayhost('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "transport":
           process_edit_return(transport('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "rsetting":
           process_edit_return(rsettings('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "delimiter_action":
           process_edit_return(mailbox('edit', 'delimiter_action', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "tls_policy":
           process_edit_return(mailbox('edit', 'tls_policy', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "quarantine_notification":
           process_edit_return(mailbox('edit', 'quarantine_notification', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "quarantine_category":
           process_edit_return(mailbox('edit', 'quarantine_category', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "qitem":
           process_edit_return(quarantine('edit', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "quarantine":
           process_edit_return(quarantine('edit', $attr));
-          break;
+        break;
         case "quota_notification":
           process_edit_return(quota_notification('edit', $attr));
-          break;
+        break;
         case "quota_notification_bcc":
           process_edit_return(quota_notification_bcc('edit', $attr));
-          break;
+        break;
         case "domain-wide-footer":
           process_edit_return(mailbox('edit', 'domain_wide_footer', $attr));
-          break;
+        break;
         case "mailq":
           process_edit_return(mailq('edit', array_merge(array('qid' => $items), $attr)));
-          break;
+        break;
         case "time_limited_alias":
           process_edit_return(mailbox('edit', 'time_limited_alias', array_merge(array('address' => $items), $attr)));
-          break;
+        break;
         case "mailbox":
           switch ($object) {
             case "template":
               process_edit_return(mailbox('edit', 'mailbox_templates', array_merge(array('ids' => $items), $attr)));
-              break;
+            break;
             default:
               process_edit_return(mailbox('edit', 'mailbox', array_merge(array('username' => $items), $attr)));
-              break;
+            break;
           }
-          break;
+        break;
         case "syncjob":
           process_edit_return(mailbox('edit', 'syncjob', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "filter":
           process_edit_return(mailbox('edit', 'filter', array_merge(array('id' => $items), $attr)));
-          break;
+        break;
         case "resource":
           process_edit_return(mailbox('edit', 'resource', array_merge(array('name' => $items), $attr)));
-          break;
+        break;
         case "domain":
           switch ($object) {
             case "template":
               process_edit_return(mailbox('edit', 'domain_templates', array_merge(array('ids' => $items), $attr)));
-              break;
+            break;
             default:
               process_edit_return(mailbox('edit', 'domain', array_merge(array('domain' => $items), $attr)));
-              break;
+            break;
           }
-          break;
+        break;
         case "rl-domain":
           process_edit_return(ratelimit('edit', 'domain', array_merge(array('object' => $items), $attr)));
-          break;
+        break;
         case "rl-mbox":
           process_edit_return(ratelimit('edit', 'mailbox', array_merge(array('object' => $items), $attr)));
-          break;
+        break;
         case "user-acl":
           process_edit_return(acl('edit', 'user', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "da-acl":
           process_edit_return(acl('edit', 'domainadmin', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "alias-domain":
           process_edit_return(mailbox('edit', 'alias_domain', array_merge(array('alias_domain' => $items), $attr)));
-          break;
+        break;
         case "spam-score":
           process_edit_return(mailbox('edit', 'spam_score', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "domain-admin":
           process_edit_return(domain_admin('edit', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "admin":
           process_edit_return(admin('edit', array_merge(array('username' => $items), $attr)));
-          break;
+        break;
         case "fwdhost":
           process_edit_return(fwdhost('edit', array_merge(array('fwdhost' => $items), $attr)));
-          break;
+        break;
         case "fail2ban":
           process_edit_return(fail2ban('edit', array_merge(array('network' => $items), $attr)));
-          break;
+        break;
         case "ui_texts":
           process_edit_return(customize('edit', 'ui_texts', $attr));
-          break;
+        break;
         case "ip_check":
           process_edit_return(customize('edit', 'ip_check', $attr));
-          break;
+        break;
         case "self":
           if ($_SESSION['zynerone_cc_role'] == "domainadmin") {
             process_edit_return(domain_admin('edit', $attr));
-          } elseif ($_SESSION['zynerone_cc_role'] == "user") {
+          }
+          elseif ($_SESSION['zynerone_cc_role'] == "user") {
             process_edit_return(edit_user_account($attr));
           }
-          break;
+        break;
         case "cors":
           process_edit_return(cors('edit', $attr));
-          break;
+        break;
         // return no route found if no case is matched
         default:
           http_response_code(404);
-          echo json_encode(
-            array(
-              'type' => 'error',
-              'msg' => 'route not found'
-            )
-          );
+          echo json_encode(array(
+            'type' => 'error',
+            'msg' => 'route not found'
+          ));
           exit();
       }
-      break;
+    break;
     // return no route found if no case is matched
     default:
       http_response_code(404);
-      echo json_encode(
-        array(
-          'type' => 'error',
-          'msg' => 'route not found'
-        )
-      );
+      echo json_encode(array(
+        'type' => 'error',
+        'msg' => 'route not found'
+      ));
       exit();
   }
 }

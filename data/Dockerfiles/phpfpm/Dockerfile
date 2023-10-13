@@ -61,28 +61,28 @@ RUN apk add -U --no-cache autoconf \
   redis \
   samba-client \
   zlib-dev \
-  tzdata &&
-  pecl install APCu-${APCU_PECL_VERSION} &&
-  pecl install imagick-${IMAGICK_PECL_VERSION} &&
-  pecl install mailparse-${MAILPARSE_PECL_VERSION} &&
-  pecl install memcached-${MEMCACHED_PECL_VERSION} &&
-  pecl install redis-${REDIS_PECL_VERSION} &&
-  docker-php-ext-enable apcu imagick memcached mailparse redis &&
-  pecl clear-cache &&
-  docker-php-ext-configure intl &&
-  docker-php-ext-configure exif &&
-  docker-php-ext-configure gd --with-freetype=/usr/include/ \
+  tzdata \
+  && pecl install APCu-${APCU_PECL_VERSION} \
+  && pecl install imagick-${IMAGICK_PECL_VERSION} \
+  && pecl install mailparse-${MAILPARSE_PECL_VERSION} \
+  && pecl install memcached-${MEMCACHED_PECL_VERSION} \
+  && pecl install redis-${REDIS_PECL_VERSION} \
+  && docker-php-ext-enable apcu imagick memcached mailparse redis \
+  && pecl clear-cache \
+  && docker-php-ext-configure intl \
+  && docker-php-ext-configure exif \
+  && docker-php-ext-configure gd --with-freetype=/usr/include/ \  
     --with-jpeg=/usr/include/ \
     --with-webp \
     --with-xpm \
-    --with-avif &&
-  docker-php-ext-install -j 4 exif gd gettext intl ldap opcache pcntl pdo pdo_mysql pspell soap sockets sysvsem zip bcmath gmp &&
-  docker-php-ext-configure imap --with-imap --with-imap-ssl &&
-  docker-php-ext-install -j 4 imap &&
-  curl --silent --show-error https://getcomposer.org/installer | php -- --version=${COMPOSER_VERSION} &&
-  mv composer.phar /usr/local/bin/composer &&
-  chmod +x /usr/local/bin/composer &&
-  apk del --purge autoconf \
+    --with-avif \
+  && docker-php-ext-install -j 4 exif gd gettext intl ldap opcache pcntl pdo pdo_mysql pspell soap sockets sysvsem zip bcmath gmp \
+  && docker-php-ext-configure imap --with-imap --with-imap-ssl \
+  && docker-php-ext-install -j 4 imap \
+  && curl --silent --show-error https://getcomposer.org/installer | php -- --version=${COMPOSER_VERSION} \
+  && mv composer.phar /usr/local/bin/composer \
+  && chmod +x /usr/local/bin/composer \
+  && apk del --purge autoconf \
     aspell-dev \
     cyrus-sasl-dev \
     freetype-dev \

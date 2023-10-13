@@ -5,7 +5,7 @@ if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "a
   header('Location: /');
   exit();
 }
-require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.inc.php';
+require_once $_SERVER['DOCUMENT_ROOT'] .  '/inc/header.inc.php';
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
 
 

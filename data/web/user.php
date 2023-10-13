@@ -22,7 +22,8 @@ if (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'do
     'lang_user' => json_encode($lang['user']),
     'lang_datatables' => json_encode($lang['datatables']),
   ];
-} elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'user') {
+}
+elseif (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'user') {
 
   /*
   / USER
@@ -38,7 +39,7 @@ if (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'do
 
   $clientconfigstr = "host=" . urlencode($zynerone_hostname) . "&email=" . urlencode($username) . "&name=" . urlencode($mailboxdata['name']) . "&ui=" . urlencode(strtok($_SERVER['HTTP_HOST'], ':')) . "&port=" . urlencode($autodiscover_config['caldav']['port']);
   if ($autodiscover_config['useEASforOutlook'] == 'yes')
-    $clientconfigstr .= "&outlookEAS=1";
+  $clientconfigstr .= "&outlookEAS=1";
   if (file_exists('thunderbird-plugins/version.csv')) {
     $fh = fopen('thunderbird-plugins/version.csv', 'r');
     if ($fh) {
@@ -63,11 +64,13 @@ if (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'do
 
   // get number of app passwords
   $number_of_app_passwords = 0;
-  foreach (app_passwd("get") as $app_password) {
-    $app_password = app_passwd("details", $app_password['id']);
-    if ($app_password['active']) {
-      $number_of_app_passwords++;
-    }
+  foreach (app_passwd("get") as $app_password)
+  {
+      $app_password = app_passwd("details", $app_password['id']);
+      if ($app_password['active'])
+      {
+          $number_of_app_passwords++;
+      }
   }
 
   $template = 'user.twig';
@@ -91,7 +94,8 @@ if (isset($_SESSION['zynerone_cc_role']) && $_SESSION['zynerone_cc_role'] == 'do
     'number_of_app_passwords' => $number_of_app_passwords,
     'lang_datatables' => json_encode($lang['datatables']),
   ];
-} else {
+}
+else {
   header('Location: /');
   exit();
 }

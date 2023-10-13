@@ -7,7 +7,8 @@ while ! mysqladmin status --socket=/var/run/mysqld/mysqld.sock -u${DBUSER} -p${D
 done
 
 # Wait until port becomes free and send sig
-until ! nc -z sogo-zynerone 20000; do
+until ! nc -z sogo-zynerone 20000;
+do
   killall -TERM sogod
   sleep 3
 done
@@ -28,8 +29,8 @@ if [[ "${MASTER}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
   echo "We are master, preparing sogo_view..."
   mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} -e "DROP VIEW IF EXISTS sogo_view"
   while [[ ${VIEW_OK} != 'OK' ]]; do
-    mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} <<EOF
-CREATE VIEW sogo_view (c_uid, domain, c_name, c_password, c_cn, mail, aliases, ad_aliases, ext_acl, kind, multiple_bookings) AS
+    mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} << EOF
+CREATE VIEW sogo_view (c_uid, domain, c_name, c_password, c_cn, mail, aliases, ad_aliases, ext_acl, kind, multiple_bookings) AS 
 SELECT
    mailbox.username,
    mailbox.domain,
@@ -102,12 +103,13 @@ else
   done
 fi
 
+
 # Recreate password update trigger
 if [[ "${MASTER}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
   echo "We are master, preparing update trigger..."
   mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} -e "DROP TRIGGER IF EXISTS sogo_update_password"
   while [[ ${TRIGGER_OK} != 'OK' ]]; do
-    mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} <<EOF
+  mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} << EOF
 DELIMITER -
 CREATE TRIGGER sogo_update_password AFTER UPDATE ON _sogo_static_view
 FOR EACH ROW
@@ -131,7 +133,7 @@ RAND_PASS=$(openssl rand -base64 16 | tr -dc _A-Z-a-z-0-9)
 
 # Generate plist header with timezone data
 mkdir -p /var/lib/sogo/GNUstep/Defaults/
-cat <<EOF >/var/lib/sogo/GNUstep/Defaults/sogod.plist
+cat <<EOF > /var/lib/sogo/GNUstep/Defaults/sogod.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//GNUstep//DTD plist 0.9//EN" "http://www.gnustep.org/plist-0_9.xml">
 <plist version="0.9">
@@ -167,7 +169,8 @@ cat <<EOF >/var/lib/sogo/GNUstep/Defaults/sogod.plist
 EOF
 
 # Generate multi-domain setup
-while read -r line gal; do
+while read -r line gal
+  do
   echo "        <key>${line}</key>
         <dict>
             <key>SOGoMailDomain</key>
@@ -205,18 +208,18 @@ while read -r line gal; do
                     <string>YES</string>
                     <key>viewURL</key>
                     <string>mysql://${DBUSER}:${DBPASS}@%2Fvar%2Frun%2Fmysqld%2Fmysqld.sock/${DBNAME}/_sogo_static_view</string>
-                </dict>" >>/var/lib/sogo/GNUstep/Defaults/sogod.plist
+                </dict>" >> /var/lib/sogo/GNUstep/Defaults/sogod.plist
   # Generate alternative LDAP authentication dict, when SQL authentication fails
   # This will nevertheless read attributes from LDAP
-  line=${line} envsubst </etc/sogo/plist_ldap >>/var/lib/sogo/GNUstep/Defaults/sogod.plist
+  line=${line} envsubst < /etc/sogo/plist_ldap >> /var/lib/sogo/GNUstep/Defaults/sogod.plist
   echo "            </array>
-        </dict>" >>/var/lib/sogo/GNUstep/Defaults/sogod.plist
+        </dict>" >> /var/lib/sogo/GNUstep/Defaults/sogod.plist
 done < <(mysql --socket=/var/run/mysqld/mysqld.sock -u ${DBUSER} -p${DBPASS} ${DBNAME} -e "SELECT domain, CASE gal WHEN '1' THEN 'YES' ELSE 'NO' END AS gal FROM domain;" -B -N)
 
 # Generate footer
 echo '    </dict>
 </dict>
-</plist>' >>/var/lib/sogo/GNUstep/Defaults/sogod.plist
+</plist>' >> /var/lib/sogo/GNUstep/Defaults/sogod.plist
 
 # Fix permissions
 chown sogo:sogo -R /var/lib/sogo/

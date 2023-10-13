@@ -21,3 +21,4 @@ $template_data = [
 ];
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/footer.inc.php';
+
