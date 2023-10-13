@@ -195,7 +195,7 @@ function domain_admin($_action, $_data = null) {
               ));
             }
           }
-          if (!empty($password)) {
+          if (strlen($password) <= 1) {
             if (password_check($password, $password2) !== true) {
               return false;
             }
