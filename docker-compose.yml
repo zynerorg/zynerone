@@ -628,6 +628,24 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /lib/modules:/lib/modules:ro
 
+    api-zynerone:
+      image: zyner/api:1.0
+      restart: always
+      ports:
+        - "${API_PORT:-127.0.0.1:8080}:8080"
+      environment:
+        - TZ=${TZ}
+        - MYSQL_ROOT_PASSWORD=${DBROOT}
+        - MYSQL_DATABASE=${DBNAME}
+        - MYSQL_USER=${DBUSER}
+        - MYSQL_PASSWORD=${DBPASS}
+        - REDIS_PORT=${REDIS_PORT:-redis-zynerone:7654}
+        - SQL_PORT= ${SQL_PORT:-mariadb-zynerone:13306}
+      networks:
+        zynerone-network:
+          aliases:
+            - api
+
 networks:
   zynerone-network:
     driver: bridge
