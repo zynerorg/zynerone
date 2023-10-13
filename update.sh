@@ -172,7 +172,7 @@ remove_obsolete_nginx_ports() {
           fi
         fi
     fi
-    done        
+    done
 }
 
 detect_docker_compose_command(){
@@ -183,11 +183,11 @@ if ! [[ "${DOCKER_COMPOSE_VERSION}" =~ ^(native|standalone)$ ]]; then
         COMPOSE_COMMAND="docker compose"
         echo -e "\e[31mFound Docker Compose Plugin (native).\e[0m"
         echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable to native\e[0m"
-        sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=native/' $SCRIPT_DIR/zynerone.conf 
+        sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=native/' $SCRIPT_DIR/zynerone.conf
         sleep 2
         echo -e "\e[33mNotice: You'll have to update this Compose Version via your Package Manager manually!\e[0m"
       else
-        echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
+        echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
         echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
         exit 1
       fi
@@ -202,54 +202,54 @@ if ! [[ "${DOCKER_COMPOSE_VERSION}" =~ ^(native|standalone)$ ]]; then
         sleep 2
         echo -e "\e[33mNotice: For an automatic update of docker-compose please use the update_compose.sh scripts located at the helper-scripts folder.\e[0m"
       else
-        echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
+        echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
         echo -e "\e[31mPlease update/install regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
         exit 1
       fi
     fi
 
   else
-    echo -e "\e[31mCannot find Docker Compose.\e[0m" 
+    echo -e "\e[31mCannot find Docker Compose.\e[0m"
     echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
     exit 1
   fi
 
 elif [ "${DOCKER_COMPOSE_VERSION}" == "native" ]; then
   COMPOSE_COMMAND="docker compose"
-  # Check if Native Compose works and has not been deleted  
+  # Check if Native Compose works and has not been deleted
   if ! $COMPOSE_COMMAND > /dev/null 2>&1; then
     # IF it not exists/work anymore try the other command
     COMPOSE_COMMAND="docker-compose"
     if ! $COMPOSE_COMMAND > /dev/null 2>&1 || ! $COMPOSE_COMMAND --version | grep "^2." > /dev/null 2>&1; then
       # IF it cannot find Standalone in > 2.X, then script stops
-      echo -e "\e[31mCannot find Docker Compose or the Version is lower then 2.X.X.\e[0m" 
+      echo -e "\e[31mCannot find Docker Compose or the Version is lower then 2.X.X.\e[0m"
       echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
       # If it finds the standalone Plugin it will use this instead and change the zynerone.conf Variable accordingly
       echo -e "\e[31mFound different Docker Compose Version then declared in zynerone.conf!\e[0m"
       echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable from native to standalone\e[0m"
-      sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=standalone/' $SCRIPT_DIR/zynerone.conf 
+      sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=standalone/' $SCRIPT_DIR/zynerone.conf
       sleep 2
   fi
 
 
 elif [ "${DOCKER_COMPOSE_VERSION}" == "standalone" ]; then
   COMPOSE_COMMAND="docker-compose"
-  # Check if Standalone Compose works and has not been deleted  
+  # Check if Standalone Compose works and has not been deleted
   if ! $COMPOSE_COMMAND > /dev/null 2>&1 && ! $COMPOSE_COMMAND --version > /dev/null 2>&1 | grep "^2." > /dev/null 2>&1; then
     # IF it not exists/work anymore try the other command
     COMPOSE_COMMAND="docker compose"
     if ! $COMPOSE_COMMAND > /dev/null 2>&1; then
       # IF it cannot find Native in > 2.X, then script stops
-      echo -e "\e[31mCannot find Docker Compose.\e[0m" 
+      echo -e "\e[31mCannot find Docker Compose.\e[0m"
       echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
       # If it finds the native Plugin it will use this instead and change the zynerone.conf Variable accordingly
       echo -e "\e[31mFound different Docker Compose Version then declared in zynerone.conf!\e[0m"
       echo -e "\e[31mSetting the DOCKER_COMPOSE_VERSION Variable from standalone to native\e[0m"
-      sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=native/' $SCRIPT_DIR/zynerone.conf 
+      sed -i 's/^DOCKER_COMPOSE_VERSION=.*/DOCKER_COMPOSE_VERSION=native/' $SCRIPT_DIR/zynerone.conf
       sleep 2
   fi
 fi
@@ -329,10 +329,10 @@ unset COMPOSE_COMMAND
 unset DOCKER_COMPOSE_VERSION
 
 for bin in curl docker git awk sha1sum grep cut; do
-  if [[ -z $(command -v ${bin}) ]]; then 
-  echo "Cannot find ${bin}, exiting..." 
+  if [[ -z $(command -v ${bin}) ]]; then
+  echo "Cannot find ${bin}, exiting..."
   exit 1;
-  fi  
+  fi
 done
 
 export LC_ALL=C
@@ -544,6 +544,12 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo "Adding new option \"${option}\" to zynerone.conf"
       echo '# Bind SQL to 127.0.0.1 on port 13306' >> zynerone.conf
       echo "SQL_PORT=127.0.0.1:13306" >> zynerone.conf
+    fi
+  elif [[ ${option} == "API_PORT" ]]; then
+    if ! grep -q ${option} zynerone.conf; then
+      echo "Adding new option \"${option}\" to zynerone.conf"
+      echo '# Bind API to 127.0.0.1 on port 8080' >> zynerone.conf
+      echo "API_PORT=127.0.0.1:8080" >> zynerone.conf
     fi
   elif [[ ${option} == "API_KEY" ]]; then
     if ! grep -q ${option} zynerone.conf; then
@@ -771,7 +777,7 @@ elif [ $NEW_BRANCH == "master" ] && [ $CURRENT_BRANCH != "master" ]; then
   sleep 1
   echo -e "\e[31mWARNING: Please see on GitHub or ask in the communitys if a switch to master is stable or not.
   In some rear cases a Update back to master can destroy your zynerone configuration in case of Database Upgrades etc.
-  Normally a upgrade back to master should be safe during each full release. 
+  Normally a upgrade back to master should be safe during each full release.
   Check GitHub for Database Changes and Update only if there similar to the full release!\e[0m"
   read -r -p "Are you sure you that want to continue upgrading to the stable (master) branch? [y/N] " response
   if [[ ! "${response}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
@@ -886,7 +892,7 @@ done
 
 DEFAULT_REPO=https://github.com/ZynerOrg/zynerone
 CURRENT_REPO=$(git remote get-url origin)
-if [ "$CURRENT_REPO" != "$DEFAULT_REPO" ]; then 
+if [ "$CURRENT_REPO" != "$DEFAULT_REPO" ]; then
   echo "The Repository currently used is not the default zynerone Repository."
   echo "Currently Repository: $CURRENT_REPO"
   echo "Default Repository:   $DEFAULT_REPO"
