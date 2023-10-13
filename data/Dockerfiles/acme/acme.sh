@@ -45,19 +45,19 @@ if [[ "${SKIP_LETS_ENCRYPT}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
 fi
 
 log_f "Waiting for Docker API..."
-until ping dockerapi -c1 > /dev/null; do
+until ping dockerapi -c1 >/dev/null; do
   sleep 1
 done
 log_f "Docker API OK"
 
 log_f "Waiting for Postfix..."
-until ping postfix -c1 > /dev/null; do
+until ping postfix -c1 >/dev/null; do
   sleep 1
 done
 log_f "Postfix OK"
 
 log_f "Waiting for Dovecot..."
-until ping dovecot -c1 > /dev/null; do
+until ping dovecot -c1 >/dev/null; do
   sleep 1
 done
 log_f "Dovecot OK"
@@ -80,7 +80,7 @@ if [[ -f ${ACME_BASE}/acme/key.pem && -f ${ACME_BASE}/acme/cert.pem ]]; then
     # key is only copied, not moved, because it is used by all other requests too
     cp ${ACME_BASE}/acme/key.pem ${ACME_BASE}/${CERT_DOMAIN}/key.pem
     chmod 600 ${ACME_BASE}/${CERT_DOMAIN}/key.pem
-    echo -n ${CERT_DOMAINS[*]} > ${ACME_BASE}/${CERT_DOMAIN}/domains
+    echo -n ${CERT_DOMAINS[*]} >${ACME_BASE}/${CERT_DOMAIN}/domains
     mv ${ACME_BASE}/acme/acme.csr ${ACME_BASE}/${CERT_DOMAIN}/acme.csr
     log_f "OK" no_date
   fi
@@ -113,7 +113,7 @@ fi
 chmod 600 ${ACME_BASE}/key.pem
 
 log_f "Waiting for database..."
-while ! mysqladmin status --socket=/var/run/mysqld/mysqld.sock -u${DBUSER} -p${DBPASS} --silent > /dev/null; do
+while ! mysqladmin status --socket=/var/run/mysqld/mysqld.sock -u${DBUSER} -p${DBPASS} --silent >/dev/null; do
   sleep 2
 done
 log_f "Database OK"
@@ -125,7 +125,7 @@ done
 log_f "Nginx OK"
 
 log_f "Waiting for resolver..."
-until dig letsencrypt.org +time=3 +tries=1 @unbound > /dev/null; do
+until dig letsencrypt.org +time=3 +tries=1 @unbound >/dev/null; do
   sleep 2
 done
 log_f "Resolver OK"
@@ -149,7 +149,7 @@ while true; do
   # Re-using previous acme-zynerone account and domain keys
   if [[ ! -f ${ACME_BASE}/acme/key.pem ]]; then
     log_f "Generating missing domain private rsa key..."
-    openssl genrsa 4096 > ${ACME_BASE}/acme/key.pem
+    openssl genrsa 4096 >${ACME_BASE}/acme/key.pem
   else
     log_f "Using existing domain rsa key ${ACME_BASE}/acme/key.pem"
   fi
@@ -167,7 +167,7 @@ while true; do
     else
       ACME_CONTACT_PARAMETER=""
     fi
-    openssl genrsa 4096 > ${ACME_BASE}/acme/account.pem
+    openssl genrsa 4096 >${ACME_BASE}/acme/account.pem
   else
     log_f "Using existing Lets Encrypt account key ${ACME_BASE}/acme/account.pem"
   fi
@@ -177,7 +177,7 @@ while true; do
 
   unset EXISTING_CERTS
   declare -a EXISTING_CERTS
-  for cert_dir in ${ACME_BASE}/*/ ; do
+  for cert_dir in ${ACME_BASE}/*/; do
     if [[ ! -f ${cert_dir}domains ]] || [[ ! -f ${cert_dir}cert.pem ]] || [[ ! -f ${cert_dir}key.pem ]]; then
       continue
     fi
@@ -203,8 +203,8 @@ while true; do
   declare -a ADDITIONAL_WC_ARR
   declare -a ADDITIONAL_SAN_ARR
   declare -a VALIDATED_CERTIFICATES
-  IFS=',' read -r -a TMP_ARR <<< "${ADDITIONAL_SAN}"
-  for i in "${TMP_ARR[@]}" ; do
+  IFS=',' read -r -a TMP_ARR <<<"${ADDITIONAL_SAN}"
+  for i in "${TMP_ARR[@]}"; do
     if [[ "$i" =~ \.\*$ ]]; then
       ADDITIONAL_WC_ARR+=(${i::-2})
     else
@@ -214,11 +214,11 @@ while true; do
   ADDITIONAL_WC_ARR+=('autodiscover' 'autoconfig')
 
   if [[ ${SKIP_IP_CHECK} != "y" ]]; then
-  # Start IP detection
-  log_f "Detecting IP addresses..."
-  IPV4=$(get_ipv4)
-  IPV6=$(get_ipv6)
-  log_f "OK: ${IPV4}, ${IPV6:-"0000:0000:0000:0000:0000:0000:0000:0000"}"
+    # Start IP detection
+    log_f "Detecting IP addresses..."
+    IPV4=$(get_ipv4)
+    IPV6=$(get_ipv6)
+    log_f "OK: ${IPV4}, ${IPV6:-"0000:0000:0000:0000:0000:0000:0000:0000"}"
   fi
 
   #########################################
@@ -235,21 +235,21 @@ while true; do
       continue
     fi
     SQL_DOMAIN_ARR+=("${domains}")
-  done <<< "${SQL_DOMAINS}"
+  done <<<"${SQL_DOMAINS}"
 
   if [[ ${ONLY_ZYNERONE_HOSTNAME} != "y" ]]; then
-  for SQL_DOMAIN in "${SQL_DOMAIN_ARR[@]}"; do
-    unset VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
-    declare -a VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
-    for SUBDOMAIN in "${ADDITIONAL_WC_ARR[@]}"; do
-      if [[  "${SUBDOMAIN}.${SQL_DOMAIN}" != "${ZYNERONE_HOSTNAME}" ]]; then
-        if check_domain "${SUBDOMAIN}.${SQL_DOMAIN}"; then
-          VALIDATED_CONFIG_DOMAINS_SUBDOMAINS+=("${SUBDOMAIN}.${SQL_DOMAIN}")
+    for SQL_DOMAIN in "${SQL_DOMAIN_ARR[@]}"; do
+      unset VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
+      declare -a VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
+      for SUBDOMAIN in "${ADDITIONAL_WC_ARR[@]}"; do
+        if [[ "${SUBDOMAIN}.${SQL_DOMAIN}" != "${ZYNERONE_HOSTNAME}" ]]; then
+          if check_domain "${SUBDOMAIN}.${SQL_DOMAIN}"; then
+            VALIDATED_CONFIG_DOMAINS_SUBDOMAINS+=("${SUBDOMAIN}.${SQL_DOMAIN}")
+          fi
         fi
-      fi
+      done
+      VALIDATED_CONFIG_DOMAINS+=("${VALIDATED_CONFIG_DOMAINS_SUBDOMAINS[*]}")
     done
-    VALIDATED_CONFIG_DOMAINS+=("${VALIDATED_CONFIG_DOMAINS_SUBDOMAINS[*]}")
-  done
   fi
 
   if check_domain ${ZYNERONE_HOSTNAME}; then
@@ -257,25 +257,25 @@ while true; do
   fi
 
   if [[ ${ONLY_ZYNERONE_HOSTNAME} != "y" ]]; then
-  for SAN in "${ADDITIONAL_SAN_ARR[@]}"; do
-    # Skip on CAA errors for SAN
-    SAN_PARENT_DOMAIN=$(echo ${SAN} | cut -d. -f2-)
-    SAN_CAAS=( $(dig CAA ${SAN_PARENT_DOMAIN} +short | sed -n 's/\d issue "\(.*\)"/\1/p') )
-    if [[ ! -z ${SAN_CAAS} ]]; then
-      if [[ ${SAN_CAAS[@]} =~ "letsencrypt.org" ]]; then
-        log_f "Validated CAA for parent domain ${SAN_PARENT_DOMAIN} of ${SAN}"
-      else
-        log_f "Skipping ACME validation for ${SAN}: Lets Encrypt disallowed for ${SAN} by CAA record"
+    for SAN in "${ADDITIONAL_SAN_ARR[@]}"; do
+      # Skip on CAA errors for SAN
+      SAN_PARENT_DOMAIN=$(echo ${SAN} | cut -d. -f2-)
+      SAN_CAAS=($(dig CAA ${SAN_PARENT_DOMAIN} +short | sed -n 's/\d issue "\(.*\)"/\1/p'))
+      if [[ ! -z ${SAN_CAAS} ]]; then
+        if [[ ${SAN_CAAS[@]} =~ "letsencrypt.org" ]]; then
+          log_f "Validated CAA for parent domain ${SAN_PARENT_DOMAIN} of ${SAN}"
+        else
+          log_f "Skipping ACME validation for ${SAN}: Lets Encrypt disallowed for ${SAN} by CAA record"
+          continue
+        fi
+      fi
+      if [[ ${SAN} == ${ZYNERONE_HOSTNAME} ]]; then
         continue
       fi
-    fi
-    if [[ ${SAN} == ${ZYNERONE_HOSTNAME} ]]; then
-      continue
-    fi
-    if check_domain ${SAN}; then
-      ADDITIONAL_VALIDATED_SAN+=("${SAN}")
-    fi
-  done
+      if check_domain ${SAN}; then
+        ADDITIONAL_VALIDATED_SAN+=("${SAN}")
+      fi
+    done
   fi
 
   # Unique domains for server certificate
@@ -313,40 +313,40 @@ while true; do
 
   # individual certificates for SNI [@]
   if [[ ${ENABLE_SSL_SNI} == "y" ]]; then
-  for VALIDATED_DOMAINS in "${VALIDATED_CONFIG_DOMAINS[@]}"; do
-    VALIDATED_DOMAINS_ARR=(${VALIDATED_DOMAINS})
+    for VALIDATED_DOMAINS in "${VALIDATED_CONFIG_DOMAINS[@]}"; do
+      VALIDATED_DOMAINS_ARR=(${VALIDATED_DOMAINS})
 
-    unset VALIDATED_DOMAINS_SORTED
-    declare -a VALIDATED_DOMAINS_SORTED
-    VALIDATED_DOMAINS_SORTED=(${VALIDATED_DOMAINS_ARR[0]} $(echo ${VALIDATED_DOMAINS_ARR[@]:1} | xargs -n1 | sort -u | xargs))
+      unset VALIDATED_DOMAINS_SORTED
+      declare -a VALIDATED_DOMAINS_SORTED
+      VALIDATED_DOMAINS_SORTED=(${VALIDATED_DOMAINS_ARR[0]} $(echo ${VALIDATED_DOMAINS_ARR[@]:1} | xargs -n1 | sort -u | xargs))
 
-    # remove all domain names that are already inside the server certificate (SERVER_SAN_VALIDATED)
-    for domain in "${SERVER_SAN_VALIDATED[@]}"; do
-      for i in "${!VALIDATED_DOMAINS_SORTED[@]}"; do
-        if [[ ${VALIDATED_DOMAINS_SORTED[i]} = $domain ]]; then
-          unset 'VALIDATED_DOMAINS_SORTED[i]'
-        fi
+      # remove all domain names that are already inside the server certificate (SERVER_SAN_VALIDATED)
+      for domain in "${SERVER_SAN_VALIDATED[@]}"; do
+        for i in "${!VALIDATED_DOMAINS_SORTED[@]}"; do
+          if [[ ${VALIDATED_DOMAINS_SORTED[i]} = $domain ]]; then
+            unset 'VALIDATED_DOMAINS_SORTED[i]'
+          fi
+        done
       done
-    done
 
-    if [[ ! -z ${VALIDATED_DOMAINS_SORTED[*]} ]]; then
-      CERT_NAME=${VALIDATED_DOMAINS_SORTED[0]}
-      VALIDATED_CERTIFICATES+=("${CERT_NAME}")
-      # obtain certificate if required
-      DOMAINS=${VALIDATED_DOMAINS_SORTED[@]} /srv/obtain-certificate.sh rsa
-      RETURN="$?"
-      if [[ "$RETURN" == "0" ]]; then # 0 = cert created successfully
-        CERT_AMOUNT_CHANGED=1
-        CERT_CHANGED=1
-      elif [[ "$RETURN" == "1" ]]; then # 1 = cert renewed successfully
-        CERT_CHANGED=1
-      elif [[ "$RETURN" == "2" ]]; then # 2 = cert not due for renewal
-        :
-      else
-        CERT_ERRORS=1
+      if [[ ! -z ${VALIDATED_DOMAINS_SORTED[*]} ]]; then
+        CERT_NAME=${VALIDATED_DOMAINS_SORTED[0]}
+        VALIDATED_CERTIFICATES+=("${CERT_NAME}")
+        # obtain certificate if required
+        DOMAINS=${VALIDATED_DOMAINS_SORTED[@]} /srv/obtain-certificate.sh rsa
+        RETURN="$?"
+        if [[ "$RETURN" == "0" ]]; then # 0 = cert created successfully
+          CERT_AMOUNT_CHANGED=1
+          CERT_CHANGED=1
+        elif [[ "$RETURN" == "1" ]]; then # 1 = cert renewed successfully
+          CERT_CHANGED=1
+        elif [[ "$RETURN" == "2" ]]; then # 2 = cert not due for renewal
+          :
+        else
+          CERT_ERRORS=1
+        fi
       fi
-    fi
-  done
+    done
   fi
 
   if [[ -z ${VALIDATED_CERTIFICATES[*]} ]]; then
@@ -360,7 +360,7 @@ while true; do
   # find orphaned certificates if no errors occurred
   if [[ "${CERT_ERRORS}" == "0" ]]; then
     for EXISTING_CERT in "${EXISTING_CERTS[@]}"; do
-      if [[ ! "`printf '_%s_\n' "${VALIDATED_CERTIFICATES[@]}"`" == *"_${EXISTING_CERT}_"* ]]; then
+      if [[ ! "$(printf '_%s_\n' "${VALIDATED_CERTIFICATES[@]}")" == *"_${EXISTING_CERT}_"* ]]; then
         DATE=$(date +%Y-%m-%d_%H_%M_%S)
         log_f "Found orphaned certificate: ${EXISTING_CERT} - archiving it at ${ACME_BASE}/backups/${EXISTING_CERT}/"
         BACKUP_DIR=${ACME_BASE}/backups/${EXISTING_CERT}/${DATE}
@@ -375,7 +375,7 @@ while true; do
 
   # reload on new or changed certificates
   if [[ "${CERT_CHANGED}" == "1" ]]; then
-    rm -f "${ACME_BASE}/force_renew" 2> /dev/null
+    rm -f "${ACME_BASE}/force_renew" 2>/dev/null
     RELOAD_LOOP_C=1
     while [[ "${POSTFIX_CERT_SERIAL}" == "${POSTFIX_CERT_SERIAL_NEW}" ]] || [[ "${DOVECOT_CERT_SERIAL}" == "${DOVECOT_CERT_SERIAL_NEW}" ]] || [[ ${#POSTFIX_CERT_SERIAL_NEW} -ne 36 ]] || [[ ${#DOVECOT_CERT_SERIAL_NEW} -ne 36 ]]; do
       log_f "Reloading or restarting services... (${RELOAD_LOOP_C})"
@@ -394,30 +394,30 @@ while true; do
       if [[ ${RELOAD_LOOP_C} -gt 3 ]]; then
         log_f "Some services do return old end dates, something went wrong!"
         ${REDIS_CMDLINE} SET ACME_FAIL_TIME "$(date +%s)"
-        break;
+        break
       fi
     done
   fi
 
   case "$CERT_ERRORS" in
-    0) # all successful
-      if [[ "${CERT_CHANGED}" == "1" ]]; then
-        if [[ "${CERT_AMOUNT_CHANGED}" == "1" ]]; then
-          log_f "Certificates successfully requested and renewed where required, sleeping one day"
-        else
-          log_f "Certificates were successfully renewed where required, sleeping for another day."
-        fi
+  0) # all successful
+    if [[ "${CERT_CHANGED}" == "1" ]]; then
+      if [[ "${CERT_AMOUNT_CHANGED}" == "1" ]]; then
+        log_f "Certificates successfully requested and renewed where required, sleeping one day"
       else
-        log_f "Certificates were successfully validated, no changes or renewals required, sleeping for another day."
+        log_f "Certificates were successfully renewed where required, sleeping for another day."
       fi
-      sleep 1d
-      ;;
-    *) # non-zero
-      log_f "Some errors occurred, retrying in 30 minutes..."
-      ${REDIS_CMDLINE} SET ACME_FAIL_TIME "$(date +%s)"
-      sleep 30m
-      exec $(readlink -f "$0")
-      ;;
+    else
+      log_f "Certificates were successfully validated, no changes or renewals required, sleeping for another day."
+    fi
+    sleep 1d
+    ;;
+  *) # non-zero
+    log_f "Some errors occurred, retrying in 30 minutes..."
+    ${REDIS_CMDLINE} SET ACME_FAIL_TIME "$(date +%s)"
+    sleep 30m
+    exec $(readlink -f "$0")
+    ;;
   esac
 
 done

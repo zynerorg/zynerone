@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_GET['file']) ) {
+if (!isset($_GET['file'])) {
     http_response_code(404);
     exit;
 }

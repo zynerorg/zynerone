@@ -8,110 +8,109 @@ ARG DOVECOT=2.3.21
 ARG GOSU_VERSION=1.16
 ENV LC_ALL C
 
-
 # Add groups and users before installing Dovecot to not break compatibility
-RUN groupadd -g 5000 vmail \
-  && groupadd -g 401 dovecot \
-  && groupadd -g 402 dovenull \
-  && groupadd -g 999 sogo \
-  && usermod -a -G sogo nobody \
-  && useradd -g vmail -u 5000 vmail -d /var/vmail \
-  && useradd -c "Dovecot unprivileged user" -d /dev/null -u 401 -g dovecot -s /bin/false dovecot \
-  && useradd -c "Dovecot login user" -d /dev/null -u 402 -g dovenull -s /bin/false dovenull \
-  && touch /etc/default/locale \
-  && apt-get update \
-  && apt-get -y --no-install-recommends install \
-  build-essential \
-  apt-transport-https \
-  ca-certificates \
-  cpanminus \
-  curl \
-  dnsutils \
-  dirmngr \
-  gettext \
-  gnupg2 \
-  jq \
-  libauthen-ntlm-perl \
-  libcgi-pm-perl \
-  libcrypt-openssl-rsa-perl \
-  libcrypt-ssleay-perl \
-  libdata-uniqid-perl \
-  libdbd-mysql-perl \
-  libdbi-perl \
-  libdigest-hmac-perl \
-  libdist-checkconflicts-perl \
-  libencode-imaputf7-perl \
-  libfile-copy-recursive-perl \
-  libfile-tail-perl \
-  libhtml-parser-perl \
-  libio-compress-perl \
-  libio-socket-inet6-perl \
-  libio-socket-ssl-perl \
-  libio-tee-perl \
-  libipc-run-perl \
-  libjson-webtoken-perl \
-  liblockfile-simple-perl \
-  libmail-imapclient-perl \
-  libmodule-implementation-perl \
-  libmodule-scandeps-perl \
-  libnet-ssleay-perl \
-  libpackage-stash-perl \
-  libpackage-stash-xs-perl \
-  libpar-packer-perl \
-  libparse-recdescent-perl \
-  libproc-processtable-perl \
-  libreadonly-perl \
-  libregexp-common-perl \
-  libssl-dev \
-  libsys-meminfo-perl \
-  libterm-readkey-perl \
-  libtest-deep-perl \
-  libtest-fatal-perl \
-  libtest-mock-guard-perl \
-  libtest-mockobject-perl \
-  libtest-nowarnings-perl \
-  libtest-pod-perl \
-  libtest-requires-perl \
-  libtest-simple-perl \
-  libtest-warn-perl \
-  libtry-tiny-perl \
-  libunicode-string-perl \
-  liburi-perl \
-  libwww-perl \
-  lua-sql-mysql \
-  lua-socket \
-  mariadb-client \
-  procps \
-  python3-pip \
-  redis-server \
-  supervisor \
-  syslog-ng \
-  syslog-ng-core \
-  syslog-ng-mod-redis \
-  wget \
-  && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-  && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
-  && chmod +x /usr/local/bin/gosu \
-  && gosu nobody true \
-  && apt-key adv --fetch-keys https://repo.dovecot.org/DOVECOT-REPO-GPG \
-  && echo "deb https://repo.dovecot.org/ce-${DOVECOT}/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list \
-  && apt-get update \
-  && apt-get -y --no-install-recommends install \
-  dovecot-lua \
-  dovecot-managesieved \
-  dovecot-sieve \
-  dovecot-lmtpd \
-  dovecot-ldap \
-  dovecot-mysql \
-  dovecot-core \
-  dovecot-pop3d \
-  dovecot-imapd \
-  dovecot-solr \
-  && pip3 install mysql-connector-python html2text jinja2 redis \
-  && apt-get autoremove --purge -y \
-  && apt-get autoclean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /tmp/* /var/tmp/* /root/.cache/
+RUN groupadd -g 5000 vmail &&
+  groupadd -g 401 dovecot &&
+  groupadd -g 402 dovenull &&
+  groupadd -g 999 sogo &&
+  usermod -a -G sogo nobody &&
+  useradd -g vmail -u 5000 vmail -d /var/vmail &&
+  useradd -c "Dovecot unprivileged user" -d /dev/null -u 401 -g dovecot -s /bin/false dovecot &&
+  useradd -c "Dovecot login user" -d /dev/null -u 402 -g dovenull -s /bin/false dovenull &&
+  touch /etc/default/locale &&
+  apt-get update &&
+  apt-get -y --no-install-recommends install \
+    build-essential \
+    apt-transport-https \
+    ca-certificates \
+    cpanminus \
+    curl \
+    dnsutils \
+    dirmngr \
+    gettext \
+    gnupg2 \
+    jq \
+    libauthen-ntlm-perl \
+    libcgi-pm-perl \
+    libcrypt-openssl-rsa-perl \
+    libcrypt-ssleay-perl \
+    libdata-uniqid-perl \
+    libdbd-mysql-perl \
+    libdbi-perl \
+    libdigest-hmac-perl \
+    libdist-checkconflicts-perl \
+    libencode-imaputf7-perl \
+    libfile-copy-recursive-perl \
+    libfile-tail-perl \
+    libhtml-parser-perl \
+    libio-compress-perl \
+    libio-socket-inet6-perl \
+    libio-socket-ssl-perl \
+    libio-tee-perl \
+    libipc-run-perl \
+    libjson-webtoken-perl \
+    liblockfile-simple-perl \
+    libmail-imapclient-perl \
+    libmodule-implementation-perl \
+    libmodule-scandeps-perl \
+    libnet-ssleay-perl \
+    libpackage-stash-perl \
+    libpackage-stash-xs-perl \
+    libpar-packer-perl \
+    libparse-recdescent-perl \
+    libproc-processtable-perl \
+    libreadonly-perl \
+    libregexp-common-perl \
+    libssl-dev \
+    libsys-meminfo-perl \
+    libterm-readkey-perl \
+    libtest-deep-perl \
+    libtest-fatal-perl \
+    libtest-mock-guard-perl \
+    libtest-mockobject-perl \
+    libtest-nowarnings-perl \
+    libtest-pod-perl \
+    libtest-requires-perl \
+    libtest-simple-perl \
+    libtest-warn-perl \
+    libtry-tiny-perl \
+    libunicode-string-perl \
+    liburi-perl \
+    libwww-perl \
+    lua-sql-mysql \
+    lua-socket \
+    mariadb-client \
+    procps \
+    python3-pip \
+    redis-server \
+    supervisor \
+    syslog-ng \
+    syslog-ng-core \
+    syslog-ng-mod-redis \
+    wget &&
+  dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" &&
+  wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" &&
+  chmod +x /usr/local/bin/gosu &&
+  gosu nobody true &&
+  apt-key adv --fetch-keys https://repo.dovecot.org/DOVECOT-REPO-GPG &&
+  echo "deb https://repo.dovecot.org/ce-${DOVECOT}/debian/bullseye bullseye main" >/etc/apt/sources.list.d/dovecot.list &&
+  apt-get update &&
+  apt-get -y --no-install-recommends install \
+    dovecot-lua \
+    dovecot-managesieved \
+    dovecot-sieve \
+    dovecot-lmtpd \
+    dovecot-ldap \
+    dovecot-mysql \
+    dovecot-core \
+    dovecot-pop3d \
+    dovecot-imapd \
+    dovecot-solr &&
+  pip3 install mysql-connector-python html2text jinja2 redis &&
+  apt-get autoremove --purge -y &&
+  apt-get autoclean &&
+  rm -rf /var/lib/apt/lists/* &&
+  rm -rf /tmp/* /var/tmp/* /root/.cache/
 # imapsync dependencies
 RUN cpan Crypt::OpenSSL::PKCS12
 

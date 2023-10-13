@@ -9,14 +9,13 @@ ini_set('error_reporting', 0);
 //$dsn = $database_type . ':host=' . $database_host . ';dbname=' . $database_name;
 $dsn = $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
 $opt = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
+  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+  PDO::ATTR_EMULATE_PREPARES => false,
 ];
 try {
   $pdo = new PDO($dsn, $database_user, $database_pass, $opt);
-}
-catch (PDOException $e) {
+} catch (PDOException $e) {
   error_log("ALIASEXP: " . $e . PHP_EOL);
   http_response_code(501);
   exit;
@@ -26,13 +25,16 @@ catch (PDOException $e) {
 $redis = new Redis();
 $redis->connect('redis-zynerone', 6379);
 
-function parse_email($email) {
-  if(!filter_var($email, FILTER_VALIDATE_EMAIL)) return false;
+function parse_email($email)
+{
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+    return false;
   $a = strrpos($email, '@');
   return array('local' => substr($email, 0, $a), 'domain' => substr(substr($email, $a), 1));
 }
-if (!function_exists('getallheaders'))  {
-  function getallheaders() {
+if (!function_exists('getallheaders')) {
+  function getallheaders()
+  {
     if (!is_array($_SERVER)) {
       return array();
     }
@@ -62,8 +64,7 @@ try {
   if (!$redis->hGet('DOMAIN_MAP', $parsed_rcpt['domain'])) {
     exit;
   }
-}
-catch (RedisException $e) {
+} catch (RedisException $e) {
   error_log("ALIASEXP: " . $e . PHP_EOL);
   http_response_code(504);
   exit;
@@ -81,15 +82,19 @@ catch (RedisException $e) {
 //
 try {
   $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :rcpt AND `active` = '1'");
-  $stmt->execute(array(
-    ':rcpt' => $rcpt
-  ));
+  $stmt->execute(
+    array(
+      ':rcpt' => $rcpt
+    )
+  );
   $gotos = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
   if (empty($gotos)) {
     $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :rcpt AND `active` = '1'");
-    $stmt->execute(array(
-      ':rcpt' => '@' . $parsed_rcpt['domain']
-    ));
+    $stmt->execute(
+      array(
+        ':rcpt' => '@' . $parsed_rcpt['domain']
+      )
+    );
     $gotos = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
   }
   if (empty($gotos)) {
@@ -118,13 +123,11 @@ try {
         if (!in_array($username, $rcpt_final_mailboxes)) {
           $rcpt_final_mailboxes[] = $username;
         }
-      }
-      else {
+      } else {
         $parsed_goto = parse_email($goto);
         if (!$redis->hGet('DOMAIN_MAP', $parsed_goto['domain'])) {
           error_log("ALIAS EXPANDER:" . $goto . " is not a zynerone handled mailbox or alias address" . PHP_EOL);
-        }
-        else {
+        } else {
           $stmt = $pdo->prepare("SELECT `goto` FROM `alias` WHERE `address` = :goto AND `active` = '1'");
           $stmt->execute(array(':goto' => $goto));
           $goto_branch = $stmt->fetch(PDO::FETCH_ASSOC)['goto'];
@@ -158,10 +161,9 @@ try {
     // Force exit if loop cannot be solved
     // Postfix does not allow for alias loops, so this should never happen.
     $loop_c++;
-    error_log("ALIAS EXPANDER: http pipe: goto array count on loop #". $loop_c . " is " . count($gotos_array) . PHP_EOL);
+    error_log("ALIAS EXPANDER: http pipe: goto array count on loop #" . $loop_c . " is " . count($gotos_array) . PHP_EOL);
   }
-}
-catch (PDOException $e) {
+} catch (PDOException $e) {
   error_log("ALIAS EXPANDER: " . $e->getMessage() . PHP_EOL);
   http_response_code(502);
   exit;

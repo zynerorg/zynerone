@@ -20,30 +20,34 @@ $js_minifier->add('/web/js/site/debug.js');
 
 // vmail df
 $exec_fields = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true));
+$vmail_df = explode(',', (string) json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true));
 
 // containers
 $containers = (array) docker('info');
-if ($clamd_status === false) unset($containers['clamd-zynerone']);
-if ($solr_status === false) unset($containers['solr-zynerone']);
+if ($clamd_status === false)
+  unset($containers['clamd-zynerone']);
+if ($solr_status === false)
+  unset($containers['solr-zynerone']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
   date_default_timezone_set('UTC');
   $StartedAt = date_parse($container_info['State']['StartedAt']);
   if ($StartedAt['hour'] !== false) {
     $date = new \DateTime();
-    $date->setTimestamp(mktime(
-      $StartedAt['hour'],
-      $StartedAt['minute'],
-      $StartedAt['second'],
-      $StartedAt['month'],
-      $StartedAt['day'],
-      $StartedAt['year']));
+    $date->setTimestamp(
+      mktime(
+        $StartedAt['hour'],
+        $StartedAt['minute'],
+        $StartedAt['second'],
+        $StartedAt['month'],
+        $StartedAt['day'],
+        $StartedAt['year']
+      )
+    );
     $user_tz = new DateTimeZone(getenv('TZ'));
     $date->setTimezone($user_tz);
     $started = $date->format('r');
-  }
-  else {
+  } else {
     $started = '?';
   }
   $containers[$container]['State']['StartedAtHR'] = $started;
@@ -71,5 +75,3 @@ $template_data = [
 ];
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/footer.inc.php';
-
-

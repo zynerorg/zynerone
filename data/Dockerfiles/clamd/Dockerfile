@@ -2,11 +2,11 @@ FROM clamav/clamav:1.0.3_base
 
 LABEL maintainer "Zyner <contact@zyner.net>"
 
-RUN apk upgrade --no-cache \
-  && apk add --update --no-cache \
-  rsync \
-  bind-tools \
-  bash 
+RUN apk upgrade --no-cache &&
+  apk add --update --no-cache \
+    rsync \
+    bind-tools \
+    bash
 
 # init
 COPY clamd.sh /clamd.sh

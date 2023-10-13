@@ -1,7 +1,8 @@
 <div class="tab-pane fade" id="tab-config-rspamd" role="tabpanel" aria-labelledby="tab-config-rspamd">
   <div class="card mb-4">
     <div class="card-header d-flex fs-5">
-      <button class="btn d-md-none flex-grow-1 text-start" data-bs-target="#collapse-tab-config-rspamd" data-bs-toggle="collapse" aria-controls="collapse-tab-config-rspamd">
+      <button class="btn d-md-none flex-grow-1 text-start" data-bs-target="#collapse-tab-config-rspamd"
+        data-bs-toggle="collapse" aria-controls="collapse-tab-config-rspamd">
         Rspamd UI
       </button>
       <span class="d-none d-md-block">Rspamd UI</span>
@@ -12,7 +13,8 @@
           <img id="rspamd_logo_sm" class="img-responsive mx-auto" src="/img/rspamd_logo_dark.png" alt="Rspamd UI">
         </div>
         <div class="col-sm-9 col-12">
-          <form class="form-horizontal" autocapitalize="none" data-id="admin" autocorrect="off" role="form" method="post">
+          <form class="form-horizontal" autocapitalize="none" data-id="admin" autocorrect="off" role="form"
+            method="post">
             <div class="row mb-4">
               <div class="offset-sm-3 col-sm-9">
                 <label>
@@ -23,18 +25,22 @@
             <div class="row mb-2">
               <label class="control-label col-sm-3 text-sm-end" for="rspamd_ui_pass">{{ lang.admin.password }}:</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" id="rspamd_ui_pass" name="rspamd_ui_pass" autocomplete="new-password" required>
+                <input type="password" class="form-control" id="rspamd_ui_pass" name="rspamd_ui_pass"
+                  autocomplete="new-password" required>
               </div>
             </div>
             <div class="row mb-4">
-              <label class="control-label col-sm-3 text-sm-end" for="rspamd_ui_pass2">{{ lang.admin.password_repeat }}:</label>
+              <label class="control-label col-sm-3 text-sm-end" for="rspamd_ui_pass2">{{ lang.admin.password_repeat
+                }}:</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" id="rspamd_ui_pass2" name="rspamd_ui_pass2" autocomplete="new-password" required>
+                <input type="password" class="form-control" id="rspamd_ui_pass2" name="rspamd_ui_pass2"
+                  autocomplete="new-password" required>
               </div>
             </div>
             <div class="row mb-4">
               <div class="offset-sm-3 col-sm-9">
-                <button type="submit" class="btn btn-sm d-block d-sm-inline btn-success" id="rspamd_ui" name="rspamd_ui" href="#"><i class="bi bi-check-lg"></i> {{ lang.admin.save }}</button>
+                <button type="submit" class="btn btn-sm d-block d-sm-inline btn-success" id="rspamd_ui" name="rspamd_ui"
+                  href="#"><i class="bi bi-check-lg"></i> {{ lang.admin.save }}</button>
               </div>
             </div>
           </form>

@@ -12,21 +12,25 @@ $mailbox = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!empty($mailbox)) {
   if ($token['scope'] == 'profile') {
     header('Content-Type: application/json');
-    echo json_encode(array(
-      'success' => true,
-      'username' => $token['user_id'],
-      'id' => $token['user_id'],
-      'identifier' => $token['user_id'],
-      'email' => (!empty($mailbox['username']) ? $mailbox['username'] : ''),
-      'full_name' => (!empty($mailbox['name']) ? $mailbox['name'] : 'zynerone administrative user'),
-      'displayName' => (!empty($mailbox['name']) ? $mailbox['name'] : 'zynerone administrative user'),
-      'created' => (!empty($mailbox['created']) ? $mailbox['created'] : ''),
-      'modified' => (!empty($mailbox['modified']) ? $mailbox['modified'] : ''),
-      'active' => (!empty($mailbox['active']) ? $mailbox['active'] : ''),
-    ));
+    echo json_encode(
+      array(
+        'success' => true,
+        'username' => $token['user_id'],
+        'id' => $token['user_id'],
+        'identifier' => $token['user_id'],
+        'email' => (!empty($mailbox['username']) ? $mailbox['username'] : ''),
+        'full_name' => (!empty($mailbox['name']) ? $mailbox['name'] : 'zynerone administrative user'),
+        'displayName' => (!empty($mailbox['name']) ? $mailbox['name'] : 'zynerone administrative user'),
+        'created' => (!empty($mailbox['created']) ? $mailbox['created'] : ''),
+        'modified' => (!empty($mailbox['modified']) ? $mailbox['modified'] : ''),
+        'active' => (!empty($mailbox['active']) ? $mailbox['active'] : ''),
+      )
+    );
     exit;
   }
 }
-echo json_encode(array(
-  'success' => false
-));
+echo json_encode(
+  array(
+    'success' => false
+  )
+);

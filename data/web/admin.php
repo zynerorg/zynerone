@@ -17,7 +17,7 @@ $js_minifier->add('/web/js/site/pwgen.js');
 
 // all domains
 $domains = mailbox('get', 'domains');
-$all_domains =  array_merge($domains, mailbox('get', 'alias_domains'));
+$all_domains = array_merge($domains, mailbox('get', 'alias_domains'));
 
 // mailboxes
 $mailboxes = [];
@@ -31,7 +31,7 @@ $mailboxes = array_filter($mailboxes);
 // DKIM domains
 $dkim_domains = [];
 $dkim_domains_with_keys = [];
-foreach($domains as $domain) {
+foreach ($domains as $domain) {
   $dkim_domains[$domain] = ['dkim' => null, 'alias_domains' => []];
   if (!empty($dkim = dkim('details', $domain))) {
     $dkim_domains_with_keys[] = $domain;
@@ -54,7 +54,7 @@ foreach($domains as $domain) {
   }
 }
 $dkim_blind_domains = [];
-foreach(dkim('blind') as $blind) {
+foreach (dkim('blind') as $blind) {
   $dkim_blind_domains[$blind] = ['dkim' => null];
   if (!empty($dkim = dkim('details', $blind))) {
     $dkim_domains_with_keys[] = $blind;
@@ -66,7 +66,7 @@ foreach(dkim('blind') as $blind) {
 }
 
 // rsettings
-$rsettings = array_map(function ($rsetting){
+$rsettings = array_map(function ($rsetting) {
   $rsetting['details'] = rsettings('details', $rsetting['id']);
   return $rsetting;
 }, rsettings('get'));

@@ -159,7 +159,7 @@ class DockerApi:
             postqueue_r = container.exec_run(["/bin/bash", "-c", "/usr/sbin/postqueue " + i], user='postfix')
             # todo: check each exit code
           res = { 'type': 'success', 'msg': 'Scheduled immediate delivery'}
-          return Response(content=json.dumps(res, indent=4), media_type="application/json")        
+          return Response(content=json.dumps(res, indent=4), media_type="application/json")
   # api call: container_post - post_action: exec - cmd: mailq - task: list
   def container_post__exec__mailq__list(self, request_json, **kwargs):
     if 'container_id' in kwargs:
@@ -318,7 +318,7 @@ class DockerApi:
 
     if 'username' in request_json and 'script_name' in request_json:
       for container in self.sync_docker_client.containers.list(filters=filters):
-        cmd = ["/bin/bash", "-c", "/usr/bin/doveadm sieve get -u '" + request_json['username'].replace("'", "'\\''") + "' '" + request_json['script_name'].replace("'", "'\\''") + "'"]  
+        cmd = ["/bin/bash", "-c", "/usr/bin/doveadm sieve get -u '" + request_json['username'].replace("'", "'\\''") + "' '" + request_json['script_name'].replace("'", "'\\''") + "'"]
         sieve_return = container.exec_run(cmd)
         return self.exec_run_handler('utf8_text_only', sieve_return)
   # api call: container_post - post_action: exec - cmd: maildir - task: cleanup
@@ -462,7 +462,7 @@ class DockerApi:
         except:
           pass
       return ''.join(total_data)
-      
+
     try :
       socket = container.exec_run([shell_cmd], stdin=True, socket=True, user=user).output._sock
       if not cmd.endswith("\n"):
