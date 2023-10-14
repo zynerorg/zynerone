@@ -1,12 +1,12 @@
 stages:
-- matrix
+  - matrix
 
 Matrix:
   stage: matrix
   image: alpine:latest
   parallel:
     matrix:
-      - images: 
+      - images:
           - "acme-zynerone"
           - "clamd-zynerone"
           - "dockerapi-zynerone"
@@ -22,4 +22,7 @@ Matrix:
           - "watchdog-zynerone"
           - "api-zynerone"
   script:
-  - echo "Hello from $images"
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - cp helper-scripts/docker-compose.override.yml.d/BUILD_FLAGS/docker-compose.override.yml docker-compose.override.yml
+    - docker compose build ${images}
+    - docker compose push ${images}
