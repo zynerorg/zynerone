@@ -3,6 +3,7 @@ stages:
 
 Matrix:
   stage: matrix
+  image: ubuntu:latest
   parallel:
     matrix:
       - images:
