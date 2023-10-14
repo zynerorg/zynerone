@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role'])) {
+if (!isset($_SESSION['zynerone_cc_role'])) {
   header('Location: /');
   exit();
 }
@@ -12,7 +12,7 @@ $quarantine_settings = quarantine('settings');
 
 $js_minifier->add('/web/js/site/quarantine.js');
 
-$role = ($_SESSION['mailcow_cc_role'] == "admin") ? 'admin' : 'domainadmin';
+$role = ($_SESSION['zynerone_cc_role'] == "admin") ? 'admin' : 'domainadmin';
 
 $template = 'quarantine.twig';
 $template_data = [

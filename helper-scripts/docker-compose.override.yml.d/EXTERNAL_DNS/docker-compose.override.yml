@@ -1,44 +1,48 @@
 version: '2.1'
 services:
 
-    clamd-mailcow:
+    clamd-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    rspamd-mailcow:
+    rspamd-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    php-fpm-mailcow:
+    php-fpm-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    sogo-mailcow:
+    sogo-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    dovecot-mailcow:
+    dovecot-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    postfix-mailcow:
+    postfix-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    nginx-mailcow:
+    nginx-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    acme-mailcow:
+    acme-zynerone:
       dns:
         - my.resolvers.ip.addr
 
-    watchdog-mailcow:
+    watchdog-zynerone:
       environment:
         - CHECK_UNBOUND=0
       dns:
         - my.resolvers.ip.addr
 
-    dockerapi-mailcow:
+    dockerapi-zynerone:
+      dns:
+        - my.resolvers.ip.addr
+
+    api-zynerone:
       dns:
         - my.resolvers.ip.addr

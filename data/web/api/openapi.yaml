@@ -1,13 +1,13 @@
 openapi: 3.1.0
 info:
   description: >-
-    mailcow is complete e-mailing solution with advanced antispam, antivirus,
+    zynerone is complete e-mailing solution with advanced antispam, antivirus,
     nice UI and API.
 
 
     In order to use this API you have to create a API key and add your IP
     address to the whitelist of allowed IPs this can be done by logging into the
-    Mailcow UI using your admin account, then go to Configuration > Access >
+    Zyner One UI using your admin account, then go to Configuration > Access >
     Edit administrator details > API. There you will find a collapsed API menu.
 
 
@@ -15,7 +15,7 @@ info:
       - The read only key can only be used for all get endpoints
       - The read write key can be used for all endpoints
 
-  title: mailcow API
+  title: Zyner One API
   version: "1.0.0"
 
 servers:
@@ -176,7 +176,7 @@ paths:
       description: >-
         You may create a time limited alias using this action. It takes a JSON
         object containing a domain and mailbox informations.
-        Mailcow will generate a random alias.
+        Zyner One will generate a random alias.
       operationId: Create time limited alias
       requestBody:
         content:
@@ -297,7 +297,7 @@ paths:
                         - add
                         - active: "1"
                           bcc_dest: bcc@awesomecow.tld
-                          local_dest: mailcow.tld
+                          local_dest: zyner.one
                           type: sender
                         - null
                       msg: bcc_saved
@@ -333,7 +333,7 @@ paths:
               example:
                 active: "1"
                 bcc_dest: bcc@awesomecow.tld
-                local_dest: mailcow.tld
+                local_dest: zyner.one
                 type: sender
               properties:
                 active:
@@ -399,7 +399,7 @@ paths:
             schema:
               example:
                 dkim_selector: dkim
-                domains: mailcow.tld
+                domains: zyner.one
                 key_size: "2048"
               properties:
                 dkim_selector:
@@ -427,11 +427,11 @@ paths:
                     - log:
                         - dkim
                         - duplicate
-                        - from_domain: mailcow.tld
+                        - from_domain: zyner.one
                           to_domain: awesomecow.tld
                       msg:
                         - dkim_duplicated
-                        - mailcow.tld
+                        - zyner.one
                         - awesomecow.tld
                       type: success
               schema:
@@ -461,7 +461,7 @@ paths:
           application/json:
             schema:
               example:
-                from_domain: mailcow.tld
+                from_domain: zyner.one
                 to_domain: awesomecow.tld
               properties:
                 fron_domain:
@@ -638,7 +638,7 @@ paths:
                         - domain_admin
                         - add
                         - active: "1"
-                          domains: mailcow.tld
+                          domains: zyner.one
                           password: "*"
                           password2: "*"
                           username: testadmin
@@ -677,7 +677,7 @@ paths:
             schema:
               example:
                 active: "1"
-                domains: mailcow.tld
+                domains: zyner.one
                 password: supersecurepw
                 password2: supersecurepw
                 username: testadmin
@@ -1002,7 +1002,7 @@ paths:
                         - fwdhost
                         - add
                         - filter_spam: "0"
-                          hostname: hosted.mailcow.de
+                          hostname: esp01.zyner.net
                       msg:
                         - forwarding_host_added
                         - "5.1.76.202, 2a00:f820:417::202"
@@ -1028,7 +1028,7 @@ paths:
       tags:
         - Fordwarding Hosts
       description: >-
-        Add a new Forwarding host to mailcow. You can chose to enable or disable
+        Add a new Forwarding host to zynerone. You can chose to enable or disable
         spam filtering of incoming emails by specifing `filter_spam` 0 =
         inactive, 1 = active.
       operationId: Add Forward Host
@@ -1038,7 +1038,7 @@ paths:
             schema:
               example:
                 filter_spam: "0"
-                hostname: hosted.mailcow.de
+                hostname: esp01.zyner.net
               properties:
                 filter_spam:
                   description: "1 to enable spam filter, 0 to disable spam filter"
@@ -1168,7 +1168,7 @@ paths:
                         - oauth2
                         - add
                         - client
-                        - redirect_uri: "https://mailcow.tld"
+                        - redirect_uri: "https://zyner.one"
                       msg: Added client access
                       type: success
               schema:
@@ -1198,7 +1198,7 @@ paths:
           application/json:
             schema:
               example:
-                redirect_uri: "https://mailcow.tld"
+                redirect_uri: "https://zyner.one"
               properties:
                 redirect_uri:
                   description: the uri where you should be redirected after oAuth
@@ -1220,12 +1220,12 @@ paths:
                         - recipient_map
                         - add
                         - active: "1"
-                          recipient_map_new: target@mailcow.tld
-                          recipient_map_old: recipient@mailcow.tld
+                          recipient_map_new: target@zyner.one
+                          recipient_map_old: recipient@zyner.one
                         - null
                       msg:
                         - recipient_map_entry_saved
-                        - recipient@mailcow.tld
+                        - recipient@zyner.one
                       type: success
               schema:
                 properties:
@@ -1257,8 +1257,8 @@ paths:
             schema:
               example:
                 active: "1"
-                recipient_map_new: target@mailcow.tld
-                recipient_map_old: recipient@mailcow.tld
+                recipient_map_new: target@zyner.one
+                recipient_map_old: recipient@zyner.one
               properties:
                 active:
                   description: 1 for a active user account 0 for a disabled user account
@@ -1285,7 +1285,7 @@ paths:
                     - log:
                         - relayhost
                         - add
-                        - hostname: "mailcow.tld:25"
+                        - hostname: "zyner.one:25"
                           password: supersecurepassword
                           username: testuser
                       msg:
@@ -1319,7 +1319,7 @@ paths:
           application/json:
             schema:
               example:
-                hostname: "mailcow.tld:25"
+                hostname: "zyner.one:25"
                 password: supersecurepassword
                 username: testuser
               properties:
@@ -1351,7 +1351,7 @@ paths:
                         - resource
                         - active: "1"
                           description: test
-                          domain: mailcow.tld
+                          domain: zyner.one
                           kind: location
                           multiple_bookings: "0"
                           multiple_bookings_custom: ""
@@ -1359,7 +1359,7 @@ paths:
                         - null
                       msg:
                         - resource_added
-                        - mailcow.tld
+                        - zyner.one
                       type: success
               schema:
                 properties:
@@ -1390,7 +1390,7 @@ paths:
               example:
                 active: "1"
                 description: test
-                domain: mailcow.tld
+                domain: zyner.one
                 kind: location
                 multiple_bookings: "0"
                 multiple_bookings_custom: ""
@@ -1500,10 +1500,10 @@ paths:
           application/json:
             schema:
               example:
-                username: lisa@mailcow.tld
-                host1: mail.mailcow.tld
+                username: lisa@zyner.one
+                host1: mail.zyner.one
                 port1: "143"
-                user1: demo@mailcow.tld
+                user1: demo@zyner.one
                 password1: supersecretpw
                 enc1: TLS
                 mins_interval: "20"
@@ -1523,7 +1523,7 @@ paths:
                 active: "1"
               properties:
                 parameters:
-                  description: your local mailcow mailbox
+                  description: your local zynerone mailbox
                   type: string
                 host1:
                   description: the smtp server where mails should be synced from
@@ -1538,7 +1538,7 @@ paths:
                   description: the encryption method used to connect to the mailserver
                   type: string
                 mins_internal:
-                  description: the interval in which messages should be syned
+                  description: the interval in which messages should be synced
                   type: number
                 subfolder2:
                   description: sync into subfolder on destination (empty = do not use subfolder)
@@ -1599,12 +1599,12 @@ paths:
                         - add
                         - parameters: ""
                           active: "1"
-                          dest: mailcow.tld
+                          dest: zyner.one
                           policy: encrypt
                         - null
                       msg:
                         - tls_policy_map_entry_saved
-                        - mailcow.tld
+                        - zyner.one
                       type: success
               schema:
                 properties:
@@ -1635,7 +1635,7 @@ paths:
               example:
                 parameters: ""
                 active: "1"
-                dest: mailcow.tld
+                dest: zyner.one
                 policy: encrypt
               properties:
                 parameters:
@@ -1926,10 +1926,10 @@ paths:
                         - dkim
                         - delete
                         - domains:
-                            - mailcow.tld
+                            - zyner.one
                       msg:
                         - dkim_removed
-                        - mailcow.tld
+                        - zyner.one
                       type: success
               schema:
                 properties:
@@ -1959,7 +1959,7 @@ paths:
             schema:
               items:
                 example:
-                  - mailcow.tld
+                  - zyner.one
                 type: string
               type: array
       summary: Delete DKIM Key
@@ -2575,11 +2575,11 @@ paths:
                         - delete
                         - resource
                         - name:
-                            - test@mailcow.tld
+                            - test@zyner.one
                         - null
                       msg:
                         - resource_removed
-                        - test@mailcow.tld
+                        - test@zyner.one
                       type: success
               schema:
                 properties:
@@ -2610,7 +2610,7 @@ paths:
           application/json:
             schema:
               example:
-                - test@mailcow.tld
+                - test@zyner.one
               properties:
                 items:
                   description: contains list of Resources you want to delete
@@ -3183,7 +3183,7 @@ paths:
                   netban_ipv4: "24"
                   netban_ipv6: "64"
                   retry_window: "600"
-                  whitelist: mailcow.tld
+                  whitelist: zyner.one
                 items: none
               properties:
                 attr:
@@ -3865,13 +3865,13 @@ paths:
     get:
       parameters:
         - description: mailbox of entry you want to get
-          example: hello@mailcow.email
+          example: hello@zyner.one
           in: path
           name: mailbox
           required: true
           schema:
             enum:
-              - hello@mailcow.email
+              - hello@zyner.one
             type: string
         - description: e.g. api-key-string
           example: api-key-string
@@ -3891,9 +3891,9 @@ paths:
                   value:
                     - active: "1"
                       created: "2019-12-21 16:04:55"
-                      domain: mailcow.email
+                      domain: zyner.one
                       id: 2
-                      mailbox: hello@mailcow.email
+                      mailbox: hello@zyner.one
                       modified: null
                       name: emclient
           description: OK
@@ -3940,9 +3940,9 @@ paths:
                     - active: "1"
                       bcc_dest: bcc@awesomecow.tld
                       created: "2019-10-02 21:44:34"
-                      domain: mailcow.tld
+                      domain: zyner.one
                       id: 3
-                      local_dest: "@mailcow.tld"
+                      local_dest: "@zyner.one"
                       modified: null
                       type: sender
           description: OK
@@ -4007,11 +4007,11 @@ paths:
                     - active: "1"
                       created: "2019-10-02 10:29:41"
                       selected_domains:
-                        - mailcow.tld
+                        - zyner.one
                       tfa_active: "0"
                       unselected_domains:
-                        - awesomemailcow.de
-                        - mailcowisgreat.de
+                        - zyner.net
+                        - zyner.org
                       username: testadmin
           description: OK
           headers: {}
@@ -4031,7 +4031,7 @@ paths:
           schema:
             enum:
               - all
-              - mailcow.tld
+              - zyner.one
             type: string
         - description: comma seperated list of tags to filter by
           example: "tag1,tag2"
@@ -4154,15 +4154,15 @@ paths:
                   value:
                     - host: 5.1.76.202
                       keep_spam: "yes"
-                      source: hosted.mailcow.de
+                      source: esp01.zyner.net
                     - host: "2a00:f820:417::202"
                       keep_spam: "yes"
-                      source: hosted.mailcow.de
+                      source: esp01.zyner.net
           description: OK
           headers: {}
       tags:
         - Fordwarding Hosts
-      description: You can list all Forwarding Hosts in your mailcow.
+      description: You can list all Forwarding Hosts in your zynerone.
       operationId: Get Forwarding Hosts
       summary: Get Forwarding Hosts
   "/api/v1/get/logs/acme/{count}":
@@ -4277,7 +4277,7 @@ paths:
                       ua: >-
                         Microsoft Office/16.0 (Windows NT 6.2; MAPICPL
                         16.0.11328; Pro)
-                      user: awesome@mailcow.de
+                      user: awesome@zyner.one
           description: OK
           headers: {}
       tags:
@@ -4438,18 +4438,18 @@ paths:
               examples:
                 response:
                   value:
-                    - from: awesome@mailcow.email
-                      header_from: '"Awesome" <awesome@mailcow.email>'
-                      header_subject: Mailcow is amazing
+                    - from: awesome@zyner.one
+                      header_from: '"Awesome" <awesome@zyner.one>'
+                      header_subject: Zyner One is amazing
                       ip: 172.22.1.248
                       message_id: 6a-5d892500-7-240abd80@90879116
                       qid: E3CF91500458
-                      rcpt: hello@mailcow.email
+                      rcpt: hello@zyner.one
                       rl_hash: RLsdz3tuabozgd4oacbdh8kc78
-                      rl_info: mailcow(RLsdz3tuabozgd4oacbdh8kc78)
-                      rl_name: mailcow
+                      rl_info: zynerone(RLsdz3tuabozgd4oacbdh8kc78)
+                      rl_name: zynerone
                       time: 1569269003
-                      user: awesome@mailcow.email
+                      user: awesome@zyner.one
           description: OK
           headers: {}
       tags:
@@ -4519,7 +4519,7 @@ paths:
                   value:
                     - message: >-
                         [109]:
-                        mailcowdockerized_watchdog-mailcow_1.mailcowdockerized_mailcow-network
+                        zynerone_watchdog-zynerone_1.zynerone_zynerone-network
                         "GET /SOGo.index/ HTTP/1.1" 200 2531/0 0.005 - - 0
                       priority: notice
                       program: sogod
@@ -4665,7 +4665,7 @@ paths:
                       queue_name: incoming
                       recipients:
                         - recipient@awesomecow.tld
-                      sender: sender@mailcow.tld
+                      sender: sender@zyner.one
           description: OK
           headers: {}
       tags:
@@ -4709,7 +4709,7 @@ paths:
                       client_secret: 73fc668a88147e32a31ff80c
                       grant_types: null
                       id: 1
-                      redirect_uri: "https://mailcow.tld"
+                      redirect_uri: "https://zyner.one"
                       scope: profile
                       user_id: null
           description: OK
@@ -4807,7 +4807,7 @@ paths:
                     rcpt: admin@domain.tld
                     score: 15.48
                     sender: bounces@send.domain.tld
-                    subject: mailcow is awesome
+                    subject: zynerone is awesome
                     virus_flag: 0
           description: OK
           headers: {}
@@ -4852,8 +4852,8 @@ paths:
                       created: "2019-10-02 22:06:29"
                       id: 3
                       modified: null
-                      recipient_map_new: target@mailcow.tld
-                      recipient_map_old: recipient@mailcow.tld
+                      recipient_map_new: target@zyner.one
+                      recipient_map_old: recipient@zyner.one
           description: OK
           headers: {}
       tags:
@@ -4894,7 +4894,7 @@ paths:
                 response:
                   value:
                     - active: "1"
-                      hostname: "mailcow.tld:25"
+                      hostname: "zyner.one:25"
                       id: 1
                       password: supersecurepassword
                       password_short: tes...
@@ -4920,11 +4920,11 @@ paths:
                   value:
                     - active: "1"
                       description: test
-                      domain: mailcow.tld
+                      domain: zyner.one
                       kind: location
                       local_part: test
                       multiple_bookings: 0
-                      name: test@mailcow.tld
+                      name: test@zyner.one
           description: OK
           headers: {}
       tags:
@@ -4958,10 +4958,10 @@ paths:
                 response:
                   value:
                     - frame: s
-                      mailbox: leon@mailcow.tld
+                      mailbox: leon@zyner.one
                       value: "5"
                     - frame: s
-                      mailbox: lisa@mailcow.tld
+                      mailbox: lisa@zyner.one
                       value: "3"
           description: OK
           headers: {}
@@ -5165,111 +5165,111 @@ paths:
               examples:
                 response:
                   value:
-                    acme-mailcow:
-                      container: acme-mailcow
-                      image: "mailcow/acme:1.63"
+                    acme-zynerone:
+                      container: acme-zynerone
+                      image: "zynerone/acme:1.63"
                       started_at: "2019-12-22T21:00:08.270660275Z"
                       state: running
                       type: info
-                    clamd-mailcow:
-                      container: clamd-mailcow
-                      image: "mailcow/clamd:1.35"
+                    clamd-zynerone:
+                      container: clamd-zynerone
+                      image: "zynerone/clamd:1.35"
                       started_at: "2019-12-22T21:00:01.622856172Z"
                       state: running
                       type: info
-                    dockerapi-mailcow:
-                      container: dockerapi-mailcow
-                      image: "mailcow/dockerapi:1.36"
+                    dockerapi-zynerone:
+                      container: dockerapi-zynerone
+                      image: "zynerone/dockerapi:1.36"
                       started_at: "2019-12-22T20:59:59.984797808Z"
                       state: running
                       type: info
-                    dovecot-mailcow:
-                      container: dovecot-mailcow
-                      image: "mailcow/dovecot:1.104"
+                    dovecot-zynerone:
+                      container: dovecot-zynerone
+                      image: "zynerone/dovecot:1.104"
                       started_at: "2019-12-22T21:00:08.988680259Z"
                       state: running
                       type: info
-                    ipv6nat-mailcow:
-                      container: ipv6nat-mailcow
+                    ipv6nat-zynerone:
+                      container: ipv6nat-zynerone
                       image: robbertkl/ipv6nat
                       started_at: "2019-12-22T21:06:37.273225445Z"
                       state: running
                       type: info
-                    memcached-mailcow:
-                      container: memcached-mailcow
+                    memcached-zynerone:
+                      container: memcached-zynerone
                       image: "memcached:alpine"
                       started_at: "2019-12-22T20:59:58.0907785Z"
                       state: running
                       type: info
-                    mysql-mailcow:
-                      container: mysql-mailcow
+                    mariadb-zynerone:
+                      container: mariadb-zynerone
                       image: "mariadb:10.3"
                       started_at: "2019-12-22T21:00:02.201937528Z"
                       state: running
                       type: info
-                    netfilter-mailcow:
-                      container: netfilter-mailcow
-                      image: "mailcow/netfilter:1.31"
+                    netfilter-zynerone:
+                      container: netfilter-zynerone
+                      image: "zynerone/netfilter:1.31"
                       started_at: "2019-12-22T21:00:09.851559297Z"
                       state: running
                       type: info
-                    nginx-mailcow:
-                      container: nginx-mailcow
+                    nginx-zynerone:
+                      container: nginx-zynerone
                       image: "nginx:mainline-alpine"
                       started_at: "2019-12-22T21:00:12.9843038Z"
                       state: running
                       type: info
-                    olefy-mailcow:
-                      container: olefy-mailcow
-                      image: "mailcow/olefy:1.2"
+                    olefy-zynerone:
+                      container: olefy-zynerone
+                      image: "zynerone/olefy:1.2"
                       started_at: "2019-12-22T20:59:59.676259274Z"
                       state: running
                       type: info
-                    php-fpm-mailcow:
-                      container: php-fpm-mailcow
-                      image: "mailcow/phpfpm:1.55"
+                    php-fpm-zynerone:
+                      container: php-fpm-zynerone
+                      image: "zynerone/phpfpm:1.55"
                       started_at: "2019-12-22T21:00:00.955808957Z"
                       state: running
                       type: info
-                    postfix-mailcow:
-                      container: postfix-mailcow
-                      image: "mailcow/postfix:1.44"
+                    postfix-zynerone:
+                      container: postfix-zynerone
+                      image: "zynerone/postfix:1.44"
                       started_at: "2019-12-22T21:00:07.186717617Z"
                       state: running
                       type: info
-                    redis-mailcow:
-                      container: redis-mailcow
+                    redis-zynerone:
+                      container: redis-zynerone
                       image: "redis:5-alpine"
                       started_at: "2019-12-22T20:59:56.827166834Z"
                       state: running
                       type: info
-                    rspamd-mailcow:
-                      container: rspamd-mailcow
-                      image: "mailcow/rspamd:1.56"
+                    rspamd-zynerone:
+                      container: rspamd-zynerone
+                      image: "zynerone/rspamd:1.56"
                       started_at: "2019-12-22T21:00:12.456075355Z"
                       state: running
                       type: info
-                    sogo-mailcow:
-                      container: sogo-mailcow
-                      image: "mailcow/sogo:1.65"
+                    sogo-zynerone:
+                      container: sogo-zynerone
+                      image: "zynerone/sogo:1.65"
                       started_at: "2019-12-22T20:59:58.382274592Z"
                       state: running
                       type: info
-                    solr-mailcow:
-                      container: solr-mailcow
-                      image: "mailcow/solr:1.7"
+                    solr-zynerone:
+                      container: solr-zynerone
+                      image: "zynerone/solr:1.7"
                       started_at: "2019-12-22T20:59:59.635413798Z"
                       state: running
                       type: info
-                    unbound-mailcow:
-                      container: unbound-mailcow
-                      image: "mailcow/unbound:1.10"
+                    unbound-zynerone:
+                      container: unbound-zynerone
+                      image: "zynerone/unbound:1.10"
                       started_at: "2019-12-22T20:59:58.760595825Z"
                       state: running
                       type: info
-                    watchdog-mailcow:
-                      container: watchdog-mailcow
-                      image: "mailcow/watchdog:1.65"
+                    watchdog-zynerone:
+                      container: watchdog-zynerone
+                      image: "zynerone/watchdog:1.65"
                       started_at: "2019-12-22T20:59:56.028660382Z"
                       state: running
                       type: info
@@ -5435,7 +5435,7 @@ paths:
                     - parameters: ""
                       active: "1"
                       created: "2019-10-03 08:42:12"
-                      dest: mailcow.tld
+                      dest: zyner.one
                       id: 1
                       modified: null
                       policy: encrypt
@@ -5614,7 +5614,7 @@ paths:
                 response:
                   value:
                     - type: "success"
-                      log: ["cors", "edit", {"allowed_origins": ["*", "mail.mailcow.tld"], "allowed_methods": ["POST", "GET", "DELETE", "PUT"]}]
+                      log: ["cors", "edit", {"allowed_origins": ["*", "mail.zyner.one"], "allowed_methods": ["POST", "GET", "DELETE", "PUT"]}]
                       msg: "cors_headers_edited"
           description: OK
           headers: { }
@@ -5623,7 +5623,7 @@ paths:
       description: >-
         This endpoint allows you to manage Cross-Origin Resource Sharing (CORS) settings for the API. 
         CORS is a security feature implemented by web browsers to prevent unauthorized cross-origin requests. 
-        By editing the CORS settings, you can specify which domains and which methods are permitted to access the API resources from outside the mailcow domain.
+        By editing the CORS settings, you can specify which domains and which methods are permitted to access the API resources from outside the zynerone domain.
       operationId: Edit Cross-Origin Resource Sharing (CORS) settings
       requestBody:
         content:
@@ -5631,7 +5631,7 @@ paths:
             schema:
               example:
                 attr:
-                  allowed_origins: ["*", "mail.mailcow.tld"]
+                  allowed_origins: ["*", "mail.zyner.one"]
                   allowed_methods: ["POST", "GET", "DELETE", "PUT"]
               properties:
                 attr:
@@ -5661,7 +5661,7 @@ tags:
   - name: Fordwarding Hosts
     description: Forwarding Hosts enable you to send mail using a relay
   - name: Logs
-    description: Get all mailcow system logs
+    description: Get all zynerone system logs
   - name: Queue Manager
     description: Manage the postfix mail queue
   - name: Quarantine
@@ -5679,7 +5679,7 @@ tags:
   - name: Outgoing TLS Policy Map Overrides
     description: Force global TLS policys
   - name: oAuth Clients
-    description: Use mailcow as a oAuth server
+    description: Use zynerone as a oAuth server
   - name: Routing
     description: Define your own email routes
   - name: Resources

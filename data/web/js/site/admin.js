@@ -32,18 +32,18 @@ jQuery(function($){
         continue;
       }
       if(!validateRegex(regex_data[i])) {
-        mailcow_alert_box('Cannot build regex from line ' + (i+1), 'danger');
+        zynerone_alert_box('Cannot build regex from line ' + (i+1), 'danger');
         var regex_valid = false;
         break;
       }
       if(!regex_data[i].startsWith('/') || !/\/[ims]?$/.test(regex_data[i])){
-        mailcow_alert_box('Line ' + (i+1) + ' is invalid', 'danger');
+        zynerone_alert_box('Line ' + (i+1) + ' is invalid', 'danger');
         var regex_valid = false;
         break;
       }
     }
     if (regex_valid) {
-      mailcow_alert_box('Regex OK', 'success');
+      zynerone_alert_box('Regex OK', 'success');
       $('button[data-id="' + regex_map_id + '"]').attr({"disabled": false});
     }
   });

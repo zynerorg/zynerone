@@ -28,9 +28,9 @@ if [[ "${SKIP_HTTP_VERIFICATION}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
   SKIP_HTTP_VERIFICATION=y
 fi
 
-# Request certificate for MAILCOW_HOSTNAME only
-if [[ "${ONLY_MAILCOW_HOSTNAME}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-  ONLY_MAILCOW_HOSTNAME=y
+# Request certificate for ZYNERONE_HOSTNAME only
+if [[ "${ONLY_ZYNERONE_HOSTNAME}" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
+  ONLY_ZYNERONE_HOSTNAME=y
 fi
 
 # Request individual certificate for every domain
@@ -90,20 +90,20 @@ fi
 
 if [[ -f ${ACME_BASE}/cert.pem ]] && [[ -f ${ACME_BASE}/key.pem ]] && [[ $(stat -c%s ${ACME_BASE}/cert.pem) != 0 ]]; then
   ISSUER=$(openssl x509 -in ${ACME_BASE}/cert.pem -noout -issuer)
-  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"mailcow"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
-    log_f "Found certificate with issuer other than mailcow snake-oil CA and Let's Encrypt, skipping ACME client..."
+  if [[ ${ISSUER} != *"Let's Encrypt"* && ${ISSUER} != *"ZynerOne"* && ${ISSUER} != *"Fake LE Intermediate"* ]]; then
+    log_f "Found certificate with issuer other than ZynerOne snake-oil CA and Let's Encrypt, skipping ACME client..."
     sleep 3650d
     exec $(readlink -f "$0")
   fi
 else
-  if [[ -f ${ACME_BASE}/${MAILCOW_HOSTNAME}/cert.pem ]] && [[ -f ${ACME_BASE}/${MAILCOW_HOSTNAME}/key.pem ]] && verify_hash_match ${ACME_BASE}/${MAILCOW_HOSTNAME}/cert.pem ${ACME_BASE}/${MAILCOW_HOSTNAME}/key.pem; then
+  if [[ -f ${ACME_BASE}/${ZYNERONE_HOSTNAME}/cert.pem ]] && [[ -f ${ACME_BASE}/${ZYNERONE_HOSTNAME}/key.pem ]] && verify_hash_match ${ACME_BASE}/${ZYNERONE_HOSTNAME}/cert.pem ${ACME_BASE}/${ZYNERONE_HOSTNAME}/key.pem; then
     log_f "Restoring previous acme certificate and restarting script..."
-    cp ${ACME_BASE}/${MAILCOW_HOSTNAME}/cert.pem ${ACME_BASE}/cert.pem
-    cp ${ACME_BASE}/${MAILCOW_HOSTNAME}/key.pem ${ACME_BASE}/key.pem
+    cp ${ACME_BASE}/${ZYNERONE_HOSTNAME}/cert.pem ${ACME_BASE}/cert.pem
+    cp ${ACME_BASE}/${ZYNERONE_HOSTNAME}/key.pem ${ACME_BASE}/key.pem
     # Restarting with env var set to trigger a restart,
     exec env TRIGGER_RESTART=1 $(readlink -f "$0")
   else
-    log_f "Restoring mailcow snake-oil certificates and restarting script..."
+    log_f "Restoring zynerone snake-oil certificates and restarting script..."
     cp ${SSL_EXAMPLE}/cert.pem ${ACME_BASE}/cert.pem
     cp ${SSL_EXAMPLE}/key.pem ${ACME_BASE}/key.pem
     exec env TRIGGER_RESTART=1 $(readlink -f "$0")
@@ -146,7 +146,7 @@ while true; do
   DOVECOT_CERT_SERIAL="$(echo | openssl s_client -connect dovecot:143 -starttls imap 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
   POSTFIX_CERT_SERIAL_NEW="$(echo | openssl s_client -connect postfix:25 -starttls smtp 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
   DOVECOT_CERT_SERIAL_NEW="$(echo | openssl s_client -connect dovecot:143 -starttls imap 2>/dev/null | openssl x509 -inform pem -noout -serial | cut -d "=" -f 2)"
-  # Re-using previous acme-mailcow account and domain keys
+  # Re-using previous acme-zynerone account and domain keys
   if [[ ! -f ${ACME_BASE}/acme/key.pem ]]; then
     log_f "Generating missing domain private rsa key..."
     openssl genrsa 4096 > ${ACME_BASE}/acme/key.pem
@@ -237,12 +237,12 @@ while true; do
     SQL_DOMAIN_ARR+=("${domains}")
   done <<< "${SQL_DOMAINS}"
 
-  if [[ ${ONLY_MAILCOW_HOSTNAME} != "y" ]]; then
+  if [[ ${ONLY_ZYNERONE_HOSTNAME} != "y" ]]; then
   for SQL_DOMAIN in "${SQL_DOMAIN_ARR[@]}"; do
     unset VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
     declare -a VALIDATED_CONFIG_DOMAINS_SUBDOMAINS
     for SUBDOMAIN in "${ADDITIONAL_WC_ARR[@]}"; do
-      if [[  "${SUBDOMAIN}.${SQL_DOMAIN}" != "${MAILCOW_HOSTNAME}" ]]; then
+      if [[  "${SUBDOMAIN}.${SQL_DOMAIN}" != "${ZYNERONE_HOSTNAME}" ]]; then
         if check_domain "${SUBDOMAIN}.${SQL_DOMAIN}"; then
           VALIDATED_CONFIG_DOMAINS_SUBDOMAINS+=("${SUBDOMAIN}.${SQL_DOMAIN}")
         fi
@@ -252,11 +252,11 @@ while true; do
   done
   fi
 
-  if check_domain ${MAILCOW_HOSTNAME}; then
-    VALIDATED_MAILCOW_HOSTNAME="${MAILCOW_HOSTNAME}"
+  if check_domain ${ZYNERONE_HOSTNAME}; then
+    VALIDATED_ZYNERONE_HOSTNAME="${ZYNERONE_HOSTNAME}"
   fi
 
-  if [[ ${ONLY_MAILCOW_HOSTNAME} != "y" ]]; then
+  if [[ ${ONLY_ZYNERONE_HOSTNAME} != "y" ]]; then
   for SAN in "${ADDITIONAL_SAN_ARR[@]}"; do
     # Skip on CAA errors for SAN
     SAN_PARENT_DOMAIN=$(echo ${SAN} | cut -d. -f2-)
@@ -269,7 +269,7 @@ while true; do
         continue
       fi
     fi
-    if [[ ${SAN} == ${MAILCOW_HOSTNAME} ]]; then
+    if [[ ${SAN} == ${ZYNERONE_HOSTNAME} ]]; then
       continue
     fi
     if check_domain ${SAN}; then
@@ -281,10 +281,10 @@ while true; do
   # Unique domains for server certificate
   if [[ ${ENABLE_SSL_SNI} == "y" ]]; then
     # create certificate for server name and fqdn SANs only
-    SERVER_SAN_VALIDATED=(${VALIDATED_MAILCOW_HOSTNAME} $(echo ${ADDITIONAL_VALIDATED_SAN[*]} | xargs -n1 | sort -u | xargs))
+    SERVER_SAN_VALIDATED=(${VALIDATED_ZYNERONE_HOSTNAME} $(echo ${ADDITIONAL_VALIDATED_SAN[*]} | xargs -n1 | sort -u | xargs))
   else
     # create certificate for all domains, including all subdomains from other domains [*]
-    SERVER_SAN_VALIDATED=(${VALIDATED_MAILCOW_HOSTNAME} $(echo ${VALIDATED_CONFIG_DOMAINS[*]} ${ADDITIONAL_VALIDATED_SAN[*]} | xargs -n1 | sort -u | xargs))
+    SERVER_SAN_VALIDATED=(${VALIDATED_ZYNERONE_HOSTNAME} $(echo ${VALIDATED_CONFIG_DOMAINS[*]} ${ADDITIONAL_VALIDATED_SAN[*]} | xargs -n1 | sort -u | xargs))
   fi
   if [[ ! -z ${SERVER_SAN_VALIDATED[*]} ]]; then
     CERT_NAME=${SERVER_SAN_VALIDATED[0]}
@@ -351,7 +351,7 @@ while true; do
 
   if [[ -z ${VALIDATED_CERTIFICATES[*]} ]]; then
     log_f "Cannot validate any hostnames, skipping Let's Encrypt for 1 hour."
-    log_f "Use SKIP_LETS_ENCRYPT=y in mailcow.conf to skip it permanently."
+    log_f "Use SKIP_LETS_ENCRYPT=y in zynerone.conf to skip it permanently."
     ${REDIS_CMDLINE} SET ACME_FAIL_TIME "$(date +%s)"
     sleep 1h
     exec $(readlink -f "$0")

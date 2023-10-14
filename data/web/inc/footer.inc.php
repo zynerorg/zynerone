@@ -3,7 +3,7 @@ logger();
 
 $hash = $js_minifier->getDataHash();
 $JSPath = '/tmp/' . $hash . '.js';
-if(!file_exists($JSPath)) {
+if (!file_exists($JSPath)) {
   $js_minifier->minify($JSPath);
   cleanupJS($hash);
 }
@@ -16,7 +16,7 @@ if (is_array($alertbox_log_parser)) {
     $alerts[trim($log['type'], '"')][] = trim($message, '"');
   }
   $alert = array_filter(array_unique($alerts));
-  foreach($alert as $alert_type => $alert_msg) {
+  foreach ($alert as $alert_type => $alert_msg) {
     // html breaks from mysql alerts, replace ` with '
     $alerts[$alert_type] = implode('<hr class="alert-hr">', str_replace("`", "'", $alert_msg));
   }
@@ -25,19 +25,23 @@ if (is_array($alertbox_log_parser)) {
 
 // map tfa details for twig
 $pending_tfa_authmechs = [];
-foreach($_SESSION['pending_tfa_methods'] as $authdata){
+foreach ($_SESSION['pending_tfa_methods'] as $authdata) {
   $pending_tfa_authmechs[$authdata['authmech']] = false;
 }
 if (isset($pending_tfa_authmechs['webauthn'])) {
   $pending_tfa_authmechs['webauthn'] = true;
 }
-if (!isset($pending_tfa_authmechs['webauthn']) 
-    && isset($pending_tfa_authmechs['yubi_otp'])) {
+if (
+  !isset($pending_tfa_authmechs['webauthn'])
+  && isset($pending_tfa_authmechs['yubi_otp'])
+) {
   $pending_tfa_authmechs['yubi_otp'] = true;
 }
-if (!isset($pending_tfa_authmechs['webauthn']) 
-    && !isset($pending_tfa_authmechs['yubi_otp'])
-    && isset($pending_tfa_authmechs['totp'])) {
+if (
+  !isset($pending_tfa_authmechs['webauthn'])
+  && !isset($pending_tfa_authmechs['yubi_otp'])
+  && isset($pending_tfa_authmechs['totp'])
+) {
   $pending_tfa_authmechs['totp'] = true;
 }
 if (isset($pending_tfa_authmechs['u2f'])) {
@@ -46,27 +50,27 @@ if (isset($pending_tfa_authmechs['u2f'])) {
 
 // globals
 $globalVariables = [
-  'mailcow_info' => array(
-    'version_tag' => $GLOBALS['MAILCOW_GIT_VERSION'],
-    'last_version_tag' => $GLOBALS['MAILCOW_LAST_GIT_VERSION'],
-    'git_owner' => $GLOBALS['MAILCOW_GIT_OWNER'],
-    'git_repo' => $GLOBALS['MAILCOW_GIT_REPO'],
-    'git_project_url' => $GLOBALS['MAILCOW_GIT_URL'],
-    'git_commit' => $GLOBALS['MAILCOW_GIT_COMMIT'],
-    'git_commit_date' => $GLOBALS['MAILCOW_GIT_COMMIT_DATE'],
-    'mailcow_branch' => $GLOBALS['MAILCOW_BRANCH'],
-    'updated_at' => $GLOBALS['MAILCOW_UPDATEDAT']
+  'zynerone_info' => array(
+    'version_tag' => $GLOBALS['ZYNERONE_GIT_VERSION'],
+    'last_version_tag' => $GLOBALS['ZYNERONE_LAST_GIT_VERSION'],
+    'git_owner' => $GLOBALS['ZYNERONE_GIT_OWNER'],
+    'git_repo' => $GLOBALS['ZYNERONE_GIT_REPO'],
+    'git_project_url' => $GLOBALS['ZYNERONE_GIT_URL'],
+    'git_commit' => $GLOBALS['ZYNERONE_GIT_COMMIT'],
+    'git_commit_date' => $GLOBALS['ZYNERONE_GIT_COMMIT_DATE'],
+    'ZYNERONE_BRANCH' => $GLOBALS['ZYNERONE_BRANCH'],
+    'updated_at' => $GLOBALS['ZYNERONE_UPDATEDAT']
   ),
-  'js_path' => '/cache/'.basename($JSPath),
+  'js_path' => '/cache/' . basename($JSPath),
   'pending_tfa_methods' => @$_SESSION['pending_tfa_methods'],
   'pending_tfa_authmechs' => $pending_tfa_authmechs,
-  'pending_mailcow_cc_username' => @$_SESSION['pending_mailcow_cc_username'],
+  'pending_zynerone_cc_username' => @$_SESSION['pending_zynerone_cc_username'],
   'lang_footer' => json_encode($lang['footer']),
   'lang_acl' => json_encode($lang['acl']),
   'lang_tfa' => json_encode($lang['tfa']),
   'lang_fido2' => json_encode($lang['fido2']),
   'docker_timeout' => $DOCKER_TIMEOUT,
-  'session_lifetime' => (int)$SESSION_LIFETIME,
+  'session_lifetime' => (int) $SESSION_LIFETIME,
   'csrf_token' => $_SESSION['CSRF']['TOKEN'],
   'pagination_size' => $PAGINATION_SIZE,
   'log_pagination_size' => $LOG_PAGINATION_SIZE,
@@ -82,7 +86,7 @@ if (is_array($template_data)) {
   echo $twig->render($template, $template_data);
 }
 
-if (isset($_SESSION['mailcow_cc_api'])) {
+if (isset($_SESSION['zynerone_cc_api'])) {
   session_regenerate_id(true);
   session_unset();
   session_destroy();

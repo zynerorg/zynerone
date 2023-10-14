@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 $AuthUsers = array("admin", "domainadmin", "user");
-if (!isset($_SESSION['mailcow_cc_role']) OR !in_array($_SESSION['mailcow_cc_role'], $AuthUsers)) {
+if (!isset($_SESSION['zynerone_cc_role']) OR !in_array($_SESSION['zynerone_cc_role'], $AuthUsers)) {
   header('Location: /');
   exit();
 }
@@ -10,8 +10,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.inc.php';
 $template = 'edit.twig';
 $template_data = [];
 $result = null;
-if (isset($_SESSION['mailcow_cc_role'])) {
-  if ($_SESSION['mailcow_cc_role'] == "admin" || $_SESSION['mailcow_cc_role'] == "domainadmin") {
+if (isset($_SESSION['zynerone_cc_role'])) {
+  if ($_SESSION['zynerone_cc_role'] == "admin" || $_SESSION['zynerone_cc_role'] == "domainadmin") {
     if (isset($_GET["alias"]) &&
       !empty($_GET["alias"])) {
         $alias = html_entity_decode(rawurldecode($_GET["alias"]));
@@ -157,7 +157,7 @@ if (isset($_SESSION['mailcow_cc_role'])) {
     }
     elseif (isset($_GET['recipient_map']) &&
       !empty($_GET["recipient_map"]) &&
-      $_SESSION['mailcow_cc_role'] == "admin") {
+      $_SESSION['zynerone_cc_role'] == "admin") {
         $map = intval($_GET["recipient_map"]);
         $result = recipient_map('details', $map);
         if (substr($result['recipient_map_old'], 0, 1) == '@') {
@@ -168,7 +168,7 @@ if (isset($_SESSION['mailcow_cc_role'])) {
     }
     elseif (isset($_GET['tls_policy_map']) &&
       !empty($_GET["tls_policy_map"]) &&
-      $_SESSION['mailcow_cc_role'] == "admin") {
+      $_SESSION['zynerone_cc_role'] == "admin") {
         $map = intval($_GET["tls_policy_map"]);
         $result = tls_policy_maps('details', $map);
         $template = 'edit/tls_policy_map.twig';
@@ -187,7 +187,7 @@ if (isset($_SESSION['mailcow_cc_role'])) {
         ];
     }
   }
-  if ($_SESSION['mailcow_cc_role'] == "admin"  || $_SESSION['mailcow_cc_role'] == "domainadmin" || $_SESSION['mailcow_cc_role'] == "user") {
+  if ($_SESSION['zynerone_cc_role'] == "admin"  || $_SESSION['zynerone_cc_role'] == "domainadmin" || $_SESSION['zynerone_cc_role'] == "user") {
     if (isset($_GET['syncjob']) &&
       is_numeric($_GET['syncjob'])) {
         $id = $_GET["syncjob"];

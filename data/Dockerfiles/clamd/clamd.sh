@@ -82,7 +82,7 @@ while true; do
         echo "Freshclam is active, waiting..."
         sleep 5
       done
-      echo RELOAD | nc clamd-mailcow 3310
+      echo RELOAD | nc clamd-zynerone 3310
       break
     fi
   done

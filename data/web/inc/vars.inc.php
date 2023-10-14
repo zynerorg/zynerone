@@ -16,8 +16,8 @@ $database_pass = getenv('DBPASS');
 $database_name = getenv('DBNAME');
 
 // Other variables
-$mailcow_hostname = getenv('MAILCOW_HOSTNAME');
-$default_pass_scheme = getenv('MAILCOW_PASS_SCHEME');
+$zynerone_hostname = getenv('ZYNERONE_HOSTNAME');
+$default_pass_scheme = getenv('ZYNERONE_PASS_SCHEME');
 
 // Autodiscover settings
 // ===
@@ -26,7 +26,7 @@ $https_port = strpos($_SERVER['HTTP_HOST'], ':');
 if ($https_port === FALSE) {
   $https_port = 443;
 } else {
-  $https_port = substr($_SERVER['HTTP_HOST'], $https_port+1);
+  $https_port = substr($_SERVER['HTTP_HOST'], $https_port + 1);
 }
 
 // Alternatively select port here =>
@@ -34,7 +34,7 @@ if ($https_port === FALSE) {
 // Other settings =>
 $autodiscover_config = array(
   // General autodiscover service type: "activesync" or "imap"
-  // emClient uses autodiscover, but does not support ActiveSync. mailcow excludes emClient from ActiveSync.
+  // emClient uses autodiscover, but does not support ActiveSync. zynerone excludes emClient from ActiveSync.
   // With SOGo disabled, the type will always fallback to imap. CalDAV and CardDAV will be excluded, too.
   'autodiscoverType' => 'activesync',
   // If autodiscoverType => activesync, also use ActiveSync (EAS) for Outlook desktop clients (>= Outlook 2013 on Windows)
@@ -44,29 +44,29 @@ $autodiscover_config = array(
   // The autodiscover service will always point to SMTPS and IMAPS (TLS-wrapped services).
   // The autoconfig service will additionally announce the STARTTLS-enabled ports, specified in the "tlsport" variable.
   'imap' => array(
-    'server' => $mailcow_hostname,
-    'port' => (int)filter_var(substr(getenv('IMAPS_PORT'), strrpos(getenv('IMAPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
-    'tlsport' => (int)filter_var(substr(getenv('IMAP_PORT'), strrpos(getenv('IMAP_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
+    'server' => $zynerone_hostname,
+    'port' => (int) filter_var(substr(getenv('IMAPS_PORT'), strrpos(getenv('IMAPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
+    'tlsport' => (int) filter_var(substr(getenv('IMAP_PORT'), strrpos(getenv('IMAP_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
   ),
   'pop3' => array(
-    'server' => $mailcow_hostname,
-    'port' => (int)filter_var(substr(getenv('POPS_PORT'), strrpos(getenv('POPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
-    'tlsport' => (int)filter_var(substr(getenv('POP_PORT'), strrpos(getenv('POP_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
+    'server' => $zynerone_hostname,
+    'port' => (int) filter_var(substr(getenv('POPS_PORT'), strrpos(getenv('POPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
+    'tlsport' => (int) filter_var(substr(getenv('POP_PORT'), strrpos(getenv('POP_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
   ),
   'smtp' => array(
-    'server' => $mailcow_hostname,
-    'port' => (int)filter_var(substr(getenv('SMTPS_PORT'), strrpos(getenv('SMTPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
-    'tlsport' => (int)filter_var(substr(getenv('SUBMISSION_PORT'), strrpos(getenv('SUBMISSION_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
+    'server' => $zynerone_hostname,
+    'port' => (int) filter_var(substr(getenv('SMTPS_PORT'), strrpos(getenv('SMTPS_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT),
+    'tlsport' => (int) filter_var(substr(getenv('SUBMISSION_PORT'), strrpos(getenv('SUBMISSION_PORT'), ':')), FILTER_SANITIZE_NUMBER_INT)
   ),
   'activesync' => array(
-    'url' => 'https://' . $mailcow_hostname . ($https_port == 443 ? '' : ':' . $https_port) . '/Microsoft-Server-ActiveSync',
+    'url' => 'https://' . $zynerone_hostname . ($https_port == 443 ? '' : ':' . $https_port) . '/Microsoft-Server-ActiveSync',
   ),
   'caldav' => array(
-    'server' => $mailcow_hostname,
+    'server' => $zynerone_hostname,
     'port' => $https_port,
   ),
   'carddav' => array(
-    'server' => $mailcow_hostname,
+    'server' => $zynerone_hostname,
     'port' => $https_port,
   ),
 );
@@ -117,8 +117,8 @@ $UI_THEME = "lumen";
 // Show DKIM private keys - false by default
 $SHOW_DKIM_PRIV_KEYS = false;
 
-// mailcow Apps - buttons on login screen
-$MAILCOW_APPS = array(
+// zynerone Apps - buttons on login screen
+$ZYNERONE_APPS = array(
   array(
     'name' => 'Webmail',
     'link' => '/SOGo/',
@@ -138,7 +138,7 @@ $LOG_PAGINATION_SIZE = 50;
 $SESSION_LIFETIME = 10800;
 
 // Label for OTP devices
-$OTP_LABEL = "mailcow UI";
+$OTP_LABEL = "Zyner One UI";
 
 // How long to wait (in s) for cURL Docker requests
 $DOCKER_TIMEOUT = 60;
@@ -149,7 +149,7 @@ $SPLIT_DKIM_255 = false;
 // OAuth2 settings
 $REFRESH_TOKEN_LIFETIME = 2678400;
 $ACCESS_TOKEN_LIFETIME = 86400;
-// Logout from mailcow after first OAuth2 session profile request
+// Logout from zynerone after first OAuth2 session profile request
 $OAUTH2_FORGET_SESSION_AFTER_LOGIN = false;
 
 // Set a limit for mailbox and domain tagging
@@ -164,7 +164,7 @@ $MAILBOX_DEFAULT_ATTRIBUTES['tls_enforce_in'] = false;
 // Force outgoing TLS for new mailboxes by default
 $MAILBOX_DEFAULT_ATTRIBUTES['tls_enforce_out'] = false;
 
-// Force password change on next login (only allows login to mailcow UI)
+// Force password change on next login (only allows login to Zyner One UI)
 $MAILBOX_DEFAULT_ATTRIBUTES['force_pw_update'] = false;
 
 // Enable SOGo access (set to false to disable access by default)
@@ -213,7 +213,7 @@ $FIDO2_USER_PRESENT_FLAG = true;
 $FIDO2_FORMATS = array('apple', 'android-key', 'android-safetynet', 'fido-u2f', 'none', 'packed', 'tpm');
 
 
-// Set visible Rspamd maps in mailcow UI, do not change unless you know what you are doing
+// Set visible Rspamd maps in Zyner One UI, do not change unless you know what you are doing
 $RSPAMD_MAPS = array(
   'regex' => array(
     'Header-From: Blacklist' => 'global_mime_from_blacklist.map',
@@ -237,93 +237,93 @@ $IMAPSYNC_OPTIONS = array(
   'whitelist' => array(
     'authmech1',
     'authmech2',
-    'authuser1', 
-    'authuser2', 
-    'debugcontent', 
-    'disarmreadreceipts', 
+    'authuser1',
+    'authuser2',
+    'debugcontent',
+    'disarmreadreceipts',
     'logdir',
-    'debugcrossduplicates', 
+    'debugcrossduplicates',
     'maxsize',
     'minsize',
     'minage',
-    'search', 
-    'noabletosearch', 
-    'pidfile', 
-    'pidfilelocking', 
+    'search',
+    'noabletosearch',
+    'pidfile',
+    'pidfilelocking',
     'search1',
-    'search2', 
+    'search2',
     'sslargs1',
-    'sslargs2', 
+    'sslargs2',
     'syncduplicates',
-    'usecache', 
-    'synclabels', 
-    'truncmess',  
-    'domino2',  
-    'expunge1',  
-    'filterbuggyflags',  
-    'justconnect',  
-    'justfolders',  
+    'usecache',
+    'synclabels',
+    'truncmess',
+    'domino2',
+    'expunge1',
+    'filterbuggyflags',
+    'justconnect',
+    'justfolders',
     'maxlinelength',
-    'useheader',  
-    'noabletosearch1',  
-    'nolog',  
+    'useheader',
+    'noabletosearch1',
+    'nolog',
     'prefix1',
     'prefix2',
     'sep1',
     'sep2',
     'nofoldersizesatend',
-    'justfoldersizes',  
-    'proxyauth1',  
+    'justfoldersizes',
+    'proxyauth1',
     'skipemptyfolders',
     'include',
     'subfolder1',
     'subscribed',
-    'subscribe',   
-    'debug',   
-    'debugimap2',   
-    'domino1',   
-    'exchange1',   
-    'exchange2',   
-    'justlogin',   
-    'keepalive1',   
-    'keepalive2',   
-    'noabletosearch2',   
-    'noexpunge2',   
-    'noresyncflags',   
-    'nossl1',   
-    'nouidexpunge2',   
+    'subscribe',
+    'debug',
+    'debugimap2',
+    'domino1',
+    'exchange1',
+    'exchange2',
+    'justlogin',
+    'keepalive1',
+    'keepalive2',
+    'noabletosearch2',
+    'noexpunge2',
+    'noresyncflags',
+    'nossl1',
+    'nouidexpunge2',
     'syncinternaldates',
-    'idatefromheader',   
-    'useuid',    
-    'debugflags',    
-    'debugimap',    
+    'idatefromheader',
+    'useuid',
+    'debugflags',
+    'debugimap',
     'delete1emptyfolders',
-    'delete2folders',    
-    'gmail2',    
-    'office1',    
-    'testslive6',     
-    'debugimap1',     
+    'delete2folders',
+    'gmail2',
+    'office1',
+    'testslive6',
+    'debugimap1',
     'errorsmax',
-    'tests',     
-    'gmail1',     
+    'tests',
+    'gmail1',
     'maxmessagespersecond',
     'maxbytesafter',
     'maxsleep',
-    'abort',     
-    'resyncflags',     
-    'resynclabels',     
+    'abort',
+    'resyncflags',
+    'resynclabels',
     'syncacls',
-    'nosyncacls',      
-    'nousecache',      
-    'office2',      
-    'testslive',       
-    'debugmemory',       
+    'nosyncacls',
+    'nousecache',
+    'office2',
+    'testslive',
+    'debugmemory',
     'exitwhenover',
-    'noid',       
-    'noexpunge1',        
-    'authmd51',        
-    'logfile',        
-    'proxyauth2',         
+    'noid',
+    'noexpunge1',
+    'authmd51',
+    'logfile',
+    'proxyauth2',
     'domain1',
     'domain2',
     'oauthaccesstoken1',
@@ -334,15 +334,15 @@ $IMAPSYNC_OPTIONS = array(
     'folderrec',
     'folderfirst',
     'folderlast',
-    'nomixfolders',          
-    'authmd52',           
-    'debugfolders',            
-    'nossl2',            
-    'ssl2',            
-    'tls2',             
-    'notls2',              
-    'debugssl',              
-    'notls1', 
+    'nomixfolders',
+    'authmd52',
+    'debugfolders',
+    'nossl2',
+    'ssl2',
+    'tls2',
+    'notls2',
+    'debugssl',
+    'notls1',
     'inet4',
     'inet6',
     'log',

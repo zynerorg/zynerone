@@ -1,10 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != 'admin') {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != 'admin') {
 	exit();
 }
 
-if (preg_match('/^[a-z\-]{0,}-mailcow/', $_GET['service'])) {
+if (preg_match('/^[a-z\-]{0,}-zynerone/', $_GET['service'])) {
   if ($_GET['action'] == "start") {
     header('Content-Type: text/html; charset=utf-8');
     $retry = 0;

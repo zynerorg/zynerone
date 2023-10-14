@@ -12,7 +12,7 @@ echo
 function docker_garbage() {
   IMGS_TO_DELETE=()
 
-  for container in $(grep -oP "image: \Kmailcow.+" docker-compose.yml); do
+  for container in $(grep -oP "image: \Kzynerone.+" docker-compose.yml); do
 
     REPOSITORY=${container/:*}
     TAG=${container/*:}
@@ -151,7 +151,7 @@ fi
 }
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${SCRIPT_DIR}/../mailcow.conf"
+source "${SCRIPT_DIR}/../zynerone.conf"
 COMPOSE_FILE="${SCRIPT_DIR}/../docker-compose.yml"
 CMPS_PRJ=$(echo ${COMPOSE_PROJECT_NAME} | tr -cd 'A-Za-z-_')
 SQLIMAGE=$(grep -iEo '(mysql|mariadb)\:.+' "${COMPOSE_FILE}")
@@ -160,7 +160,7 @@ preflight_local_checks
 preflight_remote_checks
 
 echo
-echo -e "\033[1mFound compose project name ${CMPS_PRJ} for ${MAILCOW_HOSTNAME}\033[0m"
+echo -e "\033[1mFound compose project name ${CMPS_PRJ} for ${ZYNERONE_HOSTNAME}\033[0m"
 echo -e "\033[1mFound SQL ${SQLIMAGE}\033[0m"
 echo
 
@@ -171,25 +171,25 @@ if ! ssh -o StrictHostKeyChecking=no \
   ${REMOTE_SSH_HOST} \
   -p ${REMOTE_SSH_PORT} \
   mkdir -p "${SCRIPT_DIR}/../" ; then
-    >&2 echo -e "\e[31m[ERR]\e[0m - Could not prepare remote for mailcow base directory transfer"
+    >&2 echo -e "\e[31m[ERR]\e[0m - Could not prepare remote for zynerone base directory transfer"
     exit 1
 fi
 
-# Syncing the mailcow base directory
-echo -e "\033[1mSynchronizing mailcow base directory...\033[0m"
+# Syncing the zynerone base directory
+echo -e "\033[1mSynchronizing zynerone base directory...\033[0m"
 rsync --delete -aH -e "ssh -o StrictHostKeyChecking=no \
   -i \"${REMOTE_SSH_KEY}\" \
   -p ${REMOTE_SSH_PORT}" \
   "${SCRIPT_DIR}/../" root@${REMOTE_SSH_HOST}:"${SCRIPT_DIR}/../"
 ec=$?
 if [ ${ec} -ne 0 ] && [ ${ec} -ne 24 ]; then
-  >&2 echo -e "\e[31m[ERR]\e[0m - Could not transfer mailcow base directory to remote"
+  >&2 echo -e "\e[31m[ERR]\e[0m - Could not transfer zynerone base directory to remote"
   exit 1
 fi
 
 # Trigger a Redis save for a consistent Redis copy
 echo -ne "\033[1mRunning redis-cli save... \033[0m"
-docker exec $(docker ps -qf name=redis-mailcow) redis-cli save
+docker exec $(docker ps -qf name=redis-zynerone) redis-cli save
 
 # Syncing volumes related to compose project
 # Same here: make sure destination exists

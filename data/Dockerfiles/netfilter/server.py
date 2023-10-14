@@ -104,7 +104,7 @@ def refreshF2bregex():
   global exit_code
   if not r.get('F2B_REGEX'):
     f2bregex = {}
-    f2bregex[1] = 'mailcow UI: Invalid password for .+ by ([0-9a-f\.:]+)'
+    f2bregex[1] = 'Zyner One UI: Invalid password for .+ by ([0-9a-f\.:]+)'
     f2bregex[2] = 'Rspamd UI: Invalid password by ([0-9a-f\.:]+)'
     f2bregex[3] = 'warning: .*\[([0-9a-f\.:]+)\]: SASL .+ authentication failed: (?!.*Connection lost to authentication server).+'
     f2bregex[4] = 'warning: non-SMTP command from .*\[([0-9a-f\.:]+)]:.+'
@@ -127,7 +127,7 @@ def refreshF2bregex():
 if r.exists('F2B_LOG'):
   r.rename('F2B_LOG', 'NETFILTER_LOG')
 
-def mailcowChainOrder():
+def zyneroneChainOrder():
   global lock
   global quit_now
   global exit_code
@@ -144,14 +144,14 @@ def mailcowChainOrder():
         for chain in [forward_chain, input_chain]:
           target_found = False
           for position, item in enumerate(chain.rules):
-            if item.target.name == 'MAILCOW':
+            if item.target.name == 'ZYNERONE':
               target_found = True
               if position > 2:
-                logCrit('Error in %s chain order: MAILCOW on position %d, restarting container' % (chain.name, position))
+                logCrit('Error in %s chain order: ZYNERONE on position %d, restarting container' % (chain.name, position))
                 quit_now = True
                 exit_code = 2
           if not target_found:
-            logCrit('Error in %s chain: MAILCOW target not found, restarting container' % (chain.name))
+            logCrit('Error in %s chain: ZYNERONE target not found, restarting container' % (chain.name))
             quit_now = True
             exit_code = 2
 
@@ -199,7 +199,7 @@ def ban(address):
     logCrit('Banning %s for %d minutes' % (net, NET_BAN_TIME / 60 ))
     if type(ip) is ipaddress.IPv4Address:
       with lock:
-        chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'MAILCOW')
+        chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'ZYNERONE')
         rule = iptc.Rule()
         rule.src = net
         target = iptc.Target(rule, "REJECT")
@@ -208,7 +208,7 @@ def ban(address):
           chain.insert_rule(rule)
     else:
       with lock:
-        chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'MAILCOW')
+        chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'ZYNERONE')
         rule = iptc.Rule6()
         rule.src = net
         target = iptc.Target(rule, "REJECT")
@@ -228,7 +228,7 @@ def unban(net):
   logInfo('Unbanning %s' % net)
   if type(ipaddress.ip_network(net)) is ipaddress.IPv4Network:
     with lock:
-      chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'MAILCOW')
+      chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'ZYNERONE')
       rule = iptc.Rule()
       rule.src = net
       target = iptc.Target(rule, "REJECT")
@@ -237,7 +237,7 @@ def unban(net):
         chain.delete_rule(rule)
   else:
     with lock:
-      chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'MAILCOW')
+      chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'ZYNERONE')
       rule = iptc.Rule6()
       rule.src = net
       target = iptc.Target(rule, "REJECT")
@@ -254,7 +254,7 @@ def permBan(net, unban=False):
   global lock
   if type(ipaddress.ip_network(net, strict=False)) is ipaddress.IPv4Network:
     with lock:
-      chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'MAILCOW')
+      chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), 'ZYNERONE')
       rule = iptc.Rule()
       rule.src = net
       target = iptc.Target(rule, "REJECT")
@@ -269,7 +269,7 @@ def permBan(net, unban=False):
         r.hdel('F2B_PERM_BANS', '%s' % net)
   else:
     with lock:
-      chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'MAILCOW')
+      chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), 'ZYNERONE')
       rule = iptc.Rule6()
       rule.src = net
       target = iptc.Target(rule, "REJECT")
@@ -299,17 +299,17 @@ def clear():
       filter_table.autocommit = False
       forward_chain = iptc.Chain(filter_table, "FORWARD")
       input_chain = iptc.Chain(filter_table, "INPUT")
-      mailcow_chain = iptc.Chain(filter_table, "MAILCOW")
-      if mailcow_chain in filter_table.chains:
-        for rule in mailcow_chain.rules:
-          mailcow_chain.delete_rule(rule)
+      zynerone_chain = iptc.Chain(filter_table, "ZYNERONE")
+      if zynerone_chain in filter_table.chains:
+        for rule in zynerone_chain.rules:
+          zynerone_chain.delete_rule(rule)
         for rule in forward_chain.rules:
-          if rule.target.name == 'MAILCOW':
+          if rule.target.name == 'ZYNERONE':
             forward_chain.delete_rule(rule)
         for rule in input_chain.rules:
-          if rule.target.name == 'MAILCOW':
+          if rule.target.name == 'ZYNERONE':
             input_chain.delete_rule(rule)
-        filter_table.delete_chain("MAILCOW")
+        filter_table.delete_chain("ZYNERONE")
       filter_table.commit()
       filter_table.refresh()
       filter_table.autocommit = True
@@ -526,28 +526,28 @@ def blacklistUpdate():
 
 def initChain():
   # Is called before threads start, no locking
-  print("Initializing mailcow netfilter chain")
+  print("Initializing zynerone netfilter chain")
   # IPv4
-  if not iptc.Chain(iptc.Table(iptc.Table.FILTER), "MAILCOW") in iptc.Table(iptc.Table.FILTER).chains:
-    iptc.Table(iptc.Table.FILTER).create_chain("MAILCOW")
+  if not iptc.Chain(iptc.Table(iptc.Table.FILTER), "ZYNERONE") in iptc.Table(iptc.Table.FILTER).chains:
+    iptc.Table(iptc.Table.FILTER).create_chain("ZYNERONE")
   for c in ['FORWARD', 'INPUT']:
     chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), c)
     rule = iptc.Rule()
     rule.src = '0.0.0.0/0'
     rule.dst = '0.0.0.0/0'
-    target = iptc.Target(rule, "MAILCOW")
+    target = iptc.Target(rule, "ZYNERONE")
     rule.target = target
     if rule not in chain.rules:
       chain.insert_rule(rule)
   # IPv6
-  if not iptc.Chain(iptc.Table6(iptc.Table6.FILTER), "MAILCOW") in iptc.Table6(iptc.Table6.FILTER).chains:
-    iptc.Table6(iptc.Table6.FILTER).create_chain("MAILCOW")
+  if not iptc.Chain(iptc.Table6(iptc.Table6.FILTER), "ZYNERONE") in iptc.Table6(iptc.Table6.FILTER).chains:
+    iptc.Table6(iptc.Table6.FILTER).create_chain("ZYNERONE")
   for c in ['FORWARD', 'INPUT']:
     chain = iptc.Chain(iptc.Table6(iptc.Table6.FILTER), c)
     rule = iptc.Rule6()
     rule.src = '::/0'
     rule.dst = '::/0'
-    target = iptc.Target(rule, "MAILCOW")
+    target = iptc.Target(rule, "ZYNERONE")
     rule.target = target
     if rule not in chain.rules:
       chain.insert_rule(rule)
@@ -556,7 +556,7 @@ if __name__ == '__main__':
 
   # In case a previous session was killed without cleanup
   clear()
-  # Reinit MAILCOW chain
+  # Reinit ZYNERONE chain
   initChain()
 
   watch_thread = Thread(target=watch)
@@ -589,9 +589,9 @@ if __name__ == '__main__':
   autopurge_thread.daemon = True
   autopurge_thread.start()
 
-  mailcowchainwatch_thread = Thread(target=mailcowChainOrder)
-  mailcowchainwatch_thread.daemon = True
-  mailcowchainwatch_thread.start()
+  zyneronechainwatch_thread = Thread(target=zyneroneChainOrder)
+  zyneronechainwatch_thread.daemon = True
+  zyneronechainwatch_thread.start()
 
   blacklistupdate_thread = Thread(target=blacklistUpdate)
   blacklistupdate_thread.daemon = True

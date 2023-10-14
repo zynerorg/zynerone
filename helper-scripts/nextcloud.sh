@@ -37,7 +37,7 @@ fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd ${SCRIPT_DIR}/../
-source mailcow.conf
+source zynerone.conf
 
 if [[ ${NC_PURGE} == "y" ]]; then
   read -r -p "Are you sure you want to purge Nextcloud? [y/N] " response
@@ -48,27 +48,27 @@ if [[ ${NC_PURGE} == "y" ]]; then
   fi
 
   echo -e "\033[33mDetecting Database information...\033[0m"
-  if [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "Show databases" | grep "nextcloud") ]]; then
+  if [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "Show databases" | grep "nextcloud") ]]; then
     echo -e "\033[32mFound seperate Nextcloud database (newer scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "DROP DATABASE nextcloud;" > /dev/null
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "DROP USER 'nextcloud'@'%';" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
-    echo -e "\033[32mFound Nextcloud (oc) tables inside of mailcow database (old scheme)!\033[0m"
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP DATABASE nextcloud;" > /dev/null
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "DROP USER 'nextcloud'@'%';" > /dev/null
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} zynerone -e "SHOW TABLES LIKE 'oc_%'") && $? -eq 0 ]]; then
+    echo -e "\033[32mFound Nextcloud (oc) tables inside of zynerone database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e \
-     "$(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'oc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
-  elif [[ $(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} mailcow -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
-    echo -e "\033[32mFound Nextcloud (nc) tables inside of mailcow database (old scheme)!\033[0m"
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
+     "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'oc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
+  elif [[ $(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} zynerone -e "SHOW TABLES LIKE 'nc_%'") && $? -eq 0 ]]; then
+    echo -e "\033[32mFound Nextcloud (nc) tables inside of zynerone database (old scheme)!\033[0m"
     echo -e "\033[31mPurging...\033[0m"
-    docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e \
-     "$(docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'nc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
+    docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e \
+     "$(docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "SELECT IFNULL(GROUP_CONCAT('DROP TABLE ', TABLE_SCHEMA, '.', TABLE_NAME SEPARATOR ';'),'SELECT NULL;') FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE 'nc_%' AND TABLE_SCHEMA = '${DBNAME}';" -BN)" > /dev/null
   else
     echo -e "\033[31mError: No Nextcloud databases/tables found!"
     echo -e "\033[33mNot purging anything...\033[0m"
     exit 1
   fi
-  docker exec -it $(docker ps -f name=redis-mailcow -q) /bin/sh -c ' cat <<EOF | redis-cli
+  docker exec -it $(docker ps -f name=redis-zynerone -q) /bin/sh -c ' cat <<EOF | redis-cli
 SELECT 10
 FLUSHDB
 EOF
@@ -81,7 +81,7 @@ EOF
   [[ -f ./data/conf/nginx/site.nextcloud.custom ]] && mv ./data/conf/nginx/site.nextcloud.custom ./data/conf/nginx/site.nextcloud.custom-$(date +%s).bak
   [[ -f ./data/conf/nginx/nextcloud.conf ]] && mv ./data/conf/nginx/nextcloud.conf ./data/conf/nginx/nextcloud.conf-$(date +%s).bak
 
-  docker restart $(docker ps -aqf name=nginx-mailcow)
+  docker restart $(docker ps -aqf name=nginx-zynerone)
 
   echo -e "\033[32mNextcloud has been uninstalled sucessfully!\033[0m"
 
@@ -97,15 +97,15 @@ elif [[ ${NC_UPDATE} == "y" ]]; then
     echo -e "\033[31mError: Nextcloud occ not found. Is Nextcloud installed?\033[0m"
     exit 1
   fi
-  if grep -Pq 'This version of Nextcloud is not compatible with (?:PHP)?(?>=?)(?:PHP)?(?>.+)' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
-    echo -e "\033[31mError: This version of Nextcloud is not compatible with the current PHP version of php-fpm-mailcow, we'll fix it\033[0m"
+  if grep -Pq 'This version of Nextcloud is not compatible with (?:PHP)?(?>=?)(?:PHP)?(?>.+)' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
+    echo -e "\033[31mError: This version of Nextcloud is not compatible with the current PHP version of php-fpm-zynerone, we'll fix it\033[0m"
     wget -q https://raw.githubusercontent.com/nextcloud/server/v26.0.0/lib/versioncheck.php -O ./data/web/nextcloud/lib/versioncheck.php
 	echo -e "\e[33mPlease restart the update again.\e[0m"
-  elif ! grep -q 'installed: true' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
+  elif ! grep -q 'installed: true' <<<$(docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings status"); then
     echo -e "\033[31mError: Nextcloud seems not to be installed.\033[0m"
     exit 1
   else
-    docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "php /web/nextcloud/updater/updater.phar"
+    docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "php /web/nextcloud/updater/updater.phar"
   fi
 
 elif [[ ${NC_INSTALL} == "y" ]]; then
@@ -131,13 +131,13 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
   NC_DBNAME=nextcloud
 
   echo -ne "[1/3] Creating 'nextcloud' database"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "CREATE DATABASE ${NC_DBNAME};"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "CREATE DATABASE ${NC_DBNAME};"
   sleep 2
   echo -ne "\r[2/3] Creating 'nextcloud' database user"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "CREATE USER '${NC_DBUSER}'@'%' IDENTIFIED BY '${NC_DBPASS}';"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "CREATE USER '${NC_DBUSER}'@'%' IDENTIFIED BY '${NC_DBPASS}';"
   sleep 2
   echo -ne "\r[3/3] Granting 'nextcloud' user all permissions on database 'nextcloud'"
-  docker exec -it $(docker ps -f name=mysql-mailcow -q) mysql -uroot -p${DBROOT} -e "GRANT ALL PRIVILEGES ON ${NC_DBNAME}.* TO '${NC_DBUSER}'@'%';"
+  docker exec -it $(docker ps -f name=mariadb-zynerone -q) mysql -uroot -p${DBROOT} -e "GRANT ALL PRIVILEGES ON ${NC_DBNAME}.* TO '${NC_DBUSER}'@'%';"
   sleep 2
 
   echo ""
@@ -145,10 +145,10 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
   ADMIN_NC_PASS=$(</dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)
 
   echo -ne "[1/4] Setting correct permissions for www-data"
-  docker exec -it $(docker ps -f name=php-fpm-mailcow -q) /bin/bash -c "chown -R www-data:www-data /web/nextcloud"
+  docker exec -it $(docker ps -f name=php-fpm-zynerone -q) /bin/bash -c "chown -R www-data:www-data /web/nextcloud"
   sleep 2
   echo -ne "\r[2/4] Running occ maintenance:install to install Nextcloud"
-  docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) /web/nextcloud/occ --no-warnings maintenance:install \
+  docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) /web/nextcloud/occ --no-warnings maintenance:install \
     --database mysql \
     --database-host mysql \
     --database-name ${NC_DBNAME} \
@@ -160,7 +160,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
   echo -ne "\r[3/4] Setting custom parameters inside the Nextcloud config file"
   echo ""
-  docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) bash -c "/web/nextcloud/occ --no-warnings config:system:set redis host --value=redis --type=string; \
+  docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) bash -c "/web/nextcloud/occ --no-warnings config:system:set redis host --value=redis --type=string; \
     /web/nextcloud/occ --no-warnings config:system:set redis port --value=6379 --type=integer; \
     /web/nextcloud/occ --no-warnings config:system:set redis timeout --value=0.0 --type=integer; \
     /web/nextcloud/occ --no-warnings config:system:set redis dbindex --value=10 --type=integer; \
@@ -175,7 +175,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpmode --value=smtp; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpauthtype --value=LOGIN; \
     /web/nextcloud/occ --no-warnings config:system:set mail_from_address --value=nextcloud; \
-    /web/nextcloud/occ --no-warnings config:system:set mail_domain --value=${MAILCOW_HOSTNAME}; \
+    /web/nextcloud/occ --no-warnings config:system:set mail_domain --value=${ZYNERONE_HOSTNAME}; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtphost --value=postfix; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpport --value=588; \
     /web/nextcloud/occ --no-warnings config:system:set mail_smtpstreamoptions ssl verify_peer --value=false --type=boolean
@@ -194,7 +194,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
   echo ""
   echo -e "\033[33mFinalizing installation...\033[0m"
-  docker restart $(docker ps -aqf name=nginx-mailcow)
+  docker restart $(docker ps -aqf name=nginx-zynerone)
 
   echo ""
   echo "******************************************"
@@ -211,7 +211,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
 
 elif [[ ${NC_RESETPW} == "y" ]]; then
-    printf 'You are about to set a new password for a Nextcloud user.\n\nDo not use this option if your Nextcloud is configured to use mailcow for authentication.\nSet a new password for the corresponding mailbox in mailcow, instead.\n\n'
+    printf 'You are about to set a new password for a Nextcloud user.\n\nDo not use this option if your Nextcloud is configured to use zynerone for authentication.\nSet a new password for the corresponding mailbox in zynerone, instead.\n\n'
     read -r -p "Continue? [y/N] " response
     response=${response,,}
     if [[ ! "$response" =~ ^(yes|y)$ ]]; then
@@ -223,5 +223,5 @@ elif [[ ${NC_RESETPW} == "y" ]]; then
     while [[ -z ${NC_USER} ]]; do
       read -p "Enter the username: " NC_USER
     done
-    docker exec -it -u www-data $(docker ps -f name=php-fpm-mailcow -q) /web/nextcloud/occ user:resetpassword ${NC_USER}
+    docker exec -it -u www-data $(docker ps -f name=php-fpm-zynerone -q) /web/nextcloud/occ user:resetpassword ${NC_USER}
 fi

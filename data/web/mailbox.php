@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
   header('Location: /');
   exit();
 }
@@ -14,7 +14,7 @@ $js_minifier->add('/web/js/site/mailbox.js');
 $js_minifier->add('/web/js/presets/sieveMailbox.js');
 $js_minifier->add('/web/js/site/pwgen.js');
 
-$role = ($_SESSION['mailcow_cc_role'] == "admin") ? 'admin' : 'domainadmin';
+$role = ($_SESSION['zynerone_cc_role'] == "admin") ? 'admin' : 'domainadmin';
 $is_dual = (!empty($_SESSION["dual-login"]["username"])) ? 'true' : 'false';
 $allow_admin_email_login = (preg_match("/^([yY][eE][sS]|[yY])+$/", $_ENV["ALLOW_ADMIN_EMAIL_LOGIN"])) ? 'true' : 'false';
 

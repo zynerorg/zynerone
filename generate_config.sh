@@ -10,7 +10,7 @@ fi
 
 if [[ "$(uname -r)" =~ ^4\.4\. ]]; then
   if grep -q Ubuntu <<< $(uname -a); then
-    echo "DO NOT RUN mailcow ON THIS UBUNTU KERNEL!";
+    echo "DO NOT RUN zynerone ON THIS UBUNTU KERNEL!";
     echo "Please update to linux-generic-hwe-16.04 by running \"apt-get install --install-recommends linux-generic-hwe-16.04\""
     exit 1
   fi
@@ -33,8 +33,8 @@ if docker compose > /dev/null 2>&1; then
       sleep 2
       echo -e "\e[33mNotice: You´ll have to update this Compose Version via your Package Manager manually!\e[0m"
     else
-      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
-      echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
+      echo -e "\e[31mPlease update/install it manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
 elif docker-compose > /dev/null 2>&1; then
@@ -46,35 +46,36 @@ elif docker-compose > /dev/null 2>&1; then
       sleep 2
       echo -e "\e[33mNotice: For an automatic update of docker-compose please use the update_compose.sh scripts located at the helper-scripts folder.\e[0m"
     else
-      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m" 
-      echo -e "\e[31mPlease update/install manually regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+      echo -e "\e[31mCannot find Docker Compose with a Version Higher than 2.X.X.\e[0m"
+      echo -e "\e[31mPlease update/install manually regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
       exit 1
     fi
   fi
 
 else
-  echo -e "\e[31mCannot find Docker Compose.\e[0m" 
-  echo -e "\e[31mPlease install it regarding to this doc site: https://docs.mailcow.email/i_u_m/i_u_m_install/\e[0m"
+  echo -e "\e[31mCannot find Docker Compose.\e[0m"
+  echo -e "\e[31mPlease install it regarding to this doc site: https://docs.zyner.one/i_u_m/i_u_m_install/\e[0m"
   exit 1
 fi
 
+# TODO check into how we can replace this
 detect_bad_asn() {
   echo -e "\e[33mDetecting if your IP is listed on Spamhaus Bad ASN List...\e[0m"
   response=$(curl --connect-timeout 15 --max-time 30 -s -o /dev/null -w "%{http_code}" "https://asn-check.mailcow.email")
   if [ "$response" -eq 503 ]; then
     if [ -z "$SPAMHAUS_DQS_KEY" ]; then
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[33mmailcow did not detected a value for the variable SPAMHAUS_DQS_KEY inside mailcow.conf!\e[0m"
+      echo -e "\e[33mzynerone did not detected a value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf!\e[0m"
       sleep 2
       echo ""
       echo -e "\e[33mTo use the Spamhaus DNS Blocklists again, you will need to create a FREE account for their Data Query Service (DQS) at: https://www.spamhaus.com/free-trial/sign-up-for-a-free-data-query-service-account\e[0m"
-      echo -e "\e[33mOnce done, enter your DQS API key in mailcow.conf and mailcow will do the rest for you!\e[0m"
+      echo -e "\e[33mOnce done, enter your DQS API key in zynerone.conf and zynerone will do the rest for you!\e[0m"
       echo ""
       sleep 2
 
     else
       echo -e "\e[33mYour server's public IP uses an AS that is blocked by Spamhaus to use their DNS public blocklists for Postfix.\e[0m"
-      echo -e "\e[32mmailcow detected a Value for the variable SPAMHAUS_DQS_KEY inside mailcow.conf. Postfix will use DQS with the given API key...\e[0m"
+      echo -e "\e[32mzynerone detected a Value for the variable SPAMHAUS_DQS_KEY inside zynerone.conf. Postfix will use DQS with the given API key...\e[0m"
     fi
   elif [ "$response" -eq 200 ]; then
     echo -e "\e[33mCheck completed! Your IP is \e[32mclean\e[0m"
@@ -92,12 +93,12 @@ else
   SKIP_BRANCH=n
 fi
 
-if [ -f mailcow.conf ]; then
+if [ -f zynerone.conf ]; then
   read -r -p "A config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
   case $response in
     [yY][eE][sS]|[yY])
-      mv mailcow.conf mailcow.conf_backup
-      chmod 600 mailcow.conf_backup
+      mv zynerone.conf zynerone.conf_backup
+      chmod 600 zynerone.conf_backup
       ;;
     *)
       exit 1
@@ -106,20 +107,20 @@ if [ -f mailcow.conf ]; then
 fi
 
 echo "Press enter to confirm the detected value '[value]' where applicable or enter a custom value."
-while [ -z "${MAILCOW_HOSTNAME}" ]; do
-  read -p "Mail server hostname (FQDN) - this is not your mail domain, but your mail servers hostname: " -e MAILCOW_HOSTNAME
-  DOTS=${MAILCOW_HOSTNAME//[^.]};
+while [ -z "${ZYNERONE_HOSTNAME}" ]; do
+  read -p "Mail server hostname (FQDN) - this is not your mail domain, but your mail servers hostname: " -e ZYNERONE_HOSTNAME
+  DOTS=${ZYNERONE_HOSTNAME//[^.]};
   if [ ${#DOTS} -lt 1 ]; then
-    echo -e "\e[31mMAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) is not a FQDN!\e[0m"
+    echo -e "\e[31mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is not a FQDN!\e[0m"
     sleep 1
     echo "Please change it to a FQDN and redeploy the stack with docker(-)compose up -d"
     exit 1
-  elif [[ "${MAILCOW_HOSTNAME: -1}" == "." ]]; then
-    echo "MAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) is ending with a dot. This is not a valid FQDN!"
+  elif [[ "${ZYNERONE_HOSTNAME: -1}" == "." ]]; then
+    echo "ZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) is ending with a dot. This is not a valid FQDN!"
     exit 1
   elif [ ${#DOTS} -eq 1 ]; then
-    echo -e "\e[33mMAILCOW_HOSTNAME (${MAILCOW_HOSTNAME}) does not contain a Subdomain. This is not fully tested and may cause issues.\e[0m"
-    echo "Find more information about why this message exists here: https://github.com/mailcow/mailcow-dockerized/issues/1572"
+    echo -e "\e[33mZYNERONE_HOSTNAME (${ZYNERONE_HOSTNAME}) does not contain a Subdomain. This is not fully tested and may cause issues.\e[0m"
+    echo "Find more information about why this message exists here: https://github.com/zynerorg/zynerone/issues/1572"
     read -r -p "Do you want to proceed anyway? [y/N] " response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
       echo "OK. Procceding."
@@ -136,12 +137,12 @@ elif [ -a /etc/localtime ]; then
   DETECTED_TZ=$(readlink /etc/localtime|sed -n 's|^.*zoneinfo/||p')
 fi
 
-while [ -z "${MAILCOW_TZ}" ]; do
+while [ -z "${ZYNERONE_TZ}" ]; do
   if [ -z "${DETECTED_TZ}" ]; then
-    read -p "Timezone: " -e MAILCOW_TZ
+    read -p "Timezone: " -e ZYNERONE_TZ
   else
-    read -p "Timezone [${DETECTED_TZ}]: " -e MAILCOW_TZ
-    [ -z "${MAILCOW_TZ}" ] && MAILCOW_TZ=${DETECTED_TZ}
+    read -p "Timezone [${DETECTED_TZ}]: " -e ZYNERONE_TZ
+    [ -z "${ZYNERONE_TZ}" ] && ZYNERONE_TZ=${DETECTED_TZ}
   fi
 done
 
@@ -149,7 +150,7 @@ MEM_TOTAL=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 
 if [ ${MEM_TOTAL} -le "2621440" ]; then
   echo "Installed memory is <= 2.5 GiB. It is recommended to disable ClamAV to prevent out-of-memory situations."
-  echo "ClamAV can be re-enabled by setting SKIP_CLAMD=n in mailcow.conf."
+  echo "ClamAV can be re-enabled by setting SKIP_CLAMD=n in zynerone.conf."
   read -r -p  "Do you want to disable ClamAV now? [Y/n] " response
   case $response in
     [nN][oO]|[nN])
@@ -168,8 +169,8 @@ if [ ${MEM_TOTAL} -le "2097152" ]; then
   SKIP_SOLR=y
 elif [ ${MEM_TOTAL} -le "3670016" ]; then
   echo "Installed memory is <= 3.5 GiB. It is recommended to disable Solr to prevent out-of-memory situations."
-  echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in mailcow.conf according to your expected load."
-  echo "Solr can be re-enabled by setting SKIP_SOLR=n in mailcow.conf but will refuse to start with less than 2 GB total memory."
+  echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in zynerone.conf according to your expected load."
+  echo "Solr can be re-enabled by setting SKIP_SOLR=n in zynerone.conf but will refuse to start with less than 2 GB total memory."
   read -r -p  "Do you want to disable Solr now? [Y/n] " response
   case $response in
     [nN][oO]|[nN])
@@ -184,66 +185,66 @@ else
 fi
 
 if [[ ${SKIP_BRANCH} != y ]]; then
-  echo "Which branch of mailcow do you want to use?"
+  echo "Which branch of zynerone do you want to use?"
   echo ""
   echo "Available Branches:"
   echo "- master branch (stable updates) | default, recommended [1]"
   echo "- nightly branch (unstable updates, testing) | not-production ready [2]"
   sleep 1
 
-  while [ -z "${MAILCOW_BRANCH}" ]; do
+  while [ -z "${ZYNERONE_BRANCH}" ]; do
     read -r -p  "Choose the Branch with it´s number [1/2] " branch
     case $branch in
       [2])
-        MAILCOW_BRANCH="nightly"
+        ZYNERONE_BRANCH="nightly"
         ;;
       *)
-        MAILCOW_BRANCH="master"
+        ZYNERONE_BRANCH="master"
       ;;
     esac
   done
 
   git fetch --all
-  git checkout -f $MAILCOW_BRANCH
+  git checkout -f $ZYNERONE_BRANCH
 
 elif [[ ${SKIP_BRANCH} == y ]]; then
   echo -e "\033[33mEnabled Dev Mode.\033[0m"
   echo -e "\033[33mNot checking out a different branch!\033[0m"
-  MAILCOW_BRANCH=$(git rev-parse --short $(git rev-parse @{upstream}))
+  ZYNERONE_BRANCH=$(git rev-parse --short $(git rev-parse @{upstream}))
 
 else
   echo -e "\033[31mCould not determine branch input..."
   echo -e "\033[31mExiting."
   exit 1
-fi  
+fi
 
-if [ ! -z "${MAILCOW_BRANCH}" ]; then
-  git_branch=${MAILCOW_BRANCH}
+if [ ! -z "${ZYNERONE_BRANCH}" ]; then
+  git_branch=${ZYNERONE_BRANCH}
 fi
 
 [ ! -f ./data/conf/rspamd/override.d/worker-controller-password.inc ] && echo '# Placeholder' > ./data/conf/rspamd/override.d/worker-controller-password.inc
 
-cat << EOF > mailcow.conf
+cat << EOF > zynerone.conf
 # ------------------------------
-# mailcow web ui configuration
+# zynerone web ui configuration
 # ------------------------------
 # example.org is _not_ a valid hostname, use a fqdn here.
 # Default admin user is "admin"
 # Default password is "moohoo"
 
-MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
 
 # Password hash algorithm
 # Only certain password hash algorithm are supported. For a fully list of supported schemes,
-# see https://docs.mailcow.email/models/model-passwd/
-MAILCOW_PASS_SCHEME=BLF-CRYPT
+# see https://docs.zyner.one/models/model-passwd/
+ZYNERONE_PASS_SCHEME=BLF-CRYPT
 
 # ------------------------------
 # SQL database configuration
 # ------------------------------
 
-DBNAME=mailcow
-DBUSER=mailcow
+DBNAME=zynerone
+DBUSER=zynerone
 
 # Please use long, random alphanumeric strings (A-Za-z0-9)
 
@@ -261,7 +262,7 @@ DBROOT=$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)
 # IMPORTANT: Do not use port 8081, 9081 or 65510!
 # Example: HTTP_BIND=1.2.3.4
 # For IPv4 leave it as it is: HTTP_BIND= & HTTPS_PORT=
-# For IPv6 see https://docs.mailcow.email/post_installation/firststeps-ip_bindings/
+# For IPv6 see https://docs.zyner.one/post_installation/firststeps-ip_bindings/
 
 HTTP_PORT=80
 HTTP_BIND=
@@ -287,23 +288,24 @@ DOVEADM_PORT=127.0.0.1:19991
 SQL_PORT=127.0.0.1:13306
 SOLR_PORT=127.0.0.1:18983
 REDIS_PORT=127.0.0.1:7654
+API_PORT=127.0.0.1:8080
 
 # Your timezone
 # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for a list of timezones
 # Use the column named 'TZ identifier' + pay attention for the column named 'Notes'
 
-TZ=${MAILCOW_TZ}
+TZ=${ZYNERONE_TZ}
 
 # Fixed project name
 # Please use lowercase letters only
 
-COMPOSE_PROJECT_NAME=mailcowdockerized
+COMPOSE_PROJECT_NAME=zynerone
 
 # Used Docker Compose version
 # Switch here between native (compose plugin) and standalone
-# For more informations take a look at the mailcow docs regarding the configuration options.
+# For more informations take a look at the zynerone docs regarding the configuration options.
 # Normally this should be untouched but if you decided to use either of those you can switch it manually here.
-# Please be aware that at least one of those variants should be installed on your machine or mailcow will fail.
+# Please be aware that at least one of those variants should be installed on your machine or zynerone will fail.
 
 DOCKER_COMPOSE_VERSION=${COMPOSE_VERSION}
 
@@ -322,8 +324,8 @@ MAILDIR_GC_TIME=7200
 
 # Additional SAN for the certificate
 #
-# You can use wildcard records to create specific names for every domain you add to mailcow.
-# Example: Add domains "example.com" and "example.net" to mailcow, change ADDITIONAL_SAN to a value like:
+# You can use wildcard records to create specific names for every domain you add to zynerone.
+# Example: Add domains "example.com" and "example.net" to zynerone, change ADDITIONAL_SAN to a value like:
 #ADDITIONAL_SAN=imap.*,smtp.*
 # This will expand the certificate to "imap.example.com", "smtp.example.com", "imap.example.net", "smtp.example.net"
 # plus every domain you add in the future.
@@ -336,17 +338,17 @@ MAILDIR_GC_TIME=7200
 
 ADDITIONAL_SAN=
 
-# Additional server names for mailcow UI
+# Additional server names for Zyner One UI
 #
-# Specify alternative addresses for the mailcow UI to respond to
-# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the mailcow UI.
+# Specify alternative addresses for the Zyner One UI to respond to
+# This is useful when you set mail.* as ADDITIONAL_SAN and want to make sure mail.maildomain.com will always point to the Zyner One UI.
 # If the server name does not match a known site, Nginx decides by best-guess and may redirect users to the wrong web root.
 # You can understand this as server_name directive in Nginx.
 # Comma separated list without spaces! Example: ADDITIONAL_SERVER_NAMES=a.b.c,d.e.f
 
 ADDITIONAL_SERVER_NAMES=
 
-# Skip running ACME (acme-mailcow, Let's Encrypt certs) - y/n
+# Skip running ACME (acme-zynerone, Let's Encrypt certs) - y/n
 
 SKIP_LETS_ENCRYPT=n
 
@@ -363,7 +365,7 @@ SKIP_IP_CHECK=n
 
 SKIP_HTTP_VERIFICATION=n
 
-# Skip ClamAV (clamd-mailcow) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
+# Skip ClamAV (clamd-zynerone) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
 
 SKIP_CLAMD=${SKIP_CLAMD}
 
@@ -384,15 +386,15 @@ SOLR_HEAP=1024
 
 ALLOW_ADMIN_EMAIL_LOGIN=n
 
-# Enable watchdog (watchdog-mailcow) to restart unhealthy containers
+# Enable watchdog (watchdog-zynerone) to restart unhealthy containers
 
 USE_WATCHDOG=y
 
-# Send watchdog notifications by mail (sent from watchdog@MAILCOW_HOSTNAME)
+# Send watchdog notifications by mail (sent from watchdog@ZYNERONE_HOSTNAME)
 # CAUTION:
 # 1. You should use external recipients
 # 2. Mails are sent unsigned (no DKIM)
-# 3. If you use DMARC, create a separate DMARC policy ("v=DMARC1; p=none;" in _dmarc.MAILCOW_HOSTNAME)
+# 3. If you use DMARC, create a separate DMARC policy ("v=DMARC1; p=none;" in _dmarc.ZYNERONE_HOSTNAME)
 # Multiple rcpts allowed, NO quotation marks, NO spaces
 
 #WATCHDOG_NOTIFY_EMAIL=a@example.com,b@example.com,c@example.com
@@ -403,13 +405,6 @@ WATCHDOG_NOTIFY_BAN=n
 
 # Subject for watchdog mails. Defaults to "Watchdog ALERT" followed by the error message.
 #WATCHDOG_SUBJECT=
-
-# Checks if mailcow is an open relay. Requires a SAL. More checks will follow.
-# https://www.servercow.de/mailcow?lang=en
-# https://www.servercow.de/mailcow?lang=de
-# No data is collected. Opt-in and anonymous.
-# Will only work with unmodified mailcow setups.
-WATCHDOG_EXTERNAL_CHECKS=n
 
 # Enable watchdog verbose logging
 WATCHDOG_VERBOSE=n
@@ -455,7 +450,7 @@ SOGO_EXPIRE_SESSION=480
 
 # DOVECOT_MASTER_USER and DOVECOT_MASTER_PASS must both be provided. No special chars.
 # Empty by default to auto-generate master user and password on start.
-# User expands to DOVECOT_MASTER_USER@mailcow.local
+# User expands to DOVECOT_MASTER_USER@zynerone.local
 # LEAVE EMPTY IF UNSURE
 DOVECOT_MASTER_USER=
 # LEAVE EMPTY IF UNSURE
@@ -465,17 +460,17 @@ DOVECOT_MASTER_PASS=
 # Optional: Leave empty for none
 # This value is only used on first order!
 # Setting it at a later point will require the following steps:
-# https://docs.mailcow.email/troubleshooting/debug-reset_tls/
+# https://docs.zyner.one/troubleshooting/debug-reset_tls/
 ACME_CONTACT=
 
 # WebAuthn device manufacturer verification
 # After setting WEBAUTHN_ONLY_TRUSTED_VENDORS=y only devices from trusted manufacturers are allowed
-# root certificates can be placed for validation under mailcow-dockerized/data/web/inc/lib/WebAuthn/rootCertificates
+# root certificates can be placed for validation under zynerone/data/web/inc/lib/WebAuthn/rootCertificates
 WEBAUTHN_ONLY_TRUSTED_VENDORS=n
 
 # Spamhaus Data Query Service Key
 # Optional: Leave empty for none
-# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist. 
+# Enter your key here if you are using a blocked ASN (OVH, AWS, Cloudflare e.g) for the unregistered Spamhaus Blocklist.
 # If empty, it will completely disable Spamhaus blocklists if it detects that you are running on a server using a blocked AS.
 # Otherwise it will work normally.
 SPAMHAUS_DQS_KEY=
@@ -484,71 +479,71 @@ EOF
 
 mkdir -p data/assets/ssl
 
-chmod 600 mailcow.conf
+chmod 600 zynerone.conf
 
 # copy but don't overwrite existing certificate
 echo "Generating snake-oil certificate..."
 # Making Willich more popular
-openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=DE/ST=NRW/L=Willich/O=mailcow/OU=mailcow/CN=${MAILCOW_HOSTNAME}" -sha256 -nodes
+openssl req -x509 -newkey rsa:4096 -keyout data/assets/ssl-example/key.pem -out data/assets/ssl-example/cert.pem -days 365 -subj "/C=SE/ST=M/L=Lund/O=ZynerOne/OU=ZynerOne/CN=${ZYNERONE_HOSTNAME}" -sha256 -nodes
 echo "Copying snake-oil certificate..."
 cp -n -d data/assets/ssl-example/*.pem data/assets/ssl/
 
 # Set app_info.inc.php
 case ${git_branch} in
   master)
-    mailcow_git_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+    ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
     ;;
   nightly)
-    mailcow_git_version=$(git rev-parse --short $(git rev-parse @{upstream}))
-    mailcow_last_git_version=""
+    ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
+    ZYNERONE_LAST_GIT_VERSION=""
     ;;
   *)
-    mailcow_git_version=$(git rev-parse --short HEAD)
-    mailcow_last_git_version=""
+    ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
+    ZYNERONE_LAST_GIT_VERSION=""
     ;;
 esac
 # if [ ${git_branch} == "master" ]; then
-#   mailcow_git_version=$(git describe --tags `git rev-list --tags --max-count=1`)
+#   ZYNERONE_GIT_version=$(git describe --tags `git rev-list --tags --max-count=1`)
 # elif [ ${git_branch} == "nightly" ]; then
-#   mailcow_git_version=$(git rev-parse --short $(git rev-parse @{upstream}))
-#   mailcow_last_git_version=""
+#   ZYNERONE_GIT_version=$(git rev-parse --short $(git rev-parse @{upstream}))
+#   ZYNERONE_LAST_GIT_VERSION=""
 # else
-#   mailcow_git_version=$(git rev-parse --short HEAD)
-#   mailcow_last_git_version=""
+#   ZYNERONE_GIT_version=$(git rev-parse --short HEAD)
+#   ZYNERONE_LAST_GIT_VERSION=""
 # fi
 
 if [[ $SKIP_BRANCH != "y" ]]; then
-mailcow_git_commit=$(git rev-parse origin/${git_branch})
-mailcow_git_commit_date=$(git log -1 --format=%ci @{upstream} )
+ZYNERONE_GIT_commit=$(git rev-parse origin/${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
 else
-mailcow_git_commit=$(git rev-parse ${git_branch})
-mailcow_git_commit_date=$(git log -1 --format=%ci @{upstream} )
+ZYNERONE_GIT_commit=$(git rev-parse ${git_branch})
+ZYNERONE_GIT_commit_date=$(git log -1 --format=%ci @{upstream} )
 git_branch=$(git rev-parse --abbrev-ref HEAD)
 fi
 
 if [ $? -eq 0 ]; then
   echo '<?php' > data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_VERSION="'$mailcow_git_version'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/mailcow/mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT="'$mailcow_git_commit'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT_DATE="'$mailcow_git_commit_date'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="'$ZYNERONE_GIT_commit'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="'$ZYNERONE_GIT_commit_date'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
   echo '?>' >> data/web/inc/app_info.inc.php
 else
   echo '<?php' > data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_VERSION="'$mailcow_git_version'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_OWNER="mailcow";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_REPO="mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_URL="https://github.com/mailcow/mailcow-dockerized";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
-  echo '  $MAILCOW_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_VERSION="'$ZYNERONE_GIT_version'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_LAST_GIT_VERSION="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_OWNER="zynerorg";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_REPO="zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_URL="https://github.com/zynerorg/zynerone";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_GIT_COMMIT_DATE="";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_BRANCH="'$git_branch'";' >> data/web/inc/app_info.inc.php
+  echo '  $ZYNERONE_UPDATEDAT='$(date +%s)';' >> data/web/inc/app_info.inc.php
   echo '?>' >> data/web/inc/app_info.inc.php
   echo -e "\e[33mCannot determine current git repository version...\e[0m"
 fi

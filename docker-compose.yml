@@ -1,7 +1,7 @@
 version: '2.1'
 services:
 
-    unbound-mailcow:
+    unbound-zynerone:
       image: zyner/unbound:1.19
       environment:
         - TZ=${TZ}
@@ -11,15 +11,15 @@ services:
       restart: always
       tty: true
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.254
           aliases:
             - unbound
 
-    mysql-mailcow:
-      image: mariadb:11.1
+    mariadb-zynerone:
+      image: mariadb:10.5
       depends_on:
-        - unbound-mailcow
+        - unbound-zynerone
       stop_grace_period: 45s
       volumes:
         - mysql-vol-1:/var/lib/mysql/
@@ -36,11 +36,11 @@ services:
       ports:
         - "${SQL_PORT:-127.0.0.1:13306}:3306"
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - mysql
 
-    redis-mailcow:
+    redis-zynerone:
       image: redis:7-alpine
       volumes:
         - redis-vol-1:/data/
@@ -52,16 +52,16 @@ services:
       sysctls:
         - net.core.somaxconn=4096
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.249
           aliases:
             - redis
 
-    clamd-mailcow:
+clamd-zynerone:
       image: zyner/clamd:1.64
       restart: always
       depends_on:
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -72,15 +72,15 @@ services:
         - ./data/conf/clamav/:/etc/clamav/:Z
         - clamd-db-vol-1:/var/lib/clamav
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - clamd
 
-    rspamd-mailcow:
+    rspamd-zynerone:
       image: zyner/rspamd:1.93
       stop_grace_period: 30s
       depends_on:
-        - dovecot-mailcow
+        - dovecot-zynerone
       environment:
         - TZ=${TZ}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
@@ -102,15 +102,15 @@ services:
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - rspamd
 
-    php-fpm-mailcow:
+    php-fpm-zynerone:
       image: zyner/phpfpm:1.86
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
-        - redis-mailcow
+        - redis-zynerone
       volumes:
         - ./data/hooks/phpfpm:/hooks:Z
         - ./data/web:/web:z
@@ -139,8 +139,8 @@ services:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
         - DBPASS=${DBPASS}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
-        - MAILCOW_PASS_SCHEME=${MAILCOW_PASS_SCHEME:-BLF-CRYPT}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
+        - ZYNERONE_PASS_SCHEME=${ZYNERONE_PASS_SCHEME:-BLF-CRYPT}
         - IMAP_PORT=${IMAP_PORT:-143}
         - IMAPS_PORT=${IMAPS_PORT:-993}
         - POP_PORT=${POP_PORT:-110}
@@ -154,7 +154,7 @@ services:
         - API_KEY=${API_KEY:-invalid}
         - API_KEY_READ_ONLY=${API_KEY_READ_ONLY:-invalid}
         - API_ALLOW_FROM=${API_ALLOW_FROM:-invalid}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-mailcow-dockerized}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
         - SKIP_SOLR=${SKIP_SOLR:-y}
         - SKIP_CLAMD=${SKIP_CLAMD:-n}
         - SKIP_SOGO=${SKIP_SOGO:-n}
@@ -166,11 +166,11 @@ services:
         - CLUSTERMODE=${CLUSTERMODE:-}
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - phpfpm
 
-    sogo-mailcow:
+    sogo-zynerone:
       image: zyner/sogo:1.120
       environment:
         - DBNAME=${DBNAME}
@@ -178,8 +178,8 @@ services:
         - DBPASS=${DBPASS}
         - TZ=${TZ}
         - LOG_LINES=${LOG_LINES:-9999}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
-        - MAILCOW_PASS_SCHEME=${MAILCOW_PASS_SCHEME:-BLF-CRYPT}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
+        - ZYNERONE_PASS_SCHEME=${ZYNERONE_PASS_SCHEME:-BLF-CRYPT}
         - ACL_ANYONE=${ACL_ANYONE:-disallow}
         - ALLOW_ADMIN_EMAIL_LOGIN=${ALLOW_ADMIN_EMAIL_LOGIN:-n}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
@@ -212,15 +212,15 @@ services:
         ofelia.job-exec.sogo_backup.command: "/bin/bash -c \"[[ $${MASTER} == y ]] && /usr/local/bin/gosu sogo /usr/sbin/sogo-tool backup /sogo_backup ALL || exit 0\""
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.248
           aliases:
             - sogo
 
-    dovecot-mailcow:
+    dovecot-zynerone:
       image: zyner/dovecot:1.26
       depends_on:
-        - mysql-mailcow
+        - mariadb-zynerone
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       cap_add:
@@ -246,8 +246,8 @@ services:
         - DBUSER=${DBUSER}
         - DBPASS=${DBPASS}
         - TZ=${TZ}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
-        - MAILCOW_PASS_SCHEME=${MAILCOW_PASS_SCHEME:-BLF-CRYPT}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
+        - ZYNERONE_PASS_SCHEME=${ZYNERONE_PASS_SCHEME:-BLF-CRYPT}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
         - ALLOW_ADMIN_EMAIL_LOGIN=${ALLOW_ADMIN_EMAIL_LOGIN:-n}
         - MAILDIR_GC_TIME=${MAILDIR_GC_TIME:-7200}
@@ -257,7 +257,7 @@ services:
         - MASTER=${MASTER:-y}
         - REDIS_SLAVEOF_IP=${REDIS_SLAVEOF_IP:-}
         - REDIS_SLAVEOF_PORT=${REDIS_SLAVEOF_PORT:-}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-mailcow-dockerized}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
       ports:
         - "${DOVEADM_PORT:-127.0.0.1:19991}:12345"
         - "${IMAP_PORT:-143}:143"
@@ -292,17 +292,17 @@ services:
           soft: 20000
           hard: 40000
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.250
           aliases:
             - dovecot
 
-    postfix-mailcow:
+    postfix-zynerone:
       image: zyner/postfix:1.73
       depends_on:
-        mysql-mailcow:
+        mariadb-zynerone:
           condition: service_started
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       volumes:
         - ./data/hooks/postfix:/hooks:Z
@@ -320,7 +320,7 @@ services:
         - DBPASS=${DBPASS}
         - REDIS_SLAVEOF_IP=${REDIS_SLAVEOF_IP:-}
         - REDIS_SLAVEOF_PORT=${REDIS_SLAVEOF_PORT:-}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
         - SPAMHAUS_DQS_KEY=${SPAMHAUS_DQS_KEY:-}
       cap_add:
         - NET_BIND_SERVICE
@@ -332,26 +332,26 @@ services:
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       networks:
-        mailcow-network:
+        zynerone-network:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.253
           aliases:
             - postfix
 
-    memcached-mailcow:
+    memcached-zynerone:
       image: memcached:alpine
       restart: always
       environment:
         - TZ=${TZ}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - memcached
 
-    nginx-mailcow:
+    nginx-zynerone:
       depends_on:
-        - sogo-mailcow
-        - php-fpm-mailcow
-        - redis-mailcow
+        - sogo-zynerone
+        - php-fpm-zynerone
+        - redis-zynerone
       image: nginx:mainline-alpine
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -370,7 +370,7 @@ services:
       environment:
         - HTTPS_PORT=${HTTPS_PORT:-443}
         - HTTP_PORT=${HTTP_PORT:-80}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
         - TZ=${TZ}
         - SKIP_SOGO=${SKIP_SOGO:-n}
@@ -388,15 +388,15 @@ services:
         - "${HTTP_BIND:-}:${HTTP_PORT:-80}:${HTTP_PORT:-80}"
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - nginx
 
-    acme-mailcow:
+    acme-zynerone:
       depends_on:
-        nginx-mailcow:
+        nginx-zynerone:
           condition: service_started
-        unbound-mailcow:
+        unbound-zynerone:
           condition: service_healthy
       image: zyner/acme:1.86
       dns:
@@ -405,17 +405,17 @@ services:
         - LOG_LINES=${LOG_LINES:-9999}
         - ACME_CONTACT=${ACME_CONTACT:-}
         - ADDITIONAL_SAN=${ADDITIONAL_SAN}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
         - DBPASS=${DBPASS}
         - SKIP_LETS_ENCRYPT=${SKIP_LETS_ENCRYPT:-n}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-mailcow-dockerized}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
         - DIRECTORY_URL=${DIRECTORY_URL:-}
         - ENABLE_SSL_SNI=${ENABLE_SSL_SNI:-n}
         - SKIP_IP_CHECK=${SKIP_IP_CHECK:-n}
         - SKIP_HTTP_VERIFICATION=${SKIP_HTTP_VERIFICATION:-n}
-        - ONLY_MAILCOW_HOSTNAME=${ONLY_MAILCOW_HOSTNAME:-n}
+        - ONLY_ZYNERONE_HOSTNAME=${ONLY_ZYNERONE_HOSTNAME:-n}
         - LE_STAGING=${LE_STAGING:-n}
         - TZ=${TZ}
         - REDIS_SLAVEOF_IP=${REDIS_SLAVEOF_IP:-}
@@ -429,19 +429,19 @@ services:
         - mysql-socket-vol-1:/var/run/mysqld/
       restart: always
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - acme
 
-    netfilter-mailcow:
+    netfilter-zynerone:
       image: zyner/netfilter:1.53
       stop_grace_period: 30s
       depends_on:
-        - dovecot-mailcow
-        - postfix-mailcow
-        - sogo-mailcow
-        - php-fpm-mailcow
-        - redis-mailcow
+        - dovecot-zynerone
+        - postfix-zynerone
+        - sogo-zynerone
+        - php-fpm-zynerone
+        - redis-zynerone
       restart: always
       privileged: true
       environment:
@@ -456,8 +456,8 @@ services:
       volumes:
         - /lib/modules:/lib/modules:ro
 
-    watchdog-mailcow:
-      image: zyner/watchdog:1.98
+    watchdog-zynerone:
+      image: zyner/watchdog:1.99
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       tmpfs:
@@ -469,11 +469,11 @@ services:
         - ./data/assets/ssl:/etc/ssl/mail/:ro,z
       restart: always
       depends_on:
-        - postfix-mailcow
-        - dovecot-mailcow
-        - mysql-mailcow
-        - acme-mailcow
-        - redis-mailcow
+        - postfix-zynerone
+        - dovecot-zynerone
+        - mariadb-zynerone
+        - acme-zynerone
+        - redis-zynerone
 
       environment:
         - IPV6_NETWORK=${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
@@ -490,8 +490,8 @@ services:
         - WATCHDOG_EXTERNAL_CHECKS=${WATCHDOG_EXTERNAL_CHECKS:-n}
         - WATCHDOG_MYSQL_REPLICATION_CHECKS=${WATCHDOG_MYSQL_REPLICATION_CHECKS:-n}
         - WATCHDOG_VERBOSE=${WATCHDOG_VERBOSE:-n}
-        - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-mailcow-dockerized}
+        - ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
         - IP_BY_DOCKER_API=${IP_BY_DOCKER_API:-0}
         - CHECK_UNBOUND=${CHECK_UNBOUND:-1}
@@ -521,11 +521,11 @@ services:
         - MAILQ_THRESHOLD=${MAILQ_THRESHOLD:-20}
         - MAILQ_CRIT=${MAILQ_CRIT:-30}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - watchdog
 
-    dockerapi-mailcow:
+    dockerapi-zynerone:
       image: zyner/dockerapi:2.06
       security_opt:
         - label=disable
@@ -540,11 +540,11 @@ services:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - dockerapi
 
-    solr-mailcow:
+    solr-zynerone:
       image: zyner/solr:1.8.2
       restart: always
       volumes:
@@ -556,11 +556,11 @@ services:
         - SOLR_HEAP=${SOLR_HEAP:-1024}
         - SKIP_SOLR=${SKIP_SOLR:-y}
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - solr
 
-    olefy-mailcow:
+    olefy-zynerone:
       image: zyner/olefy:1.12
       restart: always
       environment:
@@ -574,19 +574,19 @@ services:
         - OLEFY_MINLENGTH=500
         - OLEFY_DEL_TMP=1
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - olefy
 
-    ofelia-mailcow:
+    ofelia-zynerone:
       image: mcuadros/ofelia:latest
       restart: always
       command: daemon --docker
       environment:
         - TZ=${TZ}
       depends_on:
-        - sogo-mailcow
-        - dovecot-mailcow
+        - sogo-zynerone
+        - dovecot-zynerone
       labels:
         ofelia.enabled: "true"
       security_opt:
@@ -594,28 +594,28 @@ services:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
-        mailcow-network:
+        zynerone-network:
           aliases:
             - ofelia
 
-    ipv6nat-mailcow:
+    ipv6nat-zynerone:
       depends_on:
-        - unbound-mailcow
-        - mysql-mailcow
-        - redis-mailcow
-        - clamd-mailcow
-        - rspamd-mailcow
-        - php-fpm-mailcow
-        - sogo-mailcow
-        - dovecot-mailcow
-        - postfix-mailcow
-        - memcached-mailcow
-        - nginx-mailcow
-        - acme-mailcow
-        - netfilter-mailcow
-        - watchdog-mailcow
-        - dockerapi-mailcow
-        - solr-mailcow
+        - unbound-zynerone
+        - mariadb-zynerone
+        - redis-zynerone
+        - clamd-zynerone
+        - rspamd-zynerone
+        - php-fpm-zynerone
+        - sogo-zynerone
+        - dovecot-zynerone
+        - postfix-zynerone
+        - memcached-zynerone
+        - nginx-zynerone
+        - acme-zynerone
+        - netfilter-zynerone
+        - watchdog-zynerone
+        - dockerapi-zynerone
+        - solr-zynerone
       environment:
         - TZ=${TZ}
       image: robbertkl/ipv6nat
@@ -628,11 +628,29 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /lib/modules:/lib/modules:ro
 
+    api-zynerone:
+      image: zyner/api:1.0
+      restart: always
+      ports:
+        - "${API_PORT:-127.0.0.1:8080}:8080"
+      environment:
+        - TZ=${TZ}
+        - MYSQL_ROOT_PASSWORD=${DBROOT}
+        - MYSQL_DATABASE=${DBNAME}
+        - MYSQL_USER=${DBUSER}
+        - MYSQL_PASSWORD=${DBPASS}
+        - REDIS_PORT=${REDIS_PORT:-redis-zynerone:7654}
+        - SQL_PORT= ${SQL_PORT:-mariadb-zynerone:13306}
+      networks:
+        zynerone-network:
+          aliases:
+            - api
+
 networks:
-  mailcow-network:
+  zynerone-network:
     driver: bridge
     driver_opts:
-      com.docker.network.bridge.name: br-mailcow
+      com.docker.network.bridge.name: br-zynerone
     enable_ipv6: true
     ipam:
       driver: default

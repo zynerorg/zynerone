@@ -8,7 +8,7 @@
         "active": "Aktywny",
         "add": "Dodaj",
         "alias_address": "Alias/y:",
-        "alias_address_info": "<small>Pełny/e adres/y email lub @example.com, aby przejąć wszystkie wiadomości dla domeny (oddzielone przecinkami). <b>tylko domeny mailcow</b>.</small>",
+        "alias_address_info": "<small>Pełny/e adres/y email lub @example.com, aby przejąć wszystkie wiadomości dla domeny (oddzielone przecinkami). <b>tylko domeny zynerone</b>.</small>",
         "alias_domain": "Alias domeny",
         "alias_domain_info": "<small>Tylko prawidłowe nazwy domen (oddzielone przecinkami).</small>",
         "backup_mx_options": "Opcje Backup MX:",
@@ -69,13 +69,13 @@
         "empty": "Brak wyników",
         "f2b_ban_time": "Czas bana (s)",
         "f2b_max_attempts": "Max. ilość prób",
-        "f2b_parameters": "Parametry Fail2ban",
+        "f2b_parameters": "Parametry Netfilter",
         "f2b_retry_window": "Spróbuj ponownie (s) dla max. ilości prób",
         "f2b_whitelist": "Biała lista sieci/hosty",
         "filter_table": "Tabela filtru",
         "forwarding_hosts": "Hosty przekazujące",
         "forwarding_hosts_add_hint": "Możesz albo wyszczególnić adresy IPv4/IPv6, sieci w notacji CIDR, nazwy hostów (które zostaną rozłożone na adresy IP), albo nazwy domen (które zostaną rozłożone na adresy IP poprzez sprawdzanie rekordów SPF lub, w razie ich braku, rekordów MX).",
-        "forwarding_hosts_hint": "Wiadomości przychodzące od hostów wyszczególnionych tutaj są akceptowane bezwarunkowo. Dane hosty nie są następnie sprawdzane względem list DNSBL lub poddawane metodzie szarych list. Otrzymany od nich spam nie jest nigdy odrzucany, ale opcjonalnie może zostać umieszczony w folderze spam. Najpopularniejsze zastosowanie dla takiego rozwiązania to wyszczególnienie serwerów poczty, na których ustawiono przekierowanie poczty przychodzącej na Twój serwer Mailcow.",
+        "forwarding_hosts_hint": "Wiadomości przychodzące od hostów wyszczególnionych tutaj są akceptowane bezwarunkowo. Dane hosty nie są następnie sprawdzane względem list DNSBL lub poddawane metodzie szarych list. Otrzymany od nich spam nie jest nigdy odrzucany, ale opcjonalnie może zostać umieszczony w folderze spam. Najpopularniejsze zastosowanie dla takiego rozwiązania to wyszczególnienie serwerów poczty, na których ustawiono przekierowanie poczty przychodzącej na Twój serwer zynerone.",
         "host": "Host",
         "import": "Importuj",
         "import_private_key": "Importuj klucz prywatny",
@@ -90,7 +90,7 @@
         "quarantine": "Kwarantanna",
         "r_active": "Aktywne ograniczenia",
         "r_inactive": "Nieaktywne ograniczenia",
-        "r_info": "Zablokowane/Wyłączone elementy na liście aktywnych ograniczeń nie są rozpoznawane przez mailcow jako prawidłowe ograniczenia i nie można ich przesunąć. Niemniej jednak nierozpoznane ograniczenia zostaną wyświetlone w kolejności pojawiania się. <br>Nowe elementy można dodać w <code>inc/vars.local.inc.php</code>, aby móc je przełączać.",
+        "r_info": "Zablokowane/Wyłączone elementy na liście aktywnych ograniczeń nie są rozpoznawane przez zynerone jako prawidłowe ograniczenia i nie można ich przesunąć. Niemniej jednak nierozpoznane ograniczenia zostaną wyświetlone w kolejności pojawiania się. <br>Nowe elementy można dodać w <code>inc/vars.local.inc.php</code>, aby móc je przełączać.",
         "refresh": "Odśwież",
         "remove": "Usuń",
         "save": "Zapisz zmiany",
@@ -203,7 +203,7 @@
     "header": {
         "administration": "Administrowanie",
         "email": "E-Mail",
-        "mailcow_config": "Konfiguracja",
+        "zynerone_config": "Konfiguracja",
         "quarantine": "Kwarantanna",
         "restart_sogo": "Uruchom ponownie SOGo",
         "user_settings": "Ustawienia użytkownika"
@@ -291,8 +291,8 @@
     "start": {
         "help": "Pokaż/Ukryj panel pomocy",
         "imap_smtp_server_auth_info": "Proszę korzystać z pełnego adresu email i mechanizmu uwierzytelniania PLAIN.<br>\r\nTwoje dane logowania zostaną zaszyfrowane przez obowiązkowe szyfrowanie po stronie serwera.",
-        "mailcow_apps_detail": "Użyj aplikacji mailcow, aby mieć dostęp do wiadomości, kalendarza, kontaktów i innych.",
-        "mailcow_panel_detail": "<b>Administratorzy domeny</b> tworzą, modyfikują lub usuwają skrzynki i aliasy, zmieniają domeny i czytają dalsze informacje o przypisanych im domenach.<br>\r\n\t<b>Użytkownicy skrzynek</b> mogą tworzyć ograniczone czasowo aliasy (aliasy spam), zmieniać swoje hasła i ustawienia filtru spam."
+        "zynerone_apps_detail": "Użyj aplikacji zynerone, aby mieć dostęp do wiadomości, kalendarza, kontaktów i innych.",
+        "zynerone_panel_detail": "<b>Administratorzy domeny</b> tworzą, modyfikują lub usuwają skrzynki i aliasy, zmieniają domeny i czytają dalsze informacje o przypisanych im domenach.<br>\r\n\t<b>Użytkownicy skrzynek</b> mogą tworzyć ograniczone czasowo aliasy (aliasy spam), zmieniać swoje hasła i ustawienia filtru spam."
     },
     "success": {
         "admin_modified": "Zapisano zmiany w administratorze",
@@ -311,7 +311,7 @@
         "domain_modified": "Zapisano zmiany w domenie %s",
         "domain_removed": "Usunięto domenę %s",
         "eas_reset": "Zresetowano urządzenia ActiveSync dla użytkownika %s",
-        "f2b_modified": "Zmiany w Fail2ban zostały zapisane",
+        "f2b_modified": "Zmiany w Netfilter zostały zapisane",
         "forwarding_host_added": "Dodano hosta przekazującego %s",
         "forwarding_host_removed": "Usunięto hosta przekazującego %s",
         "item_deleted": "",

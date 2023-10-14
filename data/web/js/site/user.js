@@ -84,7 +84,7 @@ jQuery(function($){
       $('.last-login').html('<i class="bi bi-hourglass"></i>' +  lang.waiting);
       $.ajax({
         dataType: 'json',
-        url: '/api/v1/get/last-login/' + encodeURIComponent(mailcow_cc_username) + '/' + days,
+        url: '/api/v1/get/last-login/' + encodeURIComponent(zynerone_cc_username) + '/' + days,
         jsonp: false,
         error: function () {
           console.log('error reading last logins');
@@ -115,7 +115,7 @@ jQuery(function($){
     } else if (action == 'reset') {
       $.ajax({
         dataType: 'json',
-        url: '/api/v1/get/reset-last-login/' + encodeURIComponent(mailcow_cc_username),
+        url: '/api/v1/get/reset-last-login/' + encodeURIComponent(zynerone_cc_username),
         jsonp: false,
         error: function () {
           console.log('cannot reset last logins');
@@ -246,7 +246,7 @@ jQuery(function($){
       language: lang_datatables,
       ajax: {
         type: "GET",
-        url: '/api/v1/get/syncjobs/' + encodeURIComponent(mailcow_cc_username) + '/no_log',
+        url: '/api/v1/get/syncjobs/' + encodeURIComponent(zynerone_cc_username) + '/no_log',
         dataSrc: function(data){
           console.log(data);
           $.each(data, function (i, item) {
@@ -636,7 +636,7 @@ jQuery(function($){
     $('#user_sieve_filter').text(lang.loading);
     $.ajax({
       dataType: 'json',
-      url: '/api/v1/get/active-user-sieve/' + encodeURIComponent(mailcow_cc_username),
+      url: '/api/v1/get/active-user-sieve/' + encodeURIComponent(zynerone_cc_username),
       jsonp: false,
       error: function () {
         console.log('Cannot get active sieve script');

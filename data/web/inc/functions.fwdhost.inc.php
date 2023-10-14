@@ -1,5 +1,6 @@
 <?php
-function fwdhost($_action, $_data = null) {
+function fwdhost($_action, $_data = null)
+{
   require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/spf.inc.php';
   global $redis;
   global $lang;
@@ -7,7 +8,7 @@ function fwdhost($_action, $_data = null) {
   switch ($_action) {
     case 'add':
       global $lang;
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -20,11 +21,9 @@ function fwdhost($_action, $_data = null) {
       $filter_spam = (isset($_data['filter_spam']) && $_data['filter_spam'] == 1) ? 1 : 0;
       if (preg_match('/^[0-9a-fA-F:\/]+$/', $host)) { // IPv6 address
         $hosts = array($host);
-      }
-      elseif (preg_match('/^[0-9\.\/]+$/', $host)) { // IPv4 address
+      } elseif (preg_match('/^[0-9\.\/]+$/', $host)) { // IPv4 address
         $hosts = array($host);
-      }
-      else {
+      } else {
         $hosts = get_outgoing_hosts_best_guess($host);
       }
       if (empty($hosts)) {
@@ -40,12 +39,10 @@ function fwdhost($_action, $_data = null) {
           $redis->hSet('WHITELISTED_FWD_HOST', $host, $source);
           if ($filter_spam == 0) {
             $redis->hSet('KEEP_SPAM', $host, 1);
-          }
-          elseif ($redis->hGet('KEEP_SPAM', $host)) {
+          } elseif ($redis->hGet('KEEP_SPAM', $host)) {
             $redis->hDel('KEEP_SPAM', $host);
           }
-        }
-        catch (RedisException $e) {
+        } catch (RedisException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -57,12 +54,12 @@ function fwdhost($_action, $_data = null) {
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data_log),
-        'msg' => array('forwarding_host_added', htmlspecialchars(implode(', ', (array)$hosts)))
+        'msg' => array('forwarding_host_added', htmlspecialchars(implode(', ', (array) $hosts)))
       );
-    break;
+      break;
     case 'edit':
       global $lang;
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -70,13 +67,12 @@ function fwdhost($_action, $_data = null) {
         );
         return false;
       }
-      $fwdhosts = (array)$_data['fwdhost'];
+      $fwdhosts = (array) $_data['fwdhost'];
       foreach ($fwdhosts as $fwdhost) {
         $is_now = fwdhost('details', $fwdhost);
         if (!empty($is_now)) {
           $keep_spam = (isset($_data['keep_spam'])) ? $_data['keep_spam'] : $is_now['keep_spam'];
-        }
-        else {
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -87,12 +83,10 @@ function fwdhost($_action, $_data = null) {
         try {
           if ($keep_spam == 1) {
             $redis->hSet('KEEP_SPAM', $fwdhost, 1);
-          }
-          else {
+          } else {
             $redis->hDel('KEEP_SPAM', $fwdhost);
           }
-        }
-        catch (RedisException $e) {
+        } catch (RedisException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -106,15 +100,14 @@ function fwdhost($_action, $_data = null) {
           'msg' => array('object_modified', htmlspecialchars($fwdhost))
         );
       }
-    break;
+      break;
     case 'delete':
-      $hosts = (array)$_data['forwardinghost'];
+      $hosts = (array) $_data['forwardinghost'];
       foreach ($hosts as $host) {
         try {
           $redis->hDel('WHITELISTED_FWD_HOST', $host);
           $redis->hDel('KEEP_SPAM', $host);
-        }
-        catch (RedisException $e) {
+        } catch (RedisException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -128,26 +121,25 @@ function fwdhost($_action, $_data = null) {
           'msg' => array('forwarding_host_removed', htmlspecialchars($host))
         );
       }
-    break;
+      break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       $fwdhostsdata = array();
       try {
         $fwd_hosts = $redis->hGetAll('WHITELISTED_FWD_HOST');
         if (!empty($fwd_hosts)) {
-        foreach ($fwd_hosts as $fwd_host => $source) {
-          $keep_spam = ($redis->hGet('KEEP_SPAM', $fwd_host)) ? "yes" : "no";
-          $fwdhostsdata[] = array(
-            'host' => $fwd_host,
-            'source' => $source,
-            'keep_spam' => $keep_spam
-          );
+          foreach ($fwd_hosts as $fwd_host => $source) {
+            $keep_spam = ($redis->hGet('KEEP_SPAM', $fwd_host)) ? "yes" : "no";
+            $fwdhostsdata[] = array(
+              'host' => $fwd_host,
+              'source' => $source,
+              'keep_spam' => $keep_spam
+            );
+          }
         }
-        }
-      }
-      catch (RedisException $e) {
+      } catch (RedisException $e) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -156,7 +148,7 @@ function fwdhost($_action, $_data = null) {
         return false;
       }
       return $fwdhostsdata;
-    break;
+      break;
     case 'details':
       $fwdhostdetails = array();
       if (!isset($_data) || empty($_data)) {
@@ -168,8 +160,7 @@ function fwdhost($_action, $_data = null) {
           $fwdhostdetails['source'] = $source;
           $fwdhostdetails['keep_spam'] = ($redis->hGet('KEEP_SPAM', $_data)) ? "yes" : "no";
         }
-      }
-      catch (RedisException $e) {
+      } catch (RedisException $e) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -178,6 +169,6 @@ function fwdhost($_action, $_data = null) {
         return false;
       }
       return $fwdhostdetails;
-    break;
+      break;
   }
 }
