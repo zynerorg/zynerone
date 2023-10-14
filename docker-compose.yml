@@ -398,7 +398,7 @@ services:
           condition: service_started
         unbound-mailcow:
           condition: service_healthy
-      image: zyner/acme:1.85
+      image: zyner/acme:1.86
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
