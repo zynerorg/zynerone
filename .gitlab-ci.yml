@@ -3,7 +3,6 @@ stages:
 
 Matrix:
   stage: matrix
-  image: ubuntu:latest
   parallel:
     matrix:
       - images:
@@ -21,11 +20,10 @@ Matrix:
           - "unbound-zynerone"
           - "watchdog-zynerone"
           - "api-zynerone"
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:stable
+  before_script:
+    - docker info
   script:
-    - apt update
-    - apt install -y curl
-    - curl -sSL https://get.docker.com/ | CHANNEL=stable sh
-    - service docker start
     - echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
     - cp helper-scripts/docker-compose.override.yml.d/BUILD_FLAGS/docker-compose.override.yml docker-compose.override.yml
     - docker compose build ${images}
