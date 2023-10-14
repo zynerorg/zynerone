@@ -21,6 +21,8 @@ Matrix:
           - "watchdog-zynerone"
           - "api-zynerone"
   script:
+    - curl -sSL https://get.docker.com/ | CHANNEL=stable sudo sh
+    - sudo service docker start
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - cp helper-scripts/docker-compose.override.yml.d/BUILD_FLAGS/docker-compose.override.yml docker-compose.override.yml
     - docker compose build ${images}
