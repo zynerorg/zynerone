@@ -1,12 +1,13 @@
 <?php
-function policy($_action, $_scope, $_data = null) {
+function policy($_action, $_scope, $_data = null)
+{
   global $pdo;
   global $redis;
   global $lang;
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if (!isset($_SESSION['acl']['spam_policy']) || $_SESSION['acl']['spam_policy'] != "1" ) {
+      if (!isset($_SESSION['acl']['spam_policy']) || $_SESSION['acl']['spam_policy'] != "1") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -18,7 +19,7 @@ function policy($_action, $_scope, $_data = null) {
         case 'domain':
           $object = $_data['domain'];
           if (is_valid_domain_name($object)) {
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $object)) {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -27,8 +28,7 @@ function policy($_action, $_scope, $_data = null) {
               return false;
             }
             $object = idn_to_ascii(strtolower(trim($object)), 0, INTL_IDNA_VARIANT_UTS46);
-          }
-          else {
+          } else {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -38,8 +38,7 @@ function policy($_action, $_scope, $_data = null) {
           }
           if ($_data['object_list'] == "bl") {
             $object_list = "blacklist_from";
-          }
-          elseif ($_data['object_list'] == "wl") {
+          } elseif ($_data['object_list'] == "wl") {
             $object_list = "whitelist_from";
           }
           $object_from = trim(strtolower($_data['object_from']));
@@ -76,21 +75,23 @@ function policy($_action, $_scope, $_data = null) {
 
           $stmt = $pdo->prepare("INSERT INTO `filterconf` (`object`, `option` ,`value`)
             VALUES (:object, :object_list, :object_from)");
-          $stmt->execute(array(
-            ':object' => $object,
-            ':object_list' => $object_list,
-            ':object_from' => $object_from
-          ));
+          $stmt->execute(
+            array(
+              ':object' => $object,
+              ':object_list' => $object_list,
+              ':object_from' => $object_from
+            )
+          );
 
           $_SESSION['return'][] = array(
             'type' => 'success',
             'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
             'msg' => array('domain_modified', $object)
           );
-        break;
+          break;
         case 'mailbox':
           $object = $_data['username'];
-          if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $object)) {
+          if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)) {
             $_SESSION['return'][] = array(
               'type' => 'danger',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -100,8 +101,7 @@ function policy($_action, $_scope, $_data = null) {
           }
           if ($_data['object_list'] == "bl") {
             $object_list = "blacklist_from";
-          }
-          elseif ($_data['object_list'] == "wl") {
+          } elseif ($_data['object_list'] == "wl") {
             $object_list = "whitelist_from";
           }
           $object_from = trim(strtolower($_data['object_from']));
@@ -137,21 +137,23 @@ function policy($_action, $_scope, $_data = null) {
           }
           $stmt = $pdo->prepare("INSERT INTO `filterconf` (`object`, `option` ,`value`)
             VALUES (:object, :object_list, :object_from)");
-          $stmt->execute(array(
-            ':object' => $object,
-            ':object_list' => $object_list,
-            ':object_from' => $object_from
-          ));
+          $stmt->execute(
+            array(
+              ':object' => $object,
+              ':object_list' => $object_list,
+              ':object_from' => $object_from
+            )
+          );
           $_SESSION['return'][] = array(
             'type' => 'success',
             'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
             'msg' => array('mailbox_modified', $object)
           );
-        break;
+          break;
       }
-    break;
+      break;
     case 'delete':
-      if (!isset($_SESSION['acl']['spam_policy']) || $_SESSION['acl']['spam_policy'] != "1" ) {
+      if (!isset($_SESSION['acl']['spam_policy']) || $_SESSION['acl']['spam_policy'] != "1") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -161,7 +163,7 @@ function policy($_action, $_scope, $_data = null) {
       }
       switch ($_scope) {
         case 'domain':
-          (array)$prefids = $_data['prefid'];
+          (array) $prefids = $_data['prefid'];
           foreach ($prefids as $prefid) {
             if (!is_numeric($prefid)) {
               $_SESSION['return'][] = array(
@@ -175,7 +177,7 @@ function policy($_action, $_scope, $_data = null) {
             $stmt->execute(array(':prefid' => $prefid));
             $object = $stmt->fetch(PDO::FETCH_ASSOC)['object'];
             if (is_valid_domain_name($object)) {
-              if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $object)) {
+              if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)) {
                 $_SESSION['return'][] = array(
                   'type' => 'danger',
                   'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -184,8 +186,7 @@ function policy($_action, $_scope, $_data = null) {
                 continue;
               }
               $object = idn_to_ascii(strtolower(trim($object)), 0, INTL_IDNA_VARIANT_UTS46);
-            }
-            else {
+            } else {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -195,12 +196,13 @@ function policy($_action, $_scope, $_data = null) {
             }
             try {
               $stmt = $pdo->prepare("DELETE FROM `filterconf` WHERE `object` = :object AND `prefid` = :prefid");
-              $stmt->execute(array(
-                ':object' => $object,
-                ':prefid' => $prefid
-              ));
-            }
-            catch (PDOException $e) {
+              $stmt->execute(
+                array(
+                  ':object' => $object,
+                  ':prefid' => $prefid
+                )
+              );
+            } catch (PDOException $e) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -211,16 +213,15 @@ function policy($_action, $_scope, $_data = null) {
             $_SESSION['return'][] = array(
               'type' => 'success',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
-              'msg' => array('item_deleted',$prefid)
+              'msg' => array('item_deleted', $prefid)
             );
           }
-        break;
+          break;
         case 'mailbox':
           if (!is_array($_data['prefid'])) {
             $prefids = array();
             $prefids[] = $_data['prefid'];
-          }
-          else {
+          } else {
             $prefids = $_data['prefid'];
           }
           foreach ($prefids as $prefid) {
@@ -235,7 +236,7 @@ function policy($_action, $_scope, $_data = null) {
             $stmt = $pdo->prepare("SELECT `object` FROM `filterconf` WHERE `prefid` = :prefid");
             $stmt->execute(array(':prefid' => $prefid));
             $object = $stmt->fetch(PDO::FETCH_ASSOC)['object'];
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $object)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $object)) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -245,12 +246,13 @@ function policy($_action, $_scope, $_data = null) {
             }
             try {
               $stmt = $pdo->prepare("DELETE FROM `filterconf` WHERE `object` = :object AND `prefid` = :prefid");
-              $stmt->execute(array(
-                ':object' => $object,
-                ':prefid' => $prefid
-              ));
-            }
-            catch (PDOException $e) {
+              $stmt->execute(
+                array(
+                  ':object' => $object,
+                  ':prefid' => $prefid
+                )
+              );
+            } catch (PDOException $e) {
               $_SESSION['return'][] = array(
                 'type' => 'danger',
                 'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
@@ -261,20 +263,19 @@ function policy($_action, $_scope, $_data = null) {
             $_SESSION['return'][] = array(
               'type' => 'success',
               'log' => array(__FUNCTION__, $_action, $_scope, $_data_log),
-              'msg' => array('items_deleted', implode(', ', (array)$prefids))
+              'msg' => array('items_deleted', implode(', ', (array) $prefids))
             );
           }
-        break;
+          break;
       }
-    break;
+      break;
     case 'get':
       switch ($_scope) {
         case 'domain':
           if (!is_valid_domain_name($_data)) {
             return false;
-          }
-          else {
-            if (!hasDomainAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+          } else {
+            if (!hasDomainAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
             $_data = idn_to_ascii(strtolower(trim($_data)), 0, INTL_IDNA_VARIANT_UTS46);
@@ -290,15 +291,14 @@ function policy($_action, $_scope, $_data = null) {
           $rows['blacklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
           return $rows;
-        break;
+          break;
         case 'mailbox':
           if (isset($_data) && filter_var($_data, FILTER_VALIDATE_EMAIL)) {
-            if (!hasMailboxObjectAccess($_SESSION['mailcow_cc_username'], $_SESSION['mailcow_cc_role'], $_data)) {
+            if (!hasMailboxObjectAccess($_SESSION['zynerone_cc_username'], $_SESSION['zynerone_cc_role'], $_data)) {
               return false;
             }
-          }
-          else {
-            $_data = $_SESSION['mailcow_cc_username'];
+          } else {
+            $_data = $_SESSION['zynerone_cc_username'];
           }
           $domain = mailbox('get', 'mailbox_details', $_data)['domain'];
           if (empty($domain)) {
@@ -313,8 +313,8 @@ function policy($_action, $_scope, $_data = null) {
           $stmt->execute(array(':username' => $_data, ':domain' => $domain));
           $rows['blacklist'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
           return $rows;
-        break;
+          break;
       }
-    break;
+      break;
   }
 }

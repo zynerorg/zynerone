@@ -6,8 +6,8 @@ content: |
   # from = "/^((?!(.*@allowed-domain\.tld|.*@other-allowed-domain\.tld)).)*$/";
   from = "/^((?!.*@domain\.tld).)*$/";
   apply "default" {
-    MAILCOW_BLACK = 9999.0;
+    ZYNERONE_BLACK = 9999.0;
   }
   symbols [
-    "MAILCOW_BLACK"
+    "ZYNERONE_BLACK"
   ]

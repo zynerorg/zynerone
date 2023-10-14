@@ -55,7 +55,7 @@ get_ipv6(){
   local IPV6=
   local IPV6_SRCS=
   local TRY=
-  IPV6_SRCS[0]="ip6.mailcow.email"
+  IPV6_SRCS[0]="https://only.ipv6.gg"
   IPV6_SRCS[1]="ip6.nevondo.com"
   until [[ ! -z ${IPV6} ]] || [[ ${TRY} -ge 10 ]]; do
     IPV6=$(curl --connect-timeout 3 -m 10 -L6s ${IPV6_SRCS[$RANDOM % ${#IPV6_SRCS[@]} ]} | grep "^\([0-9a-fA-F]\{0,4\}:\)\{1,7\}[0-9a-fA-F]\{0,4\}$")
@@ -101,7 +101,7 @@ function mail_error() {
   THROTTLE=
   [[ -z ${1} ]] && return 1
   # If exists, body will be the content of "/tmp/${1}", even if ${2} is set
-  [[ -z ${2} ]] && BODY="Service was restarted on $(date), please check your mailcow installation." || BODY="$(date) - ${2}"
+  [[ -z ${2} ]] && BODY="Service was restarted on $(date), please check your zynerone installation." || BODY="$(date) - ${2}"
   # If exists, mail will be throttled by argument in seconds
   [[ ! -z ${3} ]] && THROTTLE=${3}
   if [[ ! -z ${THROTTLE} ]]; then
@@ -118,7 +118,7 @@ function mail_error() {
   # Some exceptions for subject and body formats
   if [[ ${1} == "fail2ban" ]]; then
     SUBJECT="${BODY}"
-    BODY="Please see netfilter-mailcow for more details and triggered rules."
+    BODY="Please see netfilter-zynerone for more details and triggered rules."
   else
     SUBJECT="${WATCHDOG_SUBJECT}: ${1}"
   fi
@@ -140,14 +140,14 @@ function mail_error() {
       --body-plain="${BODY}" \
       --add-header="X-Priority: 1" \
       --to=${rcpt} \
-      --from="watchdog@${MAILCOW_HOSTNAME}" \
-      --hello-host=${MAILCOW_HOSTNAME} \
+      --from="watchdog@${ZYNERONE_HOSTNAME}" \
+      --hello-host=${ZYNERONE_HOSTNAME} \
       --ipv4
     if [[ $? -eq 1 ]]; then # exit code 1 is fine
       log_msg "Sent notification email to ${rcpt}"
     else
       if [[ "${SMTP_VERBOSE}" == "" ]]; then
-        log_msg "Error while sending notification email to ${rcpt}. You can enable verbose logging by setting 'WATCHDOG_VERBOSE=y' in mailcow.conf."
+        log_msg "Error while sending notification email to ${rcpt}. You can enable verbose logging by setting 'WATCHDOG_VERBOSE=y' in zynerone.conf."
       else
         log_msg "Error while sending notification email to ${rcpt}."
       fi
@@ -201,39 +201,6 @@ if grep -qi "$(echo ${IPV6_NETWORK} | cut -d: -f1-3)" <<< "$(ip a s)"; then
   fi
 fi
 
-external_checks() {
-  err_count=0
-  diff_c=0
-  THRESHOLD=${EXTERNAL_CHECKS_THRESHOLD}
-  # Reduce error count by 2 after restarting an unhealthy container
-  GUID=$(mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SELECT version FROM versions WHERE application = 'GUID'" -BN)
-  trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
-  while [ ${err_count} -lt ${THRESHOLD} ]; do
-    err_c_cur=${err_count}
-    CHECK_REPONSE="$(curl --connect-timeout 3 -m 10 -4 -s https://checks.mailcow.email -X POST -dguid=${GUID} 2> /dev/null)"
-    if [[ ! -z "${CHECK_REPONSE}" ]] && [[ "$(echo ${CHECK_REPONSE} | jq -r .response)" == "critical" ]]; then
-      echo ${CHECK_REPONSE} | jq -r .out > /tmp/external_checks
-      err_count=$(( ${err_count} + 1 ))
-    fi
-    CHECK_REPONSE6="$(curl --connect-timeout 3 -m 10 -6 -s https://checks.mailcow.email -X POST -dguid=${GUID} 2> /dev/null)"
-    if [[ ! -z "${CHECK_REPONSE6}" ]] && [[ "$(echo ${CHECK_REPONSE6} | jq -r .response)" == "critical" ]]; then
-      echo ${CHECK_REPONSE} | jq -r .out > /tmp/external_checks
-      err_count=$(( ${err_count} + 1 ))
-    fi
-    [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
-    [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
-    progress "External checks" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
-    if [[ $? == 10 ]]; then
-      diff_c=0
-      sleep 60
-    else
-      diff_c=0
-      sleep $(( ( RANDOM % 20 ) + 1800 ))
-    fi
-  done
-  return 1
-}
-
 nginx_checks() {
   err_count=0
   diff_c=0
@@ -241,10 +208,10 @@ nginx_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/nginx-mailcow; echo "$(tail -50 /tmp/nginx-mailcow)" > /tmp/nginx-mailcow
-    host_ip=$(get_container_ip nginx-mailcow)
+    touch /tmp/nginx-zynerone; echo "$(tail -50 /tmp/nginx-zynerone)" > /tmp/nginx-zynerone
+    host_ip=$(get_container_ip nginx-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>> /tmp/nginx-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u / -p 8081 2>> /tmp/nginx-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Nginx" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -266,16 +233,16 @@ unbound_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/unbound-mailcow; echo "$(tail -50 /tmp/unbound-mailcow)" > /tmp/unbound-mailcow
-    host_ip=$(get_container_ip unbound-mailcow)
+    touch /tmp/unbound-zynerone; echo "$(tail -50 /tmp/unbound-zynerone)" > /tmp/unbound-zynerone
+    host_ip=$(get_container_ip unbound-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>> /tmp/unbound-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_dns -s ${host_ip} -H stackoverflow.com 2>> /tmp/unbound-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     DNSSEC=$(dig com +dnssec | egrep 'flags:.+ad')
     if [[ -z ${DNSSEC} ]]; then
-      echo "DNSSEC failure" 2>> /tmp/unbound-mailcow 1>&2
+      echo "DNSSEC failure" 2>> /tmp/unbound-zynerone 1>&2
       err_count=$(( ${err_count} + 1))
     else
-      echo "DNSSEC check succeeded" 2>> /tmp/unbound-mailcow 1>&2
+      echo "DNSSEC check succeeded" 2>> /tmp/unbound-zynerone 1>&2
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
@@ -299,10 +266,10 @@ redis_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/redis-mailcow; echo "$(tail -50 /tmp/redis-mailcow)" > /tmp/redis-mailcow
-    host_ip=$(get_container_ip redis-mailcow)
+    touch /tmp/redis-zynerone; echo "$(tail -50 /tmp/redis-zynerone)" > /tmp/redis-zynerone
+    host_ip=$(get_container_ip redis-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H redis-mailcow -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>> /tmp/redis-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H redis-zynerone -p 6379 -E -s "PING\n" -q "QUIT" -e "PONG" 2>> /tmp/redis-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Redis" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -324,10 +291,10 @@ mysql_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/mysql-mailcow; echo "$(tail -50 /tmp/mysql-mailcow)" > /tmp/mysql-mailcow
+    touch /tmp/mariadb-zynerone; echo "$(tail -50 /tmp/mariadb-zynerone)" > /tmp/mariadb-zynerone
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_mysql -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} 2>> /tmp/mysql-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_mysql_query -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} -q "SELECT COUNT(*) FROM information_schema.tables" 2>> /tmp/mysql-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_mysql -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} 2>> /tmp/mariadb-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_mysql_query -s /var/run/mysqld/mysqld.sock -u ${DBUSER} -p ${DBPASS} -d ${DBNAME} -q "SELECT COUNT(*) FROM information_schema.tables" 2>> /tmp/mariadb-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "MySQL/MariaDB" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -373,10 +340,10 @@ sogo_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/sogo-mailcow; echo "$(tail -50 /tmp/sogo-mailcow)" > /tmp/sogo-mailcow
-    host_ip=$(get_container_ip sogo-mailcow)
+    touch /tmp/sogo-zynerone; echo "$(tail -50 /tmp/sogo-zynerone)" > /tmp/sogo-zynerone
+    host_ip=$(get_container_ip sogo-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u /SOGo.index/ -p 20000 2>> /tmp/sogo-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_http -4 -H ${host_ip} -u /SOGo.index/ -p 20000 2>> /tmp/sogo-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "SOGo" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -398,11 +365,11 @@ postfix_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/postfix-mailcow; echo "$(tail -50 /tmp/postfix-mailcow)" > /tmp/postfix-mailcow
-    host_ip=$(get_container_ip postfix-mailcow)
+    touch /tmp/postfix-zynerone; echo "$(tail -50 /tmp/postfix-zynerone)" > /tmp/postfix-zynerone
+    host_ip=$(get_container_ip postfix-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -f "watchdog@invalid" -C "RCPT TO:watchdog@localhost" -C DATA -C . -R 250 2>> /tmp/postfix-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -S 2>> /tmp/postfix-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -f "watchdog@invalid" -C "RCPT TO:watchdog@localhost" -C DATA -C . -R 250 2>> /tmp/postfix-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 589 -S 2>> /tmp/postfix-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Postfix" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -424,10 +391,10 @@ clamd_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/clamd-mailcow; echo "$(tail -50 /tmp/clamd-mailcow)" > /tmp/clamd-mailcow
-    host_ip=$(get_container_ip clamd-mailcow)
+    touch /tmp/clamd-zynerone; echo "$(tail -50 /tmp/clamd-zynerone)" > /tmp/clamd-zynerone
+    host_ip=$(get_container_ip clamd-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>> /tmp/clamd-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_clamd -4 -H ${host_ip} 2>> /tmp/clamd-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Clamd" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -449,14 +416,14 @@ dovecot_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/dovecot-mailcow; echo "$(tail -50 /tmp/dovecot-mailcow)" > /tmp/dovecot-mailcow
-    host_ip=$(get_container_ip dovecot-mailcow)
+    touch /tmp/dovecot-zynerone; echo "$(tail -50 /tmp/dovecot-zynerone)" > /tmp/dovecot-zynerone
+    host_ip=$(get_container_ip dovecot-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>> /tmp/dovecot-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_smtp -4 -H ${host_ip} -p 24 -f "watchdog@invalid" -C "RCPT TO:<watchdog@invalid>" -L -R "User doesn't exist" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 993 -S -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_imap -4 -H ${host_ip} -p 143 -e "OK " 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10001 -e "VERSION" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 4190 -e "Dovecot ready" 2>> /tmp/dovecot-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Dovecot" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -527,11 +494,11 @@ phpfpm_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/php-fpm-mailcow; echo "$(tail -50 /tmp/php-fpm-mailcow)" > /tmp/php-fpm-mailcow
-    host_ip=$(get_container_ip php-fpm-mailcow)
+    touch /tmp/php-fpm-zynerone; echo "$(tail -50 /tmp/php-fpm-zynerone)" > /tmp/php-fpm-zynerone
+    host_ip=$(get_container_ip php-fpm-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>> /tmp/php-fpm-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
-    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>> /tmp/php-fpm-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9001 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -H ${host_ip} -p 9002 2>> /tmp/php-fpm-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "PHP-FPM" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -560,7 +527,7 @@ ratelimit_checks() {
     if [[ ${RL_LOG_STATUS_PREV} != ${RL_LOG_STATUS} ]]; then
       err_count=$(( ${err_count} + 1 ))
       echo 'Last 10 applied ratelimits (may overlap with previous reports).' > /tmp/ratelimit
-      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within mailcow UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
+      echo 'Full ratelimit buckets can be emptied by deleting the ratelimit hash from within Zyner One UI (see /debug -> Protocols -> Ratelimit):' >> /tmp/ratelimit
       echo >> /tmp/ratelimit
       redis-cli --raw -h redis LRANGE RL_LOG 0 10 | jq . >> /tmp/ratelimit
     fi
@@ -685,8 +652,8 @@ rspamd_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/rspamd-mailcow; echo "$(tail -50 /tmp/rspamd-mailcow)" > /tmp/rspamd-mailcow
-    host_ip=$(get_container_ip rspamd-mailcow)
+    touch /tmp/rspamd-zynerone; echo "$(tail -50 /tmp/rspamd-zynerone)" > /tmp/rspamd-zynerone
+    host_ip=$(get_container_ip rspamd-zynerone)
     err_c_cur=${err_count}
     SCORE=$(echo 'To: null@localhost
 From: watchdog@localhost
@@ -694,17 +661,17 @@ From: watchdog@localhost
 Empty
 ' | usr/bin/curl --max-time 10 -s --data-binary @- --unix-socket /var/lib/rspamd/rspamd.sock http://rspamd/scan | jq -rc .default.required_score)
     if [[ ${SCORE} != "9999" ]]; then
-      echo "Rspamd settings check failed, score returned: ${SCORE}" 2>> /tmp/rspamd-mailcow 1>&2
+      echo "Rspamd settings check failed, score returned: ${SCORE}" 2>> /tmp/rspamd-zynerone 1>&2
       err_count=$(( ${err_count} + 1))
     else
-      echo "Rspamd settings check succeeded, score returned: ${SCORE}" 2>> /tmp/rspamd-mailcow 1>&2
+      echo "Rspamd settings check succeeded, score returned: ${SCORE}" 2>> /tmp/rspamd-zynerone 1>&2
     fi
     # A dirty hack until a PING PONG event is implemented to worker proxy
     # We expect an empty response, not a timeout
     if [ "$(curl -s --max-time 10 ${host_ip}:9900 2> /dev/null ; echo $?)" == "28" ]; then
-      echo "Milter check failed" 2>> /tmp/rspamd-mailcow 1>&2; err_count=$(( ${err_count} + 1 ));
+      echo "Milter check failed" 2>> /tmp/rspamd-zynerone 1>&2; err_count=$(( ${err_count} + 1 ));
     else
-      echo "Milter check succeeded" 2>> /tmp/rspamd-mailcow 1>&2
+      echo "Milter check succeeded" 2>> /tmp/rspamd-zynerone 1>&2
     fi
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
@@ -727,10 +694,10 @@ olefy_checks() {
   # Reduce error count by 2 after restarting an unhealthy container
   trap "[ ${err_count} -gt 1 ] && err_count=$(( ${err_count} - 2 ))" USR1
   while [ ${err_count} -lt ${THRESHOLD} ]; do
-    touch /tmp/olefy-mailcow; echo "$(tail -50 /tmp/olefy-mailcow)" > /tmp/olefy-mailcow
-    host_ip=$(get_container_ip olefy-mailcow)
+    touch /tmp/olefy-zynerone; echo "$(tail -50 /tmp/olefy-zynerone)" > /tmp/olefy-zynerone
+    host_ip=$(get_container_ip olefy-zynerone)
     err_c_cur=${err_count}
-    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>> /tmp/olefy-mailcow 1>&2; err_count=$(( ${err_count} + $? ))
+    /usr/lib/nagios/plugins/check_tcp -4 -H ${host_ip} -p 10055 -s "PING\n" 2>> /tmp/olefy-zynerone 1>&2; err_count=$(( ${err_count} + $? ))
     [ ${err_c_cur} -eq ${err_count} ] && [ ! $((${err_count} - 1)) -lt 0 ] && err_count=$((${err_count} - 1)) diff_c=1
     [ ${err_c_cur} -ne ${err_count} ] && diff_c=$(( ${err_c_cur} - ${err_count} ))
     progress "Olefy" ${THRESHOLD} $(( ${THRESHOLD} - ${err_count} )) ${diff_c}
@@ -747,7 +714,7 @@ olefy_checks() {
 
 # Notify about start
 if [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]]; then
-  mail_error "watchdog-mailcow" "Watchdog started monitoring mailcow."
+  mail_error "watchdog-zynerone" "Watchdog started monitoring zynerone."
 fi
 
 # Create watchdog agents
@@ -756,27 +723,13 @@ fi
 while true; do
   if ! nginx_checks; then
     log_msg "Nginx hit error limit"
-    echo nginx-mailcow > /tmp/com_pipe
+    echo nginx-zynerone > /tmp/com_pipe
   fi
 done
 ) &
 PID=$!
 echo "Spawned nginx_checks with PID ${PID}"
 BACKGROUND_TASKS+=(${PID})
-
-if [[ ${WATCHDOG_EXTERNAL_CHECKS} =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-(
-while true; do
-  if ! external_checks; then
-    log_msg "External checks hit error limit"
-    echo external_checks > /tmp/com_pipe
-  fi
-done
-) &
-PID=$!
-echo "Spawned external_checks with PID ${PID}"
-BACKGROUND_TASKS+=(${PID})
-fi
 
 if [[ ${WATCHDOG_MYSQL_REPLICATION_CHECKS} =~ ^([yY][eE][sS]|[yY])+$ ]]; then
 (
@@ -796,7 +749,7 @@ fi
 while true; do
   if ! mysql_checks; then
     log_msg "MySQL hit error limit"
-    echo mysql-mailcow > /tmp/com_pipe
+    echo mariadb-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -808,7 +761,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! redis_checks; then
     log_msg "Local Redis hit error limit"
-    echo redis-mailcow > /tmp/com_pipe
+    echo redis-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -820,7 +773,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! phpfpm_checks; then
     log_msg "PHP-FPM hit error limit"
-    echo php-fpm-mailcow > /tmp/com_pipe
+    echo php-fpm-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -833,7 +786,7 @@ if [[ "${SKIP_SOGO}" =~ ^([nN][oO]|[nN])+$ ]]; then
 while true; do
   if ! sogo_checks; then
     log_msg "SOGo hit error limit"
-    echo sogo-mailcow > /tmp/com_pipe
+    echo sogo-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -847,7 +800,7 @@ if [ ${CHECK_UNBOUND} -eq 1 ]; then
 while true; do
   if ! unbound_checks; then
     log_msg "Unbound hit error limit"
-    echo unbound-mailcow > /tmp/com_pipe
+    echo unbound-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -861,7 +814,7 @@ if [[ "${SKIP_CLAMD}" =~ ^([nN][oO]|[nN])+$ ]]; then
 while true; do
   if ! clamd_checks; then
     log_msg "Clamd hit error limit"
-    echo clamd-mailcow > /tmp/com_pipe
+    echo clamd-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -874,7 +827,7 @@ fi
 while true; do
   if ! postfix_checks; then
     log_msg "Postfix hit error limit"
-    echo postfix-mailcow > /tmp/com_pipe
+    echo postfix-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -898,7 +851,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! dovecot_checks; then
     log_msg "Dovecot hit error limit"
-    echo dovecot-mailcow > /tmp/com_pipe
+    echo dovecot-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -922,7 +875,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! rspamd_checks; then
     log_msg "Rspamd hit error limit"
-    echo rspamd-mailcow > /tmp/com_pipe
+    echo rspamd-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -970,7 +923,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! olefy_checks; then
     log_msg "Olefy hit error limit"
-    echo olefy-mailcow > /tmp/com_pipe
+    echo olefy-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -982,7 +935,7 @@ BACKGROUND_TASKS+=(${PID})
 while true; do
   if ! acme_checks; then
     log_msg "ACME client hit error limit"
-    echo acme-mailcow > /tmp/com_pipe
+    echo acme-zynerone > /tmp/com_pipe
   fi
 done
 ) &
@@ -1009,7 +962,7 @@ while true; do
   while nc -z dockerapi 443; do
     sleep 3
   done
-  log_msg "Cannot find dockerapi-mailcow, waiting to recover..."
+  log_msg "Cannot find dockerapi-zynerone, waiting to recover..."
   kill -STOP ${BACKGROUND_TASKS[*]}
   until nc -z dockerapi 443; do
     sleep 3
@@ -1033,10 +986,6 @@ while true; do
   elif [[ ${com_pipe_answer} == "mail_queue_status" ]]; then
     log_msg "Mail queue status is critical"
     [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}"
-  elif [[ ${com_pipe_answer} == "external_checks" ]]; then
-    log_msg "Your mailcow is an open relay!"
-    # Define $2 to override message text, else print service was restarted at ...
-    [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please stop mailcow now and check your network configuration!"
   elif [[ ${com_pipe_answer} == "mysql_repl_checks" ]]; then
     log_msg "MySQL replication is not working properly"
     # Define $2 to override message text, else print service was restarted at ...
@@ -1052,10 +1001,10 @@ while true; do
     # Define $2 to override message text, else print service was restarted at ...
     # Only mail once a day
     [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please renew your certificate" 86400
-  elif [[ ${com_pipe_answer} == "acme-mailcow" ]]; then
-    log_msg "acme-mailcow did not complete successfully"
+  elif [[ ${com_pipe_answer} == "acme-zynerone" ]]; then
+    log_msg "acme-zynerone did not complete successfully"
     # Define $2 to override message text, else print service was restarted at ...
-    [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please check acme-mailcow for further information."
+    [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}" "Please check acme-zynerone for further information."
   elif [[ ${com_pipe_answer} == "fail2ban" ]]; then
     F2B_RES=($(timeout 4s ${REDIS_CMDLINE} --raw GET F2B_RES 2> /dev/null))
     if [[ ! -z "${F2B_RES}" ]]; then
@@ -1068,19 +1017,19 @@ while true; do
         [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && [[ ${WATCHDOG_NOTIFY_BAN} =~ ^([yY][eE][sS]|[yY])+$ ]] && mail_error "${com_pipe_answer}" "IP ban: ${host}"
       done
     fi
-  elif [[ ${com_pipe_answer} =~ .+-mailcow ]]; then
+  elif [[ ${com_pipe_answer} =~ .+-zynerone ]]; then
     kill -STOP ${BACKGROUND_TASKS[*]}
     sleep 10
     CONTAINER_ID=$(curl --silent --insecure https://dockerapi/containers/json | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring | contains(\"${com_pipe_answer}\")) | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id")
     if [[ ! -z ${CONTAINER_ID} ]]; then
-      if [[ "${com_pipe_answer}" == "php-fpm-mailcow" ]]; then
+      if [[ "${com_pipe_answer}" == "php-fpm-zynerone" ]]; then
         HAS_INITDB=$(curl --silent --insecure -XPOST https://dockerapi/containers/${CONTAINER_ID}/top | jq '.msg.Processes[] | contains(["php -c /usr/local/etc/php -f /web/inc/init_db.inc.php"])' | grep true)
       fi
       S_RUNNING=$(($(date +%s) - $(curl --silent --insecure https://dockerapi/containers/${CONTAINER_ID}/json | jq .State.StartedAt | xargs -n1 date +%s -d)))
       if [ ${S_RUNNING} -lt 360 ]; then
         log_msg "Container is running for less than 360 seconds, skipping action..."
       elif [[ ! -z ${HAS_INITDB} ]]; then
-        log_msg "Database is being initialized by php-fpm-mailcow, not restarting but delaying checks for a minute..."
+        log_msg "Database is being initialized by php-fpm-zynerone, not restarting but delaying checks for a minute..."
         sleep 60
       else
         log_msg "Sending restart command to ${CONTAINER_ID}..."

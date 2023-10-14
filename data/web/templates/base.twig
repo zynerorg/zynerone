@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ mailcow_locale|default('en') }}">
+<html lang="{{ zynerone_locale|default('en') }}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +18,7 @@
       link.id   = 'dark-mode-theme';
       link.rel  = 'stylesheet';
       link.type = 'text/css';
-      link.href = '/css/themes/mailcow-darkmode.css';
+      link.href = '/css/themes/zynerone-darkmode.css';
       head.appendChild(link);
     }
   </script>
@@ -32,8 +32,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top p-0">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
-      <img class="main-logo" alt="mailcow-logo" src="{{ logo|default('/img/cow_mailcow.svg') }}">
-      <img class="main-logo-dark" alt="mailcow-logo-dark" src="{{ logo_dark|default('/img/cow_mailcow.svg') }}">
+      <img class="main-logo" alt="zynerone-logo" src="{{ logo|default('/img/zynerone.svg') }}">
+      <img class="main-logo-dark" alt="zynerone-logo-dark" src="{{ logo_dark|default('/img/zynerone.svg') }}">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <i class="bi bi-list fs-3"></i>
@@ -46,13 +46,13 @@
             <input class="form-check-input ms-2" type="checkbox" id="dark-mode-toggle">
           </div>
         </li>
-        {% if mailcow_locale %}
+        {% if zynerone_locale %}
         <li class="nav-item dropdown{% if available_languages|length == 1 %}lang-link-disabled{% endif %}">
-          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="flag-icon flag-icon-{{ mailcow_locale[-2:] }}"></span></a>
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><span class="flag-icon flag-icon-{{ zynerone_locale[-2:] }}"></span></a>
           <ul class="dropdown-menu" role="menu "aria-labelledby="languageDropdown">
             {% for key, val in available_languages %}
             <li>
-              <a class="dropdown-item {% if mailcow_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
+              <a class="dropdown-item {% if zynerone_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
                 <span class="flag-icon flag-icon-{{ key[-2:] }}"></span>{{ val }}
               </a>
             </li>
@@ -60,15 +60,15 @@
           </ul>
         </li>
         {% endif %}
-        {% if mailcow_cc_role %}
+        {% if zynerone_cc_role %}
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ lang.header.mailcow_system }}</a>
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ lang.header.zynerone_system }}</a>
           <ul class="dropdown-menu">
-            {% if mailcow_cc_role == 'admin' %}
+            {% if zynerone_cc_role == 'admin' %}
             <li><a href="/debug" class="dropdown-item {% if is_uri('debug') %}active{% endif %}">{{ lang.header.debug }}</a></li>
-            <li><a href="/admin" class="dropdown-item {% if is_uri('admin') %}active{% endif %}">{{ lang.header.mailcow_config }}</a></li>
+            <li><a href="/admin" class="dropdown-item {% if is_uri('admin') %}active{% endif %}">{{ lang.header.zynerone_config }}</a></li>
             {% endif %}
-            {% if mailcow_cc_role != 'admin' %}
+            {% if zynerone_cc_role != 'admin' %}
             <li><a href="/user" class="dropdown-item {% if is_uri('user') %}active{% endif %}">{{ lang.header.user_settings }}</a></li>
             {% endif %}
           </ul>
@@ -76,24 +76,24 @@
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">{{ lang.header.email }}</a>
           <ul class="dropdown-menu">
-            {% if mailcow_cc_role == 'admin' or mailcow_cc_role == 'domainadmin' %}
-            <li><a href="/mailbox" class="dropdown-item {% if is_uri('mailbox') %}active{% endif %}">{{ lang.header.mailcow_config }}</a></li>
+            {% if zynerone_cc_role == 'admin' or zynerone_cc_role == 'domainadmin' %}
+            <li><a href="/mailbox" class="dropdown-item {% if is_uri('mailbox') %}active{% endif %}">{{ lang.header.zynerone_config }}</a></li>
             {% endif %}
             <li><a href="/quarantine" class="dropdown-item {% if is_uri('quarantine') %}active{% endif %}">{{ lang.header.quarantine }}</a></li>
-            {% if mailcow_cc_role == 'admin' %}
+            {% if zynerone_cc_role == 'admin' %}
             <li><a href="/queue" class="dropdown-item {% if is_uri('queue') %}active{% endif %}">{{ lang.queue.queue_manager }}</a></li>
             {% endif %}
-            {% if mailcow_cc_role == 'admin' %}
-            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-container="sogo-mailcow" data-bs-target="#RestartContainer">{{ lang.header.restart_sogo }}</a></li>
+            {% if zynerone_cc_role == 'admin' %}
+            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-container="sogo-zynerone" data-bs-target="#RestartContainer">{{ lang.header.restart_sogo }}</a></li>
             {% endif %}
           </ul>
         </li>
         {% endif %}
-        {% if mailcow_apps or app_links %}
+        {% if zynerone_apps or app_links %}
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="bi bi-link-45deg me-2"></i> {{ ui_texts.apps_name|raw }}</a>
           <ul class="dropdown-menu">
-            {% for app in mailcow_apps %}
+            {% for app in zynerone_apps %}
               {% if not skip_sogo or not is_uri('SOGo', app.link) %}
               <li {% if app.description %}title="{{ app.description }}"{% endif %}>
                 <a href="{{ app.link }}" class="dropdown-item">{{ app.name }}</a>
@@ -108,10 +108,10 @@
           </ul>
         </li>
         {% endif %}
-        {% if not dual_login and mailcow_cc_username %}
-        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ mailcow_cc_username }}</b> <i class="bi bi-power ms-2"></i></a></li>
+        {% if not dual_login and zynerone_cc_username %}
+        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }}</b> <i class="bi bi-power ms-2"></i></a></li>
         {% elseif dual_login %}
-        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ mailcow_cc_username }} <span class="text-info">({{ dual_login.username }})</span> </b><i class="bi bi-power ms-2"></i></a></li>
+        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }} <span class="text-info">({{ dual_login.username }})</span> </b><i class="bi bi-power ms-2"></i></a></li>
         {% endif %}
         {% if not is_master %}
         <li class="text-warning slave-info nav-item">[ slave ]</li>
@@ -143,16 +143,16 @@
   var lang_tfa = {{ lang_tfa|raw }};
   var lang_fido2 = {{ lang_fido2|raw }};
   var docker_timeout = {{ docker_timeout|raw }} * 1000;
-  var mailcow_cc_role = '{{ mailcow_cc_role }}';
+  var zynerone_cc_role = '{{ zynerone_cc_role }}';
   var last_login = '{{ last_login }}';
-  var mailcow_info = {
-    version_tag: '{{ mailcow_info.version_tag }}',
-    last_version_tag: '{{ mailcow_info.last_version_tag }}',
-    updatedAt: '{{ mailcow_info.updated_at }}',
-    project_url: '{{ mailcow_info.git_project_url }}',
-    project_owner: '{{ mailcow_info.git_owner }}',
-    project_repo: '{{ mailcow_info.git_repo }}',
-    branch: '{{ mailcow_info.mailcow_branch }}'
+  var zynerone_info = {
+    version_tag: '{{ zynerone_info.version_tag }}',
+    last_version_tag: '{{ zynerone_info.last_version_tag }}',
+    updatedAt: '{{ zynerone_info.updated_at }}',
+    project_url: '{{ zynerone_info.git_project_url }}',
+    project_owner: '{{ zynerone_info.git_owner }}',
+    project_repo: '{{ zynerone_info.git_repo }}',
+    branch: '{{ zynerone_info.ZYNERONE_BRANCH }}'
   };
 
 $(window).scroll(function() {
@@ -205,9 +205,9 @@ function recursiveBase64StrToArrayBuffer(obj) {
       $(modal_id).attr("aria-hidden","false");
     });
     // TFA, CSRF, Alerts in footer.inc.php
-    // Other general functions in mailcow.js
+    // Other general functions in zynerone.js
     {% for alert_type, alert_msg in alerts %}
-    mailcow_alert_box('{{ alert_msg|raw|e("js") }}', '{{ alert_type }}');
+    zynerone_alert_box('{{ alert_msg|raw|e("js") }}', '{{ alert_type }}');
     {% endfor %}
 
     // Confirm TFA modal
@@ -381,9 +381,9 @@ function recursiveBase64StrToArrayBuffer(obj) {
   }
   }).catch(function(err) {
     if (typeof err.message === 'undefined') {
-      mailcow_alert_box(lang_fido2.fido2_validation_failed, "danger");
+      zynerone_alert_box(lang_fido2.fido2_validation_failed, "danger");
     } else {
-      mailcow_alert_box(lang_fido2.fido2_validation_failed + ":<br><i>" + err.message + "</i>", "danger");
+      zynerone_alert_box(lang_fido2.fido2_validation_failed + ":<br><i>" + err.message + "</i>", "danger");
     }
   });
   });
@@ -397,7 +397,7 @@ function recursiveBase64StrToArrayBuffer(obj) {
       return;
     }
 
-    window.fetch("/api/v1/get/fido2-registration/{{ mailcow_cc_username|url_encode(true)|default('null') }}", {method:'GET',cache:'no-cache'}).then(function(response) {
+    window.fetch("/api/v1/get/fido2-registration/{{ zynerone_cc_username|url_encode(true)|default('null') }}", {method:'GET',cache:'no-cache'}).then(function(response) {
       return response.json();
     }).then(function(json) {
       if (json.success === false) {
@@ -468,7 +468,7 @@ function recursiveBase64StrToArrayBuffer(obj) {
             var confirm_password = document.getElementsByName('confirm_password')[1].value;
 
             // fetch WebAuthn create args
-            window.fetch("/api/v1/get/webauthn-tfa-registration/{{ mailcow_cc_username|url_encode(true)|default('null') }}", {method:'GET',cache:'no-cache'}).then(response => {
+            window.fetch("/api/v1/get/webauthn-tfa-registration/{{ zynerone_cc_username|url_encode(true)|default('null') }}", {method:'GET',cache:'no-cache'}).then(response => {
                 return response.json();
             }).then(json => {
                 console.log(json);
@@ -513,7 +513,7 @@ function recursiveBase64StrToArrayBuffer(obj) {
     }
   });
 
-  {% if mailcow_cc_username %}
+  {% if zynerone_cc_username %}
   // Reload after session timeout
   var session_lifetime = {{ (session_lifetime * 1000) + 15000 }};
   setTimeout(function() {
@@ -533,19 +533,19 @@ function recursiveBase64StrToArrayBuffer(obj) {
   {% if ui_texts.ui_footer %}
   <hr><span class="rot-enc">{{ ui_texts.ui_footer|rot13|raw }}</span>
   {% endif %}
-  {% if mailcow_cc_username and mailcow_info.mailcow_branch|lower == "master" and mailcow_info.version_tag|default %}
+  {% if zynerone_cc_username and zynerone_info.ZYNERONE_BRANCH|lower == "master" and zynerone_info.version_tag|default %}
   <span class="version">
-    🐮 + 🐋 = 💕
-        Version: <a href="{{ mailcow_info.git_project_url }}/releases/tag/{{ mailcow_info.version_tag }}" target="_blank">{{ mailcow_info.version_tag }}
+    Zyner One
+        Version: <a href="{{ zynerone_info.git_project_url }}/releases/tag/{{ zynerone_info.version_tag }}" target="_blank">{{ zynerone_info.version_tag }}
     </a>
   </span>
   {% endif %}  
-  {% if mailcow_cc_username and mailcow_info.mailcow_branch|lower == "nightly" and mailcow_info.version_tag|default %}
+  {% if zynerone_cc_username and zynerone_info.ZYNERONE_BRANCH|lower == "nightly" and zynerone_info.version_tag|default %}
   <span class="version">
-    🛠️🐮 + 🐋 = 💕
-        Nightly: <a href="{{ mailcow_info.git_project_url }}/commit/{{ mailcow_info.git_commit }}" target="_blank">{{ mailcow_info.version_tag }}
+    Zyner One - Nightly
+        Nightly: <a href="{{ zynerone_info.git_project_url }}/commit/{{ zynerone_info.git_commit }}" target="_blank">{{ zynerone_info.version_tag }}
     </a><br>
-    <span style="text-align:right;display:block;">Build: {{ mailcow_info.git_commit_date }}</span>
+    <span style="text-align:right;display:block;">Build: {{ zynerone_info.git_commit_date }}</span>
   </span>
   {% endif %}
 </div>

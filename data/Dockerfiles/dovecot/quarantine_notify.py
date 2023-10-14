@@ -41,7 +41,7 @@ try:
       break
 
   time_now = int(time.time())
-  mailcow_hostname = os.environ.get('MAILCOW_HOSTNAME')
+  zynerone_hostname = os.environ.get('ZYNERONE_HOSTNAME')
 
   max_score = float(r.get('Q_MAX_SCORE') or "9999.0")
   if max_score == "":
@@ -91,7 +91,7 @@ try:
     else:
       with open('/templates/quarantine.tpl') as file_:
         template = Template(file_.read())
-    html = template.render(meta=meta_query, username=rcpt, counter=msg_count, hostname=mailcow_hostname, quarantine_acl=quarantine_acl)
+    html = template.render(meta=meta_query, username=rcpt, counter=msg_count, hostname=zynerone_hostname, quarantine_acl=quarantine_acl)
     text = html2text.html2text(html)
     count = 0
     while count < 15:

@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role']) || $_SESSION['mailcow_cc_role'] != "admin") {
+if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "admin") {
   header('Location: /');
   exit();
 }
@@ -20,12 +20,12 @@ $js_minifier->add('/web/js/site/debug.js');
 
 // vmail df
 $exec_fields = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields), true));
+$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true));
 
 // containers
 $containers = (array) docker('info');
-if ($clamd_status === false) unset($containers['clamd-mailcow']);
-if ($solr_status === false) unset($containers['solr-mailcow']);
+if ($clamd_status === false) unset($containers['clamd-zynerone']);
+if ($solr_status === false) unset($containers['solr-zynerone']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
   date_default_timezone_set('UTC');
@@ -49,8 +49,8 @@ foreach ($containers as $container => $container_info) {
   $containers[$container]['State']['StartedAtHR'] = $started;
 }
 
-// get mailcow data
-$hostname = getenv('MAILCOW_HOSTNAME');
+// get zynerone data
+$hostname = getenv('ZYNERONE_HOSTNAME');
 $timezone = getenv('TZ');
 
 $template = 'debug.twig';
@@ -60,7 +60,6 @@ $template_data = [
   'hostname' => $hostname,
   'timezone' => $timezone,
   'gal' => @$_SESSION['gal'],
-  'license_guid' => license('guid'),
   'solr_status' => $solr_status,
   'solr_uptime' => round($solr_status['status']['dovecot-fts']['uptime'] / 1000 / 60 / 60),
   'clamd_status' => $clamd_status,

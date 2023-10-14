@@ -96,7 +96,7 @@ if (isset($_GET['query'])) {
 
   switch ($action) {
     case "add":
-      if ($_SESSION['mailcow_cc_api_access'] == 'ro' || isset($_SESSION['pending_mailcow_cc_username'])) {
+      if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username'])) {
         http_response_code(403);
         echo json_encode(array(
             'type' => 'error',
@@ -144,7 +144,7 @@ if (isset($_GET['query'])) {
         // fido2-registration via POST
         case "fido2-registration":
           header('Content-Type: application/json');
-          if (isset($_SESSION["mailcow_cc_role"])) {
+          if (isset($_SESSION["zynerone_cc_role"])) {
             $post = trim(file_get_contents('php://input'));
             if ($post) {
               $post = json_decode($post);
@@ -174,7 +174,7 @@ if (isset($_GET['query'])) {
           }
         break;
         case "webauthn-tfa-registration":
-            if (isset($_SESSION["mailcow_cc_role"])) {
+            if (isset($_SESSION["zynerone_cc_role"])) {
               // parse post data
               $post = trim(file_get_contents('php://input'));
               if ($post) $post = json_decode($post);
@@ -373,25 +373,25 @@ if (isset($_GET['query'])) {
           $stmt->execute(array(':username' => $process_fido2['username']));
           $obj_props = $stmt->fetch(PDO::FETCH_ASSOC);
           if ($obj_props['superadmin'] === 1) {
-            $_SESSION["mailcow_cc_role"] = "admin";
+            $_SESSION["zynerone_cc_role"] = "admin";
           }
           elseif ($obj_props['superadmin'] === 0) {
-            $_SESSION["mailcow_cc_role"] = "domainadmin";
+            $_SESSION["zynerone_cc_role"] = "domainadmin";
           }
           else {
             $stmt = $pdo->prepare("SELECT `username` FROM `mailbox` WHERE `username` = :username");
             $stmt->execute(array(':username' => $process_fido2['username']));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($row['username'] == $process_fido2['username']) {
-              $_SESSION["mailcow_cc_role"] = "user";
+              $_SESSION["zynerone_cc_role"] = "user";
             }
           }
-          if (empty($_SESSION["mailcow_cc_role"])) {
+          if (empty($_SESSION["zynerone_cc_role"])) {
             session_unset();
             session_destroy();
             exit;
           }
-          $_SESSION["mailcow_cc_username"] = $process_fido2['username'];
+          $_SESSION["zynerone_cc_username"] = $process_fido2['username'];
           $_SESSION["fido2_cid"] = $process_fido2['cid'];
           unset($_SESSION["challenge"]);
           $_SESSION['return'][] =  array(
@@ -426,10 +426,10 @@ if (isset($_GET['query'])) {
         // fido2
         case "fido2-registration":
           header('Content-Type: application/json');
-          if (isset($_SESSION["mailcow_cc_role"])) {
+          if (isset($_SESSION["zynerone_cc_role"])) {
               // Exclude existing CredentialIds, if any
               $excludeCredentialIds = fido2(array("action" => "get_user_cids"));
-              $createArgs = $WebAuthn->getCreateArgs($_SESSION["mailcow_cc_username"], $_SESSION["mailcow_cc_username"], $_SESSION["mailcow_cc_username"], 30, true, $GLOBALS['FIDO2_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
+              $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, true, $GLOBALS['FIDO2_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
               print(json_encode($createArgs));
               $_SESSION['challenge'] = $WebAuthn->getChallenge();
               return;
@@ -454,11 +454,11 @@ if (isset($_GET['query'])) {
         break;
         // webauthn two factor authentication
         case "webauthn-tfa-registration":
-          if (isset($_SESSION["mailcow_cc_role"])) {
+          if (isset($_SESSION["zynerone_cc_role"])) {
               // Exclude existing CredentialIds, if any
               $stmt = $pdo->prepare("SELECT `keyHandle` FROM `tfa` WHERE username = :username AND authmech = :authmech");
               $stmt->execute(array(
-                ':username' => $_SESSION['mailcow_cc_username'],
+                ':username' => $_SESSION['zynerone_cc_username'],
                 ':authmech' => 'webauthn'
               ));
               $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -469,7 +469,7 @@ if (isset($_GET['query'])) {
               // cross-platform: true, if type internal is not allowed
               //        false, if only internal is allowed
               //        null, if internal and cross-platform is allowed
-              $createArgs = $WebAuthn->getCreateArgs($_SESSION["mailcow_cc_username"], $_SESSION["mailcow_cc_username"], $_SESSION["mailcow_cc_username"], 30, false, $GLOBALS['WEBAUTHN_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
+              $createArgs = $WebAuthn->getCreateArgs($_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], $_SESSION["zynerone_cc_username"], 30, false, $GLOBALS['WEBAUTHN_UV_FLAG_REGISTER'], null, $excludeCredentialIds);
               
               print(json_encode($createArgs));
               $_SESSION['challenge'] = $WebAuthn->getChallenge();
@@ -483,7 +483,7 @@ if (isset($_GET['query'])) {
         case "webauthn-tfa-get-args":
           $stmt = $pdo->prepare("SELECT `keyHandle` FROM `tfa` WHERE username = :username AND authmech = :authmech");
           $stmt->execute(array(
-            ':username' => $_SESSION['pending_mailcow_cc_username'],
+            ':username' => $_SESSION['pending_zynerone_cc_username'],
             ':authmech' => 'webauthn'
           ));
           $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -505,7 +505,7 @@ if (isset($_GET['query'])) {
           return;
         break;
       }
-      if (isset($_SESSION['mailcow_cc_role'])) {
+      if (isset($_SESSION['zynerone_cc_role'])) {
         switch ($category) {
           case "rspamd":
             switch ($object) {
@@ -867,10 +867,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('dovecot-mailcow', $extra);
+                  $logs = get_logs('dovecot-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('dovecot-mailcow');
+                  $logs = get_logs('dovecot-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -889,10 +889,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('netfilter-mailcow', $extra);
+                  $logs = get_logs('netfilter-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('netfilter-mailcow');
+                  $logs = get_logs('netfilter-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -900,10 +900,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('postfix-mailcow', $extra);
+                  $logs = get_logs('postfix-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('postfix-mailcow');
+                  $logs = get_logs('postfix-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -911,10 +911,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('autodiscover-mailcow', $extra);
+                  $logs = get_logs('autodiscover-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('autodiscover-mailcow');
+                  $logs = get_logs('autodiscover-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -922,10 +922,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('sogo-mailcow', $extra);
+                  $logs = get_logs('sogo-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('sogo-mailcow');
+                  $logs = get_logs('sogo-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -933,10 +933,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('mailcow-ui', $extra);
+                  $logs = get_logs('zynerone-ui', $extra);
                 }
                 else {
-                  $logs = get_logs('mailcow-ui');
+                  $logs = get_logs('zynerone-ui');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -955,10 +955,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('watchdog-mailcow', $extra);
+                  $logs = get_logs('watchdog-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('watchdog-mailcow');
+                  $logs = get_logs('watchdog-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -966,10 +966,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('acme-mailcow', $extra);
+                  $logs = get_logs('acme-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('acme-mailcow');
+                  $logs = get_logs('acme-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -977,10 +977,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('api-mailcow', $extra);
+                  $logs = get_logs('api-zynerone', $extra);
                 }
                 else {
-                  $logs = get_logs('api-mailcow');
+                  $logs = get_logs('api-zynerone');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -1506,7 +1506,7 @@ if (isset($_GET['query'])) {
             }
           break;
           case "status":
-            if ($_SESSION['mailcow_cc_role'] == "admin") {
+            if ($_SESSION['zynerone_cc_role'] == "admin") {
               switch ($object) {
                 case "containers":
                   $containers = (docker('info'));
@@ -1531,7 +1531,7 @@ if (isset($_GET['query'])) {
                 break;
                 case "vmail":
                   $exec_fields_vmail = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot-mailcow', 'exec', $exec_fields_vmail), true));
+                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields_vmail), true));
                   $temp = array(
                     'type' => 'info',
                     'disk' => $vmail_df[0],
@@ -1571,9 +1571,9 @@ if (isset($_GET['query'])) {
                     curl_setopt($curl, CURLOPT_POST, 0);
                     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
                     curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-                    curl_setopt($curl, CURLOPT_URL, 'http://ipv4.mailcow.email');
+                    curl_setopt($curl, CURLOPT_URL, 'http://ipv4.zyner.one');
                     $ipv4 = curl_exec($curl);
-                    curl_setopt($curl, CURLOPT_URL, 'http://ipv6.mailcow.email');
+                    curl_setopt($curl, CURLOPT_URL, 'http://ipv6.zyner.one');
                     $ipv6 = curl_exec($curl);
                     $ips = array(
                       "ipv4" => $ipv4,
@@ -1585,7 +1585,7 @@ if (isset($_GET['query'])) {
                 break;
                 case "version":
                   echo json_encode(array(
-                    'version' => $GLOBALS['MAILCOW_GIT_VERSION']
+                    'version' => $GLOBALS['ZYNERONE_GIT_VERSION']
                   ));
                 break;
               }
@@ -1604,7 +1604,7 @@ if (isset($_GET['query'])) {
       }
     break;
     case "delete":
-      if ($_SESSION['mailcow_cc_api_access'] == 'ro' || isset($_SESSION['pending_mailcow_cc_username']) || !isset($_SESSION["mailcow_cc_username"])) {
+      if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username']) || !isset($_SESSION["zynerone_cc_username"])) {
         http_response_code(403);
         echo json_encode(array(
             'type' => 'error',
@@ -1755,7 +1755,7 @@ if (isset($_GET['query'])) {
       }
     break;
     case "edit":
-      if ($_SESSION['mailcow_cc_api_access'] == 'ro' || isset($_SESSION['pending_mailcow_cc_username']) || !isset($_SESSION["mailcow_cc_username"])) {
+      if ($_SESSION['zynerone_cc_api_access'] == 'ro' || isset($_SESSION['pending_zynerone_cc_username']) || !isset($_SESSION["zynerone_cc_username"])) {
         http_response_code(403);
         echo json_encode(array(
             'type' => 'error',
@@ -1942,10 +1942,10 @@ if (isset($_GET['query'])) {
           process_edit_return(customize('edit', 'ip_check', $attr));
         break;
         case "self":
-          if ($_SESSION['mailcow_cc_role'] == "domainadmin") {
+          if ($_SESSION['zynerone_cc_role'] == "domainadmin") {
             process_edit_return(domain_admin('edit', $attr));
           }
-          elseif ($_SESSION['mailcow_cc_role'] == "user") {
+          elseif ($_SESSION['zynerone_cc_role'] == "user") {
             process_edit_return(edit_user_account($attr));
           }
         break;
@@ -1972,8 +1972,8 @@ if (isset($_GET['query'])) {
       exit();
   }
 }
-if ($_SESSION['mailcow_cc_api'] === true) {
-  if (isset($_SESSION['mailcow_cc_api']) && $_SESSION['mailcow_cc_api'] === true) {
+if ($_SESSION['zynerone_cc_api'] === true) {
+  if (isset($_SESSION['zynerone_cc_api']) && $_SESSION['zynerone_cc_api'] === true) {
     unset($_SESSION['return']);
   }
 }

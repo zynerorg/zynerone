@@ -69,7 +69,7 @@
               </tr>
             {% endfor %}
           {% endfor %}
-          {% for app in mailcow_apps %}
+          {% for app in zynerone_apps %}
             <tr>
               <td><input class="input-sm input-xs-lg form-control" value="{{ app.name }}" disabled></td>
               <td><input class="input-sm input-xs-lg form-control" value="{{ app.link }}" disabled></td>
@@ -87,11 +87,11 @@
         <form class="form" data-id="uitexts" role="form" method="post">
           <div class="mb-2">
             <label for="uitests_title_name">{{ lang.admin.title_name }}:</label>
-            <input type="text" class="form-control" id="uitests_title_name" name="title_name" placeholder="mailcow UI" value="{{ ui_texts.title_name|raw }}">
+            <input type="text" class="form-control" id="uitests_title_name" name="title_name" placeholder="Zyner One UI" value="{{ ui_texts.title_name|raw }}">
           </div>
           <div class="mb-2">
             <label for="uitests_main_name">{{ lang.admin.main_name }}:</label>
-            <input type="text" class="form-control" id="uitests_main_name" name="main_name" placeholder="mailcow UI" value="{{ ui_texts.main_name|raw }}">
+            <input type="text" class="form-control" id="uitests_main_name" name="main_name" placeholder="Zyner One UI" value="{{ ui_texts.main_name|raw }}">
           </div>
           <div class="mb-2">
             <label for="uitests_apps_name">{{ lang.admin.apps_name }}:</label>

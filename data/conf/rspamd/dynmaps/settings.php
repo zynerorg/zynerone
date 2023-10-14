@@ -86,7 +86,7 @@ function wl_by_sogo() {
         continue;
       }
       // Explicit from, no mime_from, no regex - envelope must match
-      // mailcow white and blacklists also cover mime_from
+      // zynerone white and blacklists also cover mime_from
       $rcpt[$row['user']][] = normalize_email($contact);
     }
   }
@@ -279,10 +279,10 @@ while ($row = array_shift($rows)) {
   }
 ?>
     apply "default" {
-      MAILCOW_WHITE = -999.0;
+      ZYNERONE_WHITE = -999.0;
     }
     symbols [
-      "MAILCOW_WHITE"
+      "ZYNERONE_WHITE"
     ]
   }
   whitelist_mime_<?=$username_sane;?> {
@@ -314,10 +314,10 @@ while ($row = array_shift($rows)) {
   }
 ?>
     apply "default" {
-      MAILCOW_WHITE = -999.0;
+      ZYNERONE_WHITE = -999.0;
     }
     symbols [
-      "MAILCOW_WHITE"
+      "ZYNERONE_WHITE"
     ]
   }
 <?php
@@ -367,10 +367,10 @@ while ($row = array_shift($rows)) {
   }
 ?>
     apply "default" {
-      MAILCOW_BLACK = 999.0;
+      ZYNERONE_BLACK = 999.0;
     }
     symbols [
-      "MAILCOW_BLACK"
+      "ZYNERONE_BLACK"
     ]
   }
   blacklist_header_<?=$username_sane;?> {
@@ -402,10 +402,10 @@ while ($row = array_shift($rows)) {
   }
 ?>
     apply "default" {
-      MAILCOW_BLACK = 999.0;
+      ZYNERONE_BLACK = 999.0;
     }
     symbols [
-      "MAILCOW_BLACK"
+      "ZYNERONE_BLACK"
     ]
   }
 <?php

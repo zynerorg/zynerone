@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (!isset($_SESSION['mailcow_cc_role'])) {
+if (!isset($_SESSION['zynerone_cc_role'])) {
   $_SESSION['oauth2_request'] = $_SERVER['REQUEST_URI'];
   header('Location: /?oauth');
 }
@@ -26,7 +26,7 @@ if (!isset($_POST['authorized'])) {
 
 // print the authorization code if the user has authorized your client
 $is_authorized = ($_POST['authorized'] == '1');
-$oauth2_server->handleAuthorizeRequest($request, $response, $is_authorized, $_SESSION['mailcow_cc_username']);
+$oauth2_server->handleAuthorizeRequest($request, $response, $is_authorized, $_SESSION['zynerone_cc_username']);
 if ($is_authorized) {
   unset($_SESSION['oauth2_request']);
   if ($GLOBALS['OAUTH2_FORGET_SESSION_AFTER_LOGIN'] === true) {

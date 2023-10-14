@@ -1,44 +1,47 @@
 version: '2.1'
 services:
-  unbound-mailcow:
+  unbound-zynerone:
     build: ./data/Dockerfiles/unbound
 
-  clamd-mailcow:
+  clamd-zynerone:
     build: ./data/Dockerfiles/clamd
 
-  rspamd-mailcow:
+  rspamd-zynerone:
     build: ./data/Dockerfiles/rspamd
 
-  php-fpm-mailcow:
+  php-fpm-zynerone:
     build: ./data/Dockerfiles/phpfpm
 
-  sogo-mailcow:
+  sogo-zynerone:
     build:
       context: ./data/Dockerfiles/sogo
       dockerfile: Dockerfile
       args:
         - SOGO_DEBIAN_REPOSITORY=http://packages.inverse.ca/SOGo/nightly/5/debian/
 
-  dovecot-mailcow:
+  dovecot-zynerone:
     build: ./data/Dockerfiles/dovecot
 
-  postfix-mailcow:
+  postfix-zynerone:
     build: ./data/Dockerfiles/postfix
 
-  acme-mailcow:
+  acme-zynerone:
     build: ./data/Dockerfiles/acme
 
-  netfilter-mailcow:
+  netfilter-zynerone:
     build: ./data/Dockerfiles/netfilter
 
-  watchdog-mailcow:
+  watchdog-zynerone:
     build: ./data/Dockerfiles/watchdog
 
-  dockerapi-mailcow:
+  dockerapi-zynerone:
     build: ./data/Dockerfiles/dockerapi
 
-  solr-mailcow:
+  solr-zynerone:
     build: ./data/Dockerfiles/solr
 
-  olefy-mailcow:
+  olefy-zynerone:
     build: ./data/Dockerfiles/olefy
+
+  api-zynerone:
+    build: ./data/Dockerfiles/api

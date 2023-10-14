@@ -7,7 +7,7 @@ while ! mysqladmin status --socket=/var/run/mysqld/mysqld.sock -u${DBUSER} -p${D
 done
 
 # Wait until port becomes free and send sig
-until ! nc -z sogo-mailcow 20000;
+until ! nc -z sogo-zynerone 20000;
 do
   killall -TERM sogod
   sleep 3
@@ -203,7 +203,7 @@ while read -r line gal
                     <key>type</key>
                     <string>sql</string>
                     <key>userPasswordAlgorithm</key>
-                    <string>${MAILCOW_PASS_SCHEME}</string>
+                    <string>${ZYNERONE_PASS_SCHEME}</string>
                     <key>prependPasswordScheme</key>
                     <string>YES</string>
                     <key>viewURL</key>

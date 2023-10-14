@@ -1,11 +1,12 @@
 <?php
-function relayhost($_action, $_data = null) {
+function relayhost($_action, $_data = null)
+{
   global $pdo;
   global $lang;
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -27,14 +28,15 @@ function relayhost($_action, $_data = null) {
       try {
         $stmt = $pdo->prepare("INSERT INTO `relayhosts` (`hostname`, `username` ,`password`, `active`)
           VALUES (:hostname, :username, :password, :active)");
-        $stmt->execute(array(
-          ':hostname' => $hostname,
-          ':username' => $username,
-          ':password' => str_replace(':', '\:', $password),
-          ':active' => '1'
-        ));
-      }
-      catch (PDOException $e) {
+        $stmt->execute(
+          array(
+            ':hostname' => $hostname,
+            ':username' => $username,
+            ':password' => str_replace(':', '\:', $password),
+            ':active' => '1'
+          )
+        );
+      } catch (PDOException $e) {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -45,11 +47,11 @@ function relayhost($_action, $_data = null) {
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data_log),
-        'msg' => array('relayhost_added', htmlspecialchars(implode(', ', (array)$hosts)))
+        'msg' => array('relayhost_added', htmlspecialchars(implode(', ', (array) $hosts)))
       );
-    break;
+      break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -57,16 +59,15 @@ function relayhost($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $is_now = relayhost('details', $id);
         if (!empty($is_now)) {
           $hostname = (!empty($_data['hostname'])) ? trim($_data['hostname']) : $is_now['hostname'];
           $username = (isset($_data['username'])) ? trim($_data['username']) : $is_now['username'];
           $password = (isset($_data['password'])) ? trim($_data['password']) : $is_now['password'];
-          $active   = (isset($_data['active'])) ? intval($_data['active']) : $is_now['active'];
-        }
-        else {
+          $active = (isset($_data['active'])) ? intval($_data['active']) : $is_now['active'];
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -81,15 +82,16 @@ function relayhost($_action, $_data = null) {
             `password` = :password,
             `active` = :active
               WHERE `id` = :id");
-          $stmt->execute(array(
-            ':id' => $id,
-            ':hostname' => $hostname,
-            ':username' => $username,
-            ':password' => $password,
-            ':active' => $active
-          ));
-        }
-        catch (PDOException $e) {
+          $stmt->execute(
+            array(
+              ':id' => $id,
+              ':hostname' => $hostname,
+              ':username' => $username,
+              ':password' => $password,
+              ':active' => $active
+            )
+          );
+        } catch (PDOException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -100,12 +102,12 @@ function relayhost($_action, $_data = null) {
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data_log),
-          'msg' => array('object_modified', htmlspecialchars(implode(', ', (array)$hostnames)))
+          'msg' => array('object_modified', htmlspecialchars(implode(', ', (array) $hostnames)))
         );
       }
-    break;
+      break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -113,15 +115,14 @@ function relayhost($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         try {
           $stmt = $pdo->prepare("DELETE FROM `relayhosts` WHERE `id`= :id");
           $stmt->execute(array(':id' => $id));
           $stmt = $pdo->prepare("UPDATE `domain` SET `relayhost` = '0' WHERE `relayhost`= :id");
           $stmt->execute(array(':id' => $id));
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -135,18 +136,18 @@ function relayhost($_action, $_data = null) {
           'msg' => array('relayhost_removed', htmlspecialchars($id))
         );
       }
-    break;
+      break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin" && $_SESSION['mailcow_cc_role'] != "domainadmin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin" && $_SESSION['zynerone_cc_role'] != "domainadmin") {
         return false;
       }
       $relayhosts = array();
       $stmt = $pdo->query("SELECT `id`, `hostname`, `username`, `active` FROM `relayhosts`");
       $relayhosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
       return $relayhosts;
-    break;
+      break;
     case 'details':
-      if ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       $relayhostdata = array();
@@ -173,16 +174,17 @@ function relayhost($_action, $_data = null) {
         $relayhostdata['used_by_mailboxes'] = $used_by_mailboxes;
       }
       return $relayhostdata;
-    break;
+      break;
   }
 }
-function transport($_action, $_data = null) {
+function transport($_action, $_data = null)
+{
   global $pdo;
   global $lang;
   $_data_log = $_data;
   switch ($_action) {
     case 'add':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -190,7 +192,7 @@ function transport($_action, $_data = null) {
         );
         return false;
       }
-      $destinations  = array_map('trim', preg_split( "/( |,|;|\n)/", $_data['destination']));
+      $destinations = array_map('trim', preg_split("/( |,|;|\n)/", $_data['destination']));
       $active = intval($_data['active']);
       $is_mx_based = intval($_data['is_mx_based']);
       $nexthop = trim($_data['nexthop']);
@@ -260,7 +262,9 @@ function transport($_action, $_data = null) {
         }
       }
       $destinations = array_filter(array_values(array_unique($destinations)));
-      if (empty($destinations)) { return false; }
+      if (empty($destinations)) {
+        return false;
+      }
       if (isset($next_hop_matches[1])) {
         if ($existing_nh !== null && in_array($next_hop_clean, $existing_nh)) {
           $_SESSION['return'][] = array(
@@ -270,8 +274,7 @@ function transport($_action, $_data = null) {
           );
           return false;
         }
-      }
-      else {
+      } else {
         foreach ($existing_clean_nh as $existing_clean_nh_each) {
           if ($existing_clean_nh_each[1] == $nexthop) {
             $_SESSION['return'][] = array(
@@ -286,32 +289,36 @@ function transport($_action, $_data = null) {
       foreach ($destinations as $insert_dest) {
         $stmt = $pdo->prepare("INSERT INTO `transports` (`nexthop`, `destination`, `is_mx_based`, `username` , `password`,  `active`)
           VALUES (:nexthop, :destination, :is_mx_based, :username, :password, :active)");
-        $stmt->execute(array(
-          ':nexthop' => $nexthop,
-          ':destination' => $insert_dest,
-          ':is_mx_based' => $is_mx_based,
-          ':username' => $username,
-          ':password' => str_replace(':', '\:', $password),
-          ':active' => $active
-        ));
+        $stmt->execute(
+          array(
+            ':nexthop' => $nexthop,
+            ':destination' => $insert_dest,
+            ':is_mx_based' => $is_mx_based,
+            ':username' => $username,
+            ':password' => str_replace(':', '\:', $password),
+            ':active' => $active
+          )
+        );
       }
       $stmt = $pdo->prepare("UPDATE `transports` SET
         `username` = :username,
         `password` = :password
           WHERE `nexthop` = :nexthop");
-      $stmt->execute(array(
-        ':nexthop' => $nexthop,
-        ':username' => $username,
-        ':password' => $password
-      ));
+      $stmt->execute(
+        array(
+          ':nexthop' => $nexthop,
+          ':username' => $username,
+          ':password' => $password
+        )
+      );
       $_SESSION['return'][] = array(
         'type' => 'success',
         'log' => array(__FUNCTION__, $_action, $_data_log),
-        'msg' => array('relayhost_added', htmlspecialchars(implode(', ', (array)$hosts)))
+        'msg' => array('relayhost_added', htmlspecialchars(implode(', ', (array) $hosts)))
       );
-    break;
+      break;
     case 'edit':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -319,7 +326,7 @@ function transport($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         $is_now = transport('details', $id);
         if (!empty($is_now)) {
@@ -328,9 +335,8 @@ function transport($_action, $_data = null) {
           $username = (isset($_data['username'])) ? trim($_data['username']) : $is_now['username'];
           $password = (isset($_data['password'])) ? trim($_data['password']) : $is_now['password'];
           $is_mx_based = (isset($_data['is_mx_based']) && $_data['is_mx_based'] != '') ? intval($_data['is_mx_based']) : $is_now['is_mx_based'];
-          $active   = (isset($_data['active']) && $_data['active'] != '') ? intval($_data['active']) : $is_now['active'];
-        }
-        else {
+          $active = (isset($_data['active']) && $_data['active'] != '') ? intval($_data['active']) : $is_now['active'];
+        } else {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -387,8 +393,7 @@ function transport($_action, $_data = null) {
             );
             return false;
           }
-        }
-        else {
+        } else {
           foreach ($existing_clean_nh as $existing_clean_nh_each) {
             if ($existing_clean_nh_each[1] == $nexthop) {
               $_SESSION['return'][] = array(
@@ -412,26 +417,29 @@ function transport($_action, $_data = null) {
             `password` = :password,
             `active` = :active
               WHERE `id` = :id");
-          $stmt->execute(array(
-            ':id' => $id,
-            ':destination' => $destination,
-            ':is_mx_based' => $is_mx_based,
-            ':nexthop' => $nexthop,
-            ':username' => $username,
-            ':password' => $password,
-            ':active' => $active
-          ));
+          $stmt->execute(
+            array(
+              ':id' => $id,
+              ':destination' => $destination,
+              ':is_mx_based' => $is_mx_based,
+              ':nexthop' => $nexthop,
+              ':username' => $username,
+              ':password' => $password,
+              ':active' => $active
+            )
+          );
           $stmt = $pdo->prepare("UPDATE `transports` SET
             `username` = :username,
             `password` = :password
               WHERE `nexthop` = :nexthop");
-          $stmt->execute(array(
-            ':nexthop' => $nexthop,
-            ':username' => $username,
-            ':password' => $password
-          ));
-        }
-        catch (PDOException $e) {
+          $stmt->execute(
+            array(
+              ':nexthop' => $nexthop,
+              ':username' => $username,
+              ':password' => $password
+            )
+          );
+        } catch (PDOException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -442,12 +450,12 @@ function transport($_action, $_data = null) {
         $_SESSION['return'][] = array(
           'type' => 'success',
           'log' => array(__FUNCTION__, $_action, $_data_log),
-          'msg' => array('object_modified', htmlspecialchars(implode(', ', (array)$hostnames)))
+          'msg' => array('object_modified', htmlspecialchars(implode(', ', (array) $hostnames)))
         );
       }
-    break;
+      break;
     case 'delete':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         $_SESSION['return'][] = array(
           'type' => 'danger',
           'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -455,13 +463,12 @@ function transport($_action, $_data = null) {
         );
         return false;
       }
-      $ids = (array)$_data['id'];
+      $ids = (array) $_data['id'];
       foreach ($ids as $id) {
         try {
           $stmt = $pdo->prepare("DELETE FROM `transports` WHERE `id`= :id");
           $stmt->execute(array(':id' => $id));
-        }
-        catch (PDOException $e) {
+        } catch (PDOException $e) {
           $_SESSION['return'][] = array(
             'type' => 'danger',
             'log' => array(__FUNCTION__, $_action, $_data_log),
@@ -475,18 +482,18 @@ function transport($_action, $_data = null) {
           'msg' => array('relayhost_removed', htmlspecialchars($id))
         );
       }
-    break;
+      break;
     case 'get':
-      if ($_SESSION['mailcow_cc_role'] != "admin") {
+      if ($_SESSION['zynerone_cc_role'] != "admin") {
         return false;
       }
       $transports = array();
       $stmt = $pdo->query("SELECT `id`, `is_mx_based`, `destination`, `nexthop`, `username` FROM `transports`");
       $transports = $stmt->fetchAll(PDO::FETCH_ASSOC);
       return $transports;
-    break;
+      break;
     case 'details':
-      if ($_SESSION['mailcow_cc_role'] != "admin" || !isset($_data)) {
+      if ($_SESSION['zynerone_cc_role'] != "admin" || !isset($_data)) {
         return false;
       }
       $transportdata = array();
@@ -503,6 +510,6 @@ function transport($_action, $_data = null) {
       $stmt->execute(array(':id' => $_data));
       $transportdata = $stmt->fetch(PDO::FETCH_ASSOC);
       return $transportdata;
-    break;
+      break;
   }
 }

@@ -25,31 +25,31 @@ if ($_SERVER['REQUEST_URI'] == '/') {
 
 $hash = $css_minifier->getDataHash();
 $CSSPath = '/tmp/' . $hash . '.css';
-if(!file_exists($CSSPath)) {
+if (!file_exists($CSSPath)) {
   $css_minifier->minify($CSSPath);
   cleanupCSS($hash);
 }
 
 $globalVariables = [
-  'mailcow_hostname' => getenv('MAILCOW_HOSTNAME'),
-  'mailcow_locale' => @$_SESSION['mailcow_locale'],
-  'mailcow_cc_role' => @$_SESSION['mailcow_cc_role'],
-  'mailcow_cc_username' => @$_SESSION['mailcow_cc_username'],
+  'zynerone_hostname' => getenv('ZYNERONE_HOSTNAME'),
+  'zynerone_locale' => @$_SESSION['zynerone_locale'],
+  'zynerone_cc_role' => @$_SESSION['zynerone_cc_role'],
+  'zynerone_cc_username' => @$_SESSION['zynerone_cc_username'],
   'is_master' => preg_match('/y|yes/i', getenv('MASTER')),
   'dual_login' => @$_SESSION['dual-login'],
   'ui_texts' => $UI_TEXTS,
-  'css_path' => '/cache/'.basename($CSSPath),
+  'css_path' => '/cache/' . basename($CSSPath),
   'logo' => customize('get', 'main_logo'),
   'logo_dark' => customize('get', 'main_logo_dark'),
   'available_languages' => $AVAILABLE_LANGUAGES,
   'lang' => $lang,
   'skip_sogo' => (getenv('SKIP_SOGO') == 'y'),
   'allow_admin_email_login' => (getenv('ALLOW_ADMIN_EMAIL_LOGIN') == 'n'),
-  'mailcow_apps' => $MAILCOW_APPS,
+  'zynerone_apps' => $ZYNERONE_APPS,
   'app_links' => customize('get', 'app_links'),
   'is_root_uri' => (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) == '/'),
   'uri' => $_SERVER['REQUEST_URI'],
-  'last_login' => last_login('get', $_SESSION['mailcow_cc_username'], 7, 0)['ui']['time']
+  'last_login' => last_login('get', $_SESSION['zynerone_cc_username'], 7, 0)['ui']['time']
 ];
 
 foreach ($globalVariables as $globalVariableName => $globalVariableValue) {
