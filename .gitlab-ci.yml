@@ -6,12 +6,20 @@ Matrix:
   image: alpine:latest
   parallel:
     matrix:
-      - CLOUD: 
-        - aws
-        - azure
-        - gcp
-        ARCH:
-        - kubernetes
-        - service-mesh
+      - images: 
+          - "acme-zynerone"
+          - "clamd-zynerone"
+          - "dockerapi-zynerone"
+          - "dovecot-zynerone"
+          - "netfilter-zynerone"
+          - "olefy-zynerone"
+          - "php-fpm-zynerone"
+          - "postfix-zynerone"
+          - "rspamd-zynerone"
+          - "sogo-zynerone"
+          - "solr-zynerone"
+          - "unbound-zynerone"
+          - "watchdog-zynerone"
+          - "api-zynerone"
   script:
-  - echo "Hello from $ARCH from $CLOUD"
+  - echo "Hello from $images"
