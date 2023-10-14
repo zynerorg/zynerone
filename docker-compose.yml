@@ -2,7 +2,7 @@ version: '2.1'
 services:
 
     unbound-zynerone:
-      image: zyner/unbound:1.19
+      image: registry.zyner.org/zyner/zynerone/unbound:1.19
       environment:
         - TZ=${TZ}
       volumes:
@@ -58,8 +58,8 @@ services:
           aliases:
             - redis
 
-    clamd-zynerone:
-      image: zyner/clamd:1.64
+clamd-zynerone:
+      image: registry.zyner.org/zyner/zynerone/clamd:1.64
       restart: always
       depends_on:
         unbound-zynerone:
@@ -78,7 +78,7 @@ services:
             - clamd
 
     rspamd-zynerone:
-      image: zyner/rspamd:1.93
+      image: registry.zyner.org/zyner/zynerone/rspamd:1.93
       stop_grace_period: 30s
       depends_on:
         - dovecot-zynerone
@@ -108,7 +108,7 @@ services:
             - rspamd
 
     php-fpm-zynerone:
-      image: zyner/phpfpm:1.86
+      image: registry.zyner.org/zyner/zynerone/phpfpm:1.86
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
         - redis-zynerone
@@ -172,7 +172,7 @@ services:
             - phpfpm
 
     sogo-zynerone:
-      image: zyner/sogo:1.120
+      image: registry.zyner.org/zyner/zynerone/sogo:1.120
       environment:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
@@ -219,7 +219,7 @@ services:
             - sogo
 
     dovecot-zynerone:
-      image: zyner/dovecot:1.26
+      image: registry.zyner.org/zyner/zynerone/dovecot:1.26
       depends_on:
         - mariadb-zynerone
       dns:
@@ -299,7 +299,7 @@ services:
             - dovecot
 
     postfix-zynerone:
-      image: zyner/postfix:1.73
+      image: registry.zyner.org/zyner/zynerone/postfix:1.73
       depends_on:
         mariadb-zynerone:
           condition: service_started
@@ -399,7 +399,7 @@ services:
           condition: service_started
         unbound-zynerone:
           condition: service_healthy
-      image: zyner/acme:1.86
+      image: registry.zyner.org/zyner/zynerone/acme:1.86
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
@@ -435,7 +435,7 @@ services:
             - acme
 
     netfilter-zynerone:
-      image: zyner/netfilter:1.53
+      image: registry.zyner.org/zyner/zynerone/netfilter:1.53
       stop_grace_period: 30s
       depends_on:
         - dovecot-zynerone
@@ -458,7 +458,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
     watchdog-zynerone:
-      image: zyner/watchdog:1.99
+      image: registry.zyner.org/zyner/zynerone/watchdog:1.99
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       tmpfs:
@@ -527,7 +527,7 @@ services:
             - watchdog
 
     dockerapi-zynerone:
-      image: zyner/dockerapi:2.06
+      image: registry.zyner.org/zyner/zynerone/dockerapi:2.06
       security_opt:
         - label=disable
       restart: always
@@ -546,7 +546,7 @@ services:
             - dockerapi
 
     solr-zynerone:
-      image: zyner/solr:1.8.2
+      image: registry.zyner.org/zyner/zynerone/solr:1.8.2
       restart: always
       volumes:
         - solr-vol-1:/opt/solr/server/solr/dovecot-fts/data
@@ -562,7 +562,7 @@ services:
             - solr
 
     olefy-zynerone:
-      image: zyner/olefy:1.12
+      image: registry.zyner.org/zyner/zynerone/olefy:1.12
       restart: always
       environment:
         - TZ=${TZ}
@@ -630,7 +630,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
     api-zynerone:
-      image: zyner/api:1.0
+      image: registry.zyner.org/zyner/zynerone/api:1.0
       restart: always
       ports:
         - "${API_PORT:-127.0.0.1:8080}:8080"
