@@ -22,6 +22,7 @@ Matrix:
           - "watchdog-zynerone"
           - "api-zynerone"
   script:
+    - apt update
     - apt install -y curl
     - curl -sSL https://get.docker.com/ | CHANNEL=stable sudo sh
     - service docker start
