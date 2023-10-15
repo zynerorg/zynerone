@@ -205,7 +205,7 @@ for vol in $(docker volume ls -qf name="${CMPS_PRJ}"); do
     -p ${REMOTE_SSH_PORT} \
     mkdir -p "${mountpoint}"
 
-  if [[ "${vol}" =~ "mysql-vol-1" ]]; then
+  if [[ "${vol}" =~ "mariadb-vol-1" ]]; then
 
     # Make sure a previous backup does not exist
     rm -rf "${SCRIPT_DIR}/../_tmp_mariabackup/"
@@ -213,7 +213,7 @@ for vol in $(docker volume ls -qf name="${CMPS_PRJ}"); do
     echo -e "\033[1mCreating consistent backup of MariaDB volume...\033[0m"
     if ! docker run --rm \
       --network $(docker network ls -qf name=${CMPS_PRJ}_) \
-      -v $(docker volume ls -qf name=${CMPS_PRJ}_mysql-vol-1):/var/lib/mysql/:ro \
+      -v $(docker volume ls -qf name=${CMPS_PRJ}_mariadb-vol-1):/var/lib/mysql/:ro \
       --entrypoint= \
       -v "${SCRIPT_DIR}/../_tmp_mariabackup":/backup \
       ${SQLIMAGE} mariabackup --host mysql --user root --password ${DBROOT} --backup --target-dir=/backup 2>/dev/null ; then

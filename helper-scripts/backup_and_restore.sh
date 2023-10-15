@@ -145,7 +145,7 @@ function backup() {
         echo "Using SQL image ${SQLIMAGE}, starting..."
         docker run --name zynerone-backup --rm \
           --network $(docker network ls -qf name=^${CMPS_PRJ}_zynerone-network$) \
-          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:ro,z \
+          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mariadb-vol-1$):/var/lib/mysql/:ro,z \
           -t --entrypoint= \
           --sysctl net.ipv6.conf.all.disable_ipv6=1 \
           -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
@@ -270,14 +270,14 @@ function restore() {
         #docker stop $(docker ps -qf name=mariadb-zynerone)
         if [[ -d "${RESTORE_LOCATION}/mysql" ]]; then
         docker run --name zynerone-backup --rm \
-          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:rw,z \
+          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mariadb-vol-1$):/var/lib/mysql/:rw,z \
           --entrypoint= \
           -v ${RESTORE_LOCATION}/mysql:/backup:z \
           ${SQLIMAGE} /bin/bash -c "shopt -s dotglob ; /bin/rm -rf /var/lib/mysql/* ; rsync -avh --usermap=root:mysql --groupmap=root:mysql /backup/ /var/lib/mysql/"
         elif [[ -f "${RESTORE_LOCATION}/backup_mysql.gz" ]]; then
         docker run \
           -it --name zynerone-backup --rm \
-          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/var/lib/mysql/:z \
+          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mariadb-vol-1$):/var/lib/mysql/:z \
           --entrypoint= \
           -u mysql \
           -v ${RESTORE_LOCATION}:/backup:z \
@@ -288,7 +288,7 @@ function restore() {
           mysql -uroot -e SHUTDOWN;"
         elif [[ -f "${RESTORE_LOCATION}/backup_mariadb.tar.gz" ]]; then
         docker run --name zynerone-backup --rm \
-          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mysql-vol-1$):/backup_mariadb/:rw,z \
+          -v $(docker volume ls -qf name=^${CMPS_PRJ}_mariadb-vol-1$):/backup_mariadb/:rw,z \
           --entrypoint= \
           -v ${RESTORE_LOCATION}:/backup:z \
           ${SQLIMAGE} /bin/bash -c "shopt -s dotglob ; \
