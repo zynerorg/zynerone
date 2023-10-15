@@ -640,7 +640,8 @@ services:
         - MYSQL_USER=${DBUSER}
         - MYSQL_PASSWORD=${DBPASS}
         - REDIS_PORT=${REDIS_PORT:-redis-zynerone:7654}
-        - SQL_PORT= ${SQL_PORT:-mariadb-zynerone:13306}
+        - SQL_PORT=${SQL_PORT:-mariadb-zynerone:13306}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
       networks:
