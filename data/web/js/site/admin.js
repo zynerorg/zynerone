@@ -712,9 +712,9 @@ jQuery(function($){
       cols = '<td><input class="input-sm input-xs-lg form-control" data-id="app_links" type="text" name="app" required></td>';
       cols += '<td><input class="input-sm input-xs-lg form-control" data-id="app_links" type="text" name="href" required></td>';
       cols += '<td><a href="#" role="button" class="btn btn-sm btn-xs-lg btn-secondary h-100 w-100" type="button">' + lang.remove_row + '</a></td>';
-    } else if (type == "f2b_regex") {
-      cols = '<td><input style="text-align:center" class="input-sm input-xs-lg form-control" data-id="f2b_regex" type="text" value="+" disabled></td>';
-      cols += '<td><input class="input-sm input-xs-lg form-control regex-input" data-id="f2b_regex" type="text" name="regex" required></td>';
+    } else if (type == "netfilter_regex") {
+      cols = '<td><input style="text-align:center" class="input-sm input-xs-lg form-control" data-id="netfilter_regex" type="text" value="+" disabled></td>';
+      cols += '<td><input class="input-sm input-xs-lg form-control regex-input" data-id="netfilter_regex" type="text" name="regex" required></td>';
       cols += '<td><a href="#" role="button" class="btn btn-sm btn-xs-lg btn-secondary h-100 w-100" type="button">' + lang.remove_row + '</a></td>';
     }
     row.append(cols);
@@ -724,14 +724,14 @@ jQuery(function($){
     e.preventDefault();
     $(this).parents('tr').remove();
   });
-  $('#f2b_regex_table').on('click', 'tr a', function (e) {
+  $('#netfilter_regex_table').on('click', 'tr a', function (e) {
     e.preventDefault();
     $(this).parents('tr').remove();
   });
   $('#add_app_link_row').click(function() {
     add_table_row($('#app_link_table'), "app_link");
   });
-  $('#add_f2b_regex_row').click(function() {
-    add_table_row($('#f2b_regex_table'), "f2b_regex");
+  $('#add_netfilter_regex_row').click(function() {
+    add_table_row($('#netfilter_regex_table'), "netfilter_regex");
   });
 });

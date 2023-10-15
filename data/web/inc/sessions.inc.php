@@ -65,7 +65,7 @@ if (!empty($_SERVER['HTTP_X_API_KEY'])) {
         $_SESSION['zynerone_cc_api_access'] = 'ro';
       }
     } else {
-      $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for API_USER by " . $_SERVER['REMOTE_ADDR']);
+      $redis->publish("NETFILTER_CHANNEL", "Zyner One UI: Invalid password for API_USER by " . $_SERVER['REMOTE_ADDR']);
       error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
       http_response_code(401);
       echo json_encode(
@@ -78,7 +78,7 @@ if (!empty($_SERVER['HTTP_X_API_KEY'])) {
       exit();
     }
   } else {
-    $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for API_USER by " . $_SERVER['REMOTE_ADDR']);
+    $redis->publish("NETFILTER_CHANNEL", "Zyner One UI: Invalid password for API_USER by " . $_SERVER['REMOTE_ADDR']);
     error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
     http_response_code(401);
     echo json_encode(

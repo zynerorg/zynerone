@@ -14,7 +14,7 @@ Some of the PHP variables are stored here: https://github.com/ZynerOrg/zynerone/
   - [ ] [dkim](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.dkim.inc.php)
   - [ ] [docker](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.docker.inc.php)
   - [ ] [domain_admin](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.domain_admin.inc.php)
-  - [ ] [netfilter](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.fail2ban.inc.php)
+  - [ ] [netfilter](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.netfilter.inc.php)
   - [ ] [fwdhost](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.fwdhost.inc.php)
   - [x] [mailbox](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.mailbox.inc.php)
   - [ ] [mailq](https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.mailq.inc.php)
@@ -199,7 +199,7 @@ Endpoints:
   - [ ] SPF Validation (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/spf.inc.php)
   - [ ] Validate Sieve filters in backend (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/ajax/sieve_validation.php)
 - [ ] Security Endpoints
-  - [ ] Netfilter (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.fail2ban.inc.php)
+  - [ ] Netfilter (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.netfilter.inc.php)
   - [ ] Admin Users (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.admin.inc.php)
   - [ ] ACL (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.acl.inc.php)
   - [ ] Domain Admin Users (https://github.com/ZynerOrg/zynerone/blob/master/data/web/inc/functions.domain_admin.inc.php)

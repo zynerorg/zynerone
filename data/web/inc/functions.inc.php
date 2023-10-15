@@ -989,11 +989,11 @@ function check_login($user, $pass, $app_passwd_data = false)
 
   if (!isset($_SESSION['ldelay'])) {
     $_SESSION['ldelay'] = "0";
-    $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
+    $redis->publish("NETFILTER_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
     error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
   } elseif (!isset($_SESSION['zynerone_cc_username'])) {
     $_SESSION['ldelay'] = $_SESSION['ldelay'] + 0.5;
-    $redis->publish("F2B_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
+    $redis->publish("NETFILTER_CHANNEL", "Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
     error_log("Zyner One UI: Invalid password for " . $user . " by " . $_SERVER['REMOTE_ADDR']);
   }
 
