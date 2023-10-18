@@ -109,9 +109,9 @@
         </li>
         {% endif %}
         {% if not dual_login and zynerone_cc_username %}
-        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }}</b> <i class="bi bi-power ms-2"></i></a></li>
+        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }}</b> <i class="bi bi-box-arrow-right ms-2"></i></a></li>
         {% elseif dual_login %}
-        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }} <span class="text-info">({{ dual_login.username }})</span> </b><i class="bi bi-power ms-2"></i></a></li>
+        <li class="logged-in-as nav-item"><a href="#" onclick="logout.submit()" class="nav-link"><b class="username-lia">{{ zynerone_cc_username }} <span class="text-info">({{ dual_login.username }})</span> </b><i class="bi bi-box-arrow-right ms-2"></i></a></li>
         {% endif %}
         {% if not is_master %}
         <li class="text-warning slave-info nav-item">[ slave ]</li>
