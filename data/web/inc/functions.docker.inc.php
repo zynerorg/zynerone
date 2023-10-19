@@ -9,7 +9,7 @@ function docker($action, $service_name = null, $attr1 = null, $attr2 = null, $ex
   curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
   switch($action) {
     case 'get_id':
-      curl_setopt($curl, CURLOPT_URL, 'https://dockerapi:443/containers/json');
+      curl_setopt($curl, CURLOPT_URL, 'http://api:8080/api/v1/system/containers');
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($curl, CURLOPT_POST, 0);
       curl_setopt($curl, CURLOPT_TIMEOUT, $DOCKER_TIMEOUT);
@@ -35,7 +35,7 @@ function docker($action, $service_name = null, $attr1 = null, $attr2 = null, $ex
       return false;
     break;
     case 'containers':
-      curl_setopt($curl, CURLOPT_URL, 'https://dockerapi:443/containers/json');
+      curl_setopt($curl, CURLOPT_URL, 'http://api:8080/api/v1/system/containers');
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($curl, CURLOPT_POST, 0);
       curl_setopt($curl, CURLOPT_TIMEOUT, $DOCKER_TIMEOUT);
@@ -63,7 +63,7 @@ function docker($action, $service_name = null, $attr1 = null, $attr2 = null, $ex
     break;
     case 'info':
       if (empty($service_name)) {
-        curl_setopt($curl, CURLOPT_URL, 'https://dockerapi:443/containers/json');
+        curl_setopt($curl, CURLOPT_URL, 'http://api:8080/api/v1/system/containers');
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_POST, 0);
         curl_setopt($curl, CURLOPT_TIMEOUT, $DOCKER_TIMEOUT);
