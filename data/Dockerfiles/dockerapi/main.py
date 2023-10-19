@@ -62,23 +62,6 @@ async def get_container(container_id : str):
     }
     return Response(content=json.dumps(res, indent=4), media_type="application/json")
 
-@app.get("/containers/json")
-async def get_containers():
-  global dockerapi
-
-  containers = {}
-  try:
-    for container in (await dockerapi.async_docker_client.containers.list()):
-      container_info = await container.show()
-      containers.update({container_info['Id']: container_info})
-    return Response(content=json.dumps(containers, indent=4), media_type="application/json")
-  except Exception as e:
-    res = {
-      "type": "danger",
-      "msg": str(e)
-    }
-    return Response(content=json.dumps(res, indent=4), media_type="application/json")
-
 @app.post("/containers/{container_id}/{post_action}")
 async def post_containers(container_id : str, post_action : str, request: Request):
   global dockerapi
