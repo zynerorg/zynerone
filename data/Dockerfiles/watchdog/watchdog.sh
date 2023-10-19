@@ -167,7 +167,7 @@ get_container_ip() {
     else
       sleep 0.5
       # get long container id for exact match
-      CONTAINER_ID=($(curl --silent --insecure https://dockerapi/containers/json | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring == \"${1}\") | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id"))
+      CONTAINER_ID=($(curl --silent http://api:8080/api/v1/system/containers | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring == \"${1}\") | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id"))
       # returned id can have multiple elements (if scaled), shuffle for random test
       CONTAINER_ID=($(printf "%s\n" "${CONTAINER_ID[@]}" | shuf))
       if [[ ! -z ${CONTAINER_ID} ]]; then
@@ -1020,7 +1020,7 @@ while true; do
   elif [[ ${com_pipe_answer} =~ .+-zynerone ]]; then
     kill -STOP ${BACKGROUND_TASKS[*]}
     sleep 10
-    CONTAINER_ID=$(curl --silent --insecure https://dockerapi/containers/json | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring | contains(\"${com_pipe_answer}\")) | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id")
+    CONTAINER_ID=$(curl --silent http://api:8080/api/v1/system/containers | jq -r ".[] | {name: .Config.Labels[\"com.docker.compose.service\"], project: .Config.Labels[\"com.docker.compose.project\"], id: .Id}" | jq -rc "select( .name | tostring | contains(\"${com_pipe_answer}\")) | select( .project | tostring | contains(\"${COMPOSE_PROJECT_NAME,,}\")) | .id")
     if [[ ! -z ${CONTAINER_ID} ]]; then
       if [[ "${com_pipe_answer}" == "php-fpm-zynerone" ]]; then
         HAS_INITDB=$(curl --silent --insecure -XPOST https://dockerapi/containers/${CONTAINER_ID}/top | jq '.msg.Processes[] | contains(["php -c /usr/local/etc/php -f /web/inc/init_db.inc.php"])' | grep true)
