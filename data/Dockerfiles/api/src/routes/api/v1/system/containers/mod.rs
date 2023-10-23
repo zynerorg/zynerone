@@ -59,6 +59,18 @@ async fn restart(data: &State<Data>, container: &str) -> Value {
 
     serde_json::from_str("{\"type\": \"success\", \"msg\": \"command completed successfully\"}").unwrap()
 }
+
+#[get("/<container>")]
+async fn get_specific(data: &State<Data>, container: &str) -> Value {
+    let url = Uri::new("/var/run/docker.sock", &format!("/containers/{}/json", container)).into();   
+
+    let response = data.docker.get(url).await.unwrap();
+
+    let buf = hyper::body::to_bytes(response).await.unwrap();
+    let res_json_str = std::str::from_utf8(&buf).unwrap();
+    let res_data: Value = serde_json::from_str(res_json_str).unwrap();
+    serde_json::to_value(res_data).unwrap()
+}
 #[get("/")]
 async fn get(data: &State<Data>) -> Value {
     let url = Uri::new("/var/run/docker.sock", "/containers/json?all=true").into();   
@@ -95,5 +107,5 @@ async fn get(data: &State<Data>) -> Value {
 }
 
 pub fn routes(rocket: Rocket<Build>, base_url: &str) -> Rocket<Build> {
-    rocket.mount(route_url!(base_url, "/containers"), routes![get, start, stop, restart])
+    rocket.mount(route_url!(base_url, "/containers"), routes![get, get_specific, start, stop, restart])
 }
