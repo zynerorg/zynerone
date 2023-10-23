@@ -123,7 +123,7 @@ function docker($action, $service_name = null, $attr1 = null, $attr2 = null, $ex
       if (!empty($attr1)) {
         $container_id = docker('get_id', $service_name);
         if (ctype_xdigit($container_id) && ctype_alnum($attr1)) {
-          curl_setopt($curl, CURLOPT_URL, 'https://dockerapi:443/containers/' . $container_id . '/' . $attr1);
+          curl_setopt($curl, CURLOPT_URL, 'http://api:8080/api/v1/system/containers/' . $container_id . '/' . $attr1);
           curl_setopt($curl, CURLOPT_POST, 1);
           curl_setopt($curl, CURLOPT_TIMEOUT, $DOCKER_TIMEOUT);
           if (!empty($attr2)) {
