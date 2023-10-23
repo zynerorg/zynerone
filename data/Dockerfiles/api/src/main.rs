@@ -1,6 +1,7 @@
 mod structs;
 mod routes;
 mod helpers;
+mod macros;
 
 use rocket::{
     Build,
