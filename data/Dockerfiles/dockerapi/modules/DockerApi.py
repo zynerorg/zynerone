@@ -19,42 +19,6 @@ class DockerApi:
     self.host_stats_isUpdating = False
     self.containerIds_to_update = []
 
-  # api call: container_post - post_action: stop
-  def container_post__stop(self, request_json, **kwargs):
-    if 'container_id' in kwargs:
-      filters = {"id": kwargs['container_id']}
-    elif 'container_name' in kwargs:
-      filters = {"name": kwargs['container_name']}
-
-    for container in self.sync_docker_client.containers.list(all=True, filters=filters):
-      container.stop()
-
-    res = { 'type': 'success', 'msg': 'command completed successfully'}
-    return Response(content=json.dumps(res, indent=4), media_type="application/json")
-  # api call: container_post - post_action: start
-  def container_post__start(self, request_json, **kwargs):
-    if 'container_id' in kwargs:
-      filters = {"id": kwargs['container_id']}
-    elif 'container_name' in kwargs:
-      filters = {"name": kwargs['container_name']}
-
-    for container in self.sync_docker_client.containers.list(all=True, filters=filters):
-      container.start()
-
-    res = { 'type': 'success', 'msg': 'command completed successfully'}
-    return Response(content=json.dumps(res, indent=4), media_type="application/json")
-  # api call: container_post - post_action: restart
-  def container_post__restart(self, request_json, **kwargs):
-    if 'container_id' in kwargs:
-      filters = {"id": kwargs['container_id']}
-    elif 'container_name' in kwargs:
-      filters = {"name": kwargs['container_name']}
-
-    for container in self.sync_docker_client.containers.list(all=True, filters=filters):
-      container.restart()
-
-    res = { 'type': 'success', 'msg': 'command completed successfully'}
-    return Response(content=json.dumps(res, indent=4), media_type="application/json")
   # api call: container_post - post_action: top
   def container_post__top(self, request_json, **kwargs):
     if 'container_id' in kwargs:
