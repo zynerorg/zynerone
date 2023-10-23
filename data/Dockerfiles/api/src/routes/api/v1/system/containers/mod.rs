@@ -8,6 +8,7 @@ use serde_json::Value;
 use futures::future;
 use crate::helpers;
 use crate::structs::Data;
+use crate::route_url;
 
 #[get("/")]
 async fn get(data: &State<Data>) -> Value {
@@ -45,5 +46,5 @@ async fn get(data: &State<Data>) -> Value {
 }
 
 pub fn routes(rocket: Rocket<Build>, base_url: &str) -> Rocket<Build> {
-    rocket.mount(format!("{}/{}", base_url, "containers"), routes![get])
+    rocket.mount(route_url!(base_url, "/containers"), routes![get])
 }
