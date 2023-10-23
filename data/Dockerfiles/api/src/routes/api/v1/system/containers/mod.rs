@@ -30,9 +30,38 @@ async fn start(data: &State<Data>, container: &str) -> Value {
     serde_json::from_str("{\"type\": \"success\", \"msg\": \"command completed successfully\"}").unwrap()
 }
 
+#[post("/<container>/stop")]
+async fn stop(data: &State<Data>, container: &str) -> Value {
+
+    let url = Uri::new("/var/run/docker.sock", &format!("/containers/{}/stop", container));
+
+    let req = Request::builder()
+        .method(Method::POST)
+        .uri(url)
+        .body(Body::empty())
+        .expect("request builder");
+    let response = data.docker.request(req).await.unwrap();
+
+    serde_json::from_str("{\"type\": \"success\", \"msg\": \"command completed successfully\"}").unwrap()
+}
+
+#[post("/<container>/restart")]
+async fn restart(data: &State<Data>, container: &str) -> Value {
+
+    let url = Uri::new("/var/run/docker.sock", &format!("/containers/{}/restart", container));
+
+    let req = Request::builder()
+        .method(Method::POST)
+        .uri(url)
+        .body(Body::empty())
+        .expect("request builder");
+    let response = data.docker.request(req).await.unwrap();
+
+    serde_json::from_str("{\"type\": \"success\", \"msg\": \"command completed successfully\"}").unwrap()
+}
 #[get("/")]
 async fn get(data: &State<Data>) -> Value {
-    let url = Uri::new("/var/run/docker.sock", "/containers/json").into();   
+    let url = Uri::new("/var/run/docker.sock", "/containers/json?all=true").into();   
 
     let response = data.docker.get(url).await.unwrap();
 
@@ -66,5 +95,5 @@ async fn get(data: &State<Data>) -> Value {
 }
 
 pub fn routes(rocket: Rocket<Build>, base_url: &str) -> Rocket<Build> {
-    rocket.mount(route_url!(base_url, "/containers"), routes![get, start])
+    rocket.mount(route_url!(base_url, "/containers"), routes![get, start, stop, restart])
 }
