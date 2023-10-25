@@ -30,7 +30,6 @@ struct CreateExec {
 struct StartExec {
     Detach: bool,
     Tty: bool,
-    ConsoleSize: Vec<i32>
 }
 
 pub async fn container_exec(client: &Client<UnixConnector>, container: &str, command: Vec<String>, env: Option<Vec<String>>) -> Result<String, Box<dyn Error>> {
@@ -41,7 +40,7 @@ pub async fn container_exec(client: &Client<UnixConnector>, container: &str, com
 	AttachStdout: true,
 	AttachStderr: true,
 	DetachKeys: "ctrl-p,ctrl-q",
-	Tty: false,
+	Tty: true,
 	Cmd: command,
 	Env: env.unwrap_or([].to_vec()),
     };
@@ -67,11 +66,7 @@ pub async fn container_exec(client: &Client<UnixConnector>, container: &str, com
     let url = Uri::new("/var/run/docker.sock", &format!("/exec/{}/start", id.unwrap().to_string().replace("\"", "")));
     let start_exec = StartExec {
 	Detach: false,
-	Tty: false,
-	ConsoleSize: [
-	    80,
-	    64
-	].to_vec()
+	Tty: true,
     };
     let req_body_str = serde_json::to_string(&start_exec).unwrap();
     // println!("{}", req_body_str);
