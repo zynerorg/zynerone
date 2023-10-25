@@ -2,6 +2,7 @@ mod structs;
 mod routes;
 mod helpers;
 mod macros;
+mod docker_api;
 
 use rocket::{
     Build,
