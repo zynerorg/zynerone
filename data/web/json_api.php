@@ -867,10 +867,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('dovecot-zynerone', $extra);
+                  $logs = get_logs('dovecot', $extra);
                 }
                 else {
-                  $logs = get_logs('dovecot-zynerone');
+                  $logs = get_logs('dovecot');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -889,10 +889,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('netfilter-zynerone', $extra);
+                  $logs = get_logs('netfilter', $extra);
                 }
                 else {
-                  $logs = get_logs('netfilter-zynerone');
+                  $logs = get_logs('netfilter');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -900,10 +900,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('postfix-zynerone', $extra);
+                  $logs = get_logs('postfix', $extra);
                 }
                 else {
-                  $logs = get_logs('postfix-zynerone');
+                  $logs = get_logs('postfix');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -911,10 +911,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('autodiscover-zynerone', $extra);
+                  $logs = get_logs('autodiscover', $extra);
                 }
                 else {
-                  $logs = get_logs('autodiscover-zynerone');
+                  $logs = get_logs('autodiscover');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -922,10 +922,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('sogo-zynerone', $extra);
+                  $logs = get_logs('sogo', $extra);
                 }
                 else {
-                  $logs = get_logs('sogo-zynerone');
+                  $logs = get_logs('sogo');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -955,10 +955,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('watchdog-zynerone', $extra);
+                  $logs = get_logs('watchdog', $extra);
                 }
                 else {
-                  $logs = get_logs('watchdog-zynerone');
+                  $logs = get_logs('watchdog');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -966,10 +966,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('acme-zynerone', $extra);
+                  $logs = get_logs('acme', $extra);
                 }
                 else {
-                  $logs = get_logs('acme-zynerone');
+                  $logs = get_logs('acme');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -977,10 +977,10 @@ if (isset($_GET['query'])) {
                 // 0 is first record, so empty is fine
                 if (isset($extra)) {
                   $extra = preg_replace('/[^\d\-]/i', '', $extra);
-                  $logs = get_logs('api-zynerone', $extra);
+                  $logs = get_logs('api', $extra);
                 }
                 else {
-                  $logs = get_logs('api-zynerone');
+                  $logs = get_logs('api');
                 }
                 echo (isset($logs) && !empty($logs)) ? json_encode($logs, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) : '{}';
               break;
@@ -1531,7 +1531,7 @@ if (isset($_GET['query'])) {
                 break;
                 case "vmail":
                   $exec_fields_vmail = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields_vmail), true));
+                  $vmail_df = explode(',', json_decode(docker('post', 'dovecot', 'exec', $exec_fields_vmail), true));
                   $temp = array(
                     'type' => 'info',
                     'disk' => $vmail_df[0],

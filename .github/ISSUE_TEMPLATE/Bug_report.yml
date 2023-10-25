@@ -151,7 +151,7 @@ body:
   - type: textarea
     attributes:
       label: "DNS check:"
-      description: "#### Output of `docker exec -it $(docker ps -qf name=acme-zynerone) dig +short stackoverflow.com @172.22.1.254` (set the IP accordingly, if you changed the internal zynerone network)"
+      description: "#### Output of `docker exec -it $(docker ps -qf name=acme) dig +short stackoverflow.com @172.22.1.254` (set the IP accordingly, if you changed the internal zynerone network)"
       render: plain text
     validations:
       required: true

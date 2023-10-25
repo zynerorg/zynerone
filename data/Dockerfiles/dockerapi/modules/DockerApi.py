@@ -179,20 +179,6 @@ class DockerApi:
         else:
           res = { 'type': 'warning', 'msg': 'fts_rescan error'}
           return Response(content=json.dumps(res, indent=4), media_type="application/json")
-  # api call: container_post - post_action: exec - cmd: system - task: df
-  def container_post__exec__system__df(self, request_json, **kwargs):
-    if 'container_id' in kwargs:
-      filters = {"id": kwargs['container_id']}
-    elif 'container_name' in kwargs:
-      filters = {"name": kwargs['container_name']}
-
-    if 'dir' in request_json:
-      for container in self.sync_docker_client.containers.list(filters=filters):
-        df_return = container.exec_run(["/bin/bash", "-c", "/bin/df -H '" + request_json['dir'].replace("'", "'\\''") + "' | /usr/bin/tail -n1 | /usr/bin/tr -s [:blank:] | /usr/bin/tr ' ' ','"], user='nobody')
-        if df_return.exit_code == 0:
-          return df_return.output.decode('utf-8').rstrip()
-        else:
-          return "0,0,0,0,0,0"
   # api call: container_post - post_action: exec - cmd: system - task: mysql_upgrade
   def container_post__exec__system__mysql_upgrade(self, request_json, **kwargs):
     if 'container_id' in kwargs:

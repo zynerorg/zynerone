@@ -292,7 +292,7 @@
         "rspamd_global_filters": "Mapa globálních filtrů",
         "rspamd_global_filters_agree": "Budu opatrný!",
         "rspamd_global_filters_info": "Mapa globálních filtrů obsahuje jiné globální black- a whitelisty.",
-        "rspamd_global_filters_regex": "Názvy jsou dostatečným vysvětlením. Musí obsahovat jen platné regulární výrazy ve formátu \"/vyraz/parametry\" (e.g. <code>/.+@domena\\.tld/i</code>).<br>\r\n  Každý výraz bude podroben základní kontrole, přesto je možné Rspamd 'rozbít', nebude-li syntax zcela korektní.<br>\r\n  Rspamd se pokusí načíst mapu po každé změně. V případě potíží, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd-zynerone\" data-target=\"#RestartContainer\">restartujte Rspamd</a>, aby se konfigurace načetla explicitně.",
+        "rspamd_global_filters_regex": "Názvy jsou dostatečným vysvětlením. Musí obsahovat jen platné regulární výrazy ve formátu \"/vyraz/parametry\" (e.g. <code>/.+@domena\\.tld/i</code>).<br>\r\n  Každý výraz bude podroben základní kontrole, přesto je možné Rspamd 'rozbít', nebude-li syntax zcela korektní.<br>\r\n  Rspamd se pokusí načíst mapu po každé změně. V případě potíží, <a href=\"\" data-toggle=\"modal\" data-container=\"rspamd\" data-target=\"#RestartContainer\">restartujte Rspamd</a>, aby se konfigurace načetla explicitně.",
         "rspamd_settings_map": "Nastavení Rspamd",
         "sal_level": "Úroveň 'Moo'",
         "save": "Uložit změny",

@@ -105,8 +105,8 @@ function quarantine($_action, $_data = null)
         $stmt->execute(array(':id' => $row['id']));
         $detail_row = $stmt->fetch(PDO::FETCH_ASSOC);
         $sender = !empty($detail_row['sender']) ? $detail_row['sender'] : 'sender-unknown@rspamd';
-        if (!empty(gethostbynamel('postfix-zynerone'))) {
-          $postfix = 'postfix-zynerone';
+        if (!empty(gethostbynamel('postfix'))) {
+          $postfix = 'postfix';
         }
         if (!empty(gethostbynamel('postfix'))) {
           $postfix = 'postfix';
@@ -152,8 +152,8 @@ function quarantine($_action, $_data = null)
                 'allow_self_signed' => true
               )
             );
-            if (!empty(gethostbynamel('postfix-zynerone'))) {
-              $postfix = 'postfix-zynerone';
+            if (!empty(gethostbynamel('postfix'))) {
+              $postfix = 'postfix';
             }
             if (!empty(gethostbynamel('postfix'))) {
               $postfix = 'postfix';
@@ -426,8 +426,8 @@ function quarantine($_action, $_data = null)
             continue;
           }
           $sender = !empty($row['sender']) ? $row['sender'] : 'sender-unknown@rspamd';
-          if (!empty(gethostbynamel('postfix-zynerone'))) {
-            $postfix = 'postfix-zynerone';
+          if (!empty(gethostbynamel('postfix'))) {
+            $postfix = 'postfix';
           }
           if (!empty(gethostbynamel('postfix'))) {
             $postfix = 'postfix';
@@ -461,8 +461,8 @@ function quarantine($_action, $_data = null)
                   'allow_self_signed' => true
                 )
               );
-              if (!empty(gethostbynamel('postfix-zynerone'))) {
-                $postfix = 'postfix-zynerone';
+              if (!empty(gethostbynamel('postfix'))) {
+                $postfix = 'postfix';
               }
               if (!empty(gethostbynamel('postfix'))) {
                 $postfix = 'postfix';

@@ -117,7 +117,7 @@ function backup() {
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --warning='no-file-ignored' --use-compress-program="pigz --rsyncable -p ${THREADS}" -Pcvpf /backup/backup_crypt.tar.gz /crypt
       ;;&
     redis|all)
-      docker exec $(docker ps -qf name=redis-zynerone) redis-cli save
+      docker exec $(docker ps -qf name=redis) redis-cli save
       docker run --name zynerone-backup --rm \
         -v ${BACKUP_LOCATION}/zynerone-${DATE}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_redis-vol-1$):/redis:ro,z \
@@ -188,63 +188,63 @@ function restore() {
   fi
 
   echo
-  echo "Stopping watchdog-zynerone..."
-  docker stop $(docker ps -qf name=watchdog-zynerone)
+  echo "Stopping watchdog
+  docker stop $(docker ps -qf name=watchdog)
   echo
   RESTORE_LOCATION="${1}"
   shift
   while (( "$#" )); do
     case "$1" in
     vmail)
-      docker stop $(docker ps -qf name=dovecot-zynerone)
+      docker stop $(docker ps -qf name=dovecot)
       docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_vmail-vol-1$):/vmail:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_vmail.tar.gz
-      docker start $(docker ps -aqf name=dovecot-zynerone)
+      docker start $(docker ps -aqf name=dovecot)
       echo
       echo "In most cases it is not required to run a full resync, you can run the command printed below at any time after testing wether the restore process broke a mailbox:"
       echo
-      echo "docker exec $(docker ps -qf name=dovecot-zynerone) doveadm force-resync -A '*'"
+      echo "docker exec $(docker ps -qf name=dovecot) doveadm force-resync -A '*'"
       echo
       read -p "Force a resync now? [y|N] " FORCE_RESYNC
       if [[ ${FORCE_RESYNC,,} =~ ^(yes|y)$ ]]; then
-        docker exec $(docker ps -qf name=dovecot-zynerone) doveadm force-resync -A '*'
+        docker exec $(docker ps -qf name=dovecot) doveadm force-resync -A '*'
       else
         echo "OK, skipped."
       fi
       ;;
     redis)
-      docker stop $(docker ps -qf name=redis-zynerone)
+      docker stop $(docker ps -qf name=redis)
       docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_redis-vol-1$):/redis:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_redis.tar.gz
-      docker start $(docker ps -aqf name=redis-zynerone)
+      docker start $(docker ps -aqf name=redis)
       ;;
     crypt)
-      docker stop $(docker ps -qf name=dovecot-zynerone)
+      docker stop $(docker ps -qf name=dovecot)
       docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_crypt-vol-1$):/crypt:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_crypt.tar.gz
-      docker start $(docker ps -aqf name=dovecot-zynerone)
+      docker start $(docker ps -aqf name=dovecot)
       ;;
     rspamd)
-      docker stop $(docker ps -qf name=rspamd-zynerone)
+      docker stop $(docker ps -qf name=rspamd)
       docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_rspamd-vol-1$):/rspamd:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_rspamd.tar.gz
-      docker start $(docker ps -aqf name=rspamd-zynerone)
+      docker start $(docker ps -aqf name=rspamd)
       ;;
     postfix)
-      docker stop $(docker ps -qf name=postfix-zynerone)
+      docker stop $(docker ps -qf name=postfix)
       docker run -it --name zynerone-backup --rm \
         -v ${RESTORE_LOCATION}:/backup:z \
         -v $(docker volume ls -qf name=^${CMPS_PRJ}_postfix-vol-1$):/postfix:z \
         ${DEBIAN_DOCKER_IMAGE} /bin/tar --use-compress-program="pigz -d -p ${THREADS}" -Pxvf /backup/backup_postfix.tar.gz
-      docker start $(docker ps -aqf name=postfix-zynerone)
+      docker start $(docker ps -aqf name=postfix)
       ;;
     mysql|mariadb)
       SQLIMAGE=$(grep -iEo '(mysql|mariadb)\:.+' ${COMPOSE_FILE})
@@ -267,7 +267,7 @@ function restore() {
           echo "Stopping zynerone..."
           ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} down
         fi
-        #docker stop $(docker ps -qf name=mariadb-zynerone)
+        #docker stop $(docker ps -qf name=mariadb)
         if [[ -d "${RESTORE_LOCATION}/mysql" ]]; then
         docker run --name zynerone-backup --rm \
           -v $(docker volume ls -qf name=^${CMPS_PRJ}_mariadb-vol-1$):/var/lib/mysql/:rw,z \
@@ -304,15 +304,15 @@ function restore() {
         source ${SCRIPT_DIR}/../zynerone.conf
         echo "Starting zynerone..."
         ${COMPOSE_COMMAND} -f ${COMPOSE_FILE} --env-file ${ENV_FILE} up -d
-        #docker start $(docker ps -aqf name=mariadb-zynerone)
+        #docker start $(docker ps -aqf name=mariadb)
       fi
       ;;
     esac
     shift
   done
   echo
-  echo "Starting watchdog-zynerone..."
-  docker start $(docker ps -aqf name=watchdog-zynerone)
+  echo "Starting watchdog..."
+  docker start $(docker ps -aqf name=watchdog)
 }
 
 if [[ ${1} == "backup" ]]; then

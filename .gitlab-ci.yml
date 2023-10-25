@@ -6,20 +6,20 @@ Matrix:
   parallel:
     matrix:
       - images:
-          - "acme-zynerone"
-          - "clamd-zynerone"
-          - "dockerapi-zynerone"
-          - "dovecot-zynerone"
-          - "netfilter-zynerone"
-          - "olefy-zynerone"
-          - "php-fpm-zynerone"
-          - "postfix-zynerone"
-          - "rspamd-zynerone"
-          - "sogo-zynerone"
-          - "solr-zynerone"
-          - "unbound-zynerone"
-          - "watchdog-zynerone"
-          - "api-zynerone"
+          - "acme"
+          - "clamd"
+          - "dockerapi"
+          - "dovecot"
+          - "netfilter"
+          - "olefy"
+          - "php-fpm"
+          - "postfix"
+          - "rspamd"
+          - "sogo"
+          - "solr"
+          - "unbound"
+          - "watchdog"
+          - "api"
   image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/docker:stable
   before_script:
     - docker info

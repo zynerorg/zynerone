@@ -1,7 +1,7 @@
 version: '2.1'
 services:
 
-    unbound-zynerone:
+    unbound:
       image: zyner/unbound:1.19
       environment:
         - TZ=${TZ}
@@ -16,10 +16,10 @@ services:
           aliases:
             - unbound
 
-    mariadb-zynerone:
+    mariadb:
       image: mariadb:11.1
       depends_on:
-        - unbound-zynerone
+        - unbound
       stop_grace_period: 45s
       volumes:
         - mariadb-vol-1:/var/lib/mysql/
@@ -41,7 +41,7 @@ services:
             - mysql
             - mariadb
 
-    redis-zynerone:
+    redis:
       image: redis:7-alpine
       volumes:
         - redis-vol-1:/data/
@@ -58,11 +58,11 @@ services:
           aliases:
             - redis
 
-    clamd-zynerone:
+    clamd:
       image: zyner/clamd:1.64
       restart: always
       depends_on:
-        unbound-zynerone:
+        unbound:
           condition: service_healthy
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -77,11 +77,11 @@ services:
           aliases:
             - clamd
 
-    rspamd-zynerone:
+    rspamd:
       image: zyner/rspamd:1.93
       stop_grace_period: 30s
       depends_on:
-        - dovecot-zynerone
+        - dovecot
       environment:
         - TZ=${TZ}
         - IPV4_NETWORK=${IPV4_NETWORK:-172.22.1}
@@ -107,11 +107,11 @@ services:
           aliases:
             - rspamd
 
-    php-fpm-zynerone:
+    php-fpm:
       image: zyner/phpfpm:1.86
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
-        - redis-zynerone
+        - redis
       volumes:
         - ./data/hooks/phpfpm:/hooks:Z
         - ./data/web:/web:z
@@ -171,7 +171,7 @@ services:
           aliases:
             - phpfpm
 
-    sogo-zynerone:
+    sogo:
       image: zyner/sogo:1.120
       environment:
         - DBNAME=${DBNAME}
@@ -218,10 +218,10 @@ services:
           aliases:
             - sogo
 
-    dovecot-zynerone:
+    dovecot:
       image: zyner/dovecot:1.26
       depends_on:
-        - mariadb-zynerone
+        - mariadb
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       cap_add:
@@ -298,12 +298,12 @@ services:
           aliases:
             - dovecot
 
-    postfix-zynerone:
+    postfix:
       image: zyner/postfix:1.73
       depends_on:
-        mariadb-zynerone:
+        mariadb:
           condition: service_started
-        unbound-zynerone:
+        unbound:
           condition: service_healthy
       volumes:
         - ./data/hooks/postfix:/hooks:Z
@@ -338,7 +338,7 @@ services:
           aliases:
             - postfix
 
-    memcached-zynerone:
+    memcached:
       image: memcached:alpine
       restart: always
       environment:
@@ -348,11 +348,11 @@ services:
           aliases:
             - memcached
 
-    nginx-zynerone:
+    nginx:
       depends_on:
-        - sogo-zynerone
-        - php-fpm-zynerone
-        - redis-zynerone
+        - sogo
+        - php-fpm
+        - redis
       image: nginx:mainline-alpine
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -393,11 +393,11 @@ services:
           aliases:
             - nginx
 
-    acme-zynerone:
+    acme:
       depends_on:
-        nginx-zynerone:
+        nginx:
           condition: service_started
-        unbound-zynerone:
+        unbound:
           condition: service_healthy
       image: zyner/acme:1.86
       dns:
@@ -434,15 +434,15 @@ services:
           aliases:
             - acme
 
-    netfilter-zynerone:
+    netfilter:
       image: zyner/netfilter:1.53
       stop_grace_period: 30s
       depends_on:
-        - dovecot-zynerone
-        - postfix-zynerone
-        - sogo-zynerone
-        - php-fpm-zynerone
-        - redis-zynerone
+        - dovecot
+        - postfix
+        - sogo
+        - php-fpm
+        - redis
       restart: always
       privileged: true
       environment:
@@ -457,7 +457,7 @@ services:
       volumes:
         - /lib/modules:/lib/modules:ro
 
-    watchdog-zynerone:
+    watchdog:
       image: zyner/watchdog:1.99
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -470,11 +470,11 @@ services:
         - ./data/assets/ssl:/etc/ssl/mail/:ro,z
       restart: always
       depends_on:
-        - postfix-zynerone
-        - dovecot-zynerone
-        - mariadb-zynerone
-        - acme-zynerone
-        - redis-zynerone
+        - postfix
+        - dovecot
+        - mariadb
+        - acme
+        - redis
 
       environment:
         - IPV6_NETWORK=${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
@@ -526,7 +526,7 @@ services:
           aliases:
             - watchdog
 
-    dockerapi-zynerone:
+    dockerapi:
       image: zyner/dockerapi:2.06
       security_opt:
         - label=disable
@@ -545,7 +545,7 @@ services:
           aliases:
             - dockerapi
 
-    solr-zynerone:
+    solr:
       image: zyner/solr:1.8.2
       restart: always
       volumes:
@@ -561,7 +561,7 @@ services:
           aliases:
             - solr
 
-    olefy-zynerone:
+    olefy:
       image: zyner/olefy:1.12
       restart: always
       environment:
@@ -579,15 +579,15 @@ services:
           aliases:
             - olefy
 
-    ofelia-zynerone:
+    ofelia:
       image: mcuadros/ofelia:latest
       restart: always
       command: daemon --docker
       environment:
         - TZ=${TZ}
       depends_on:
-        - sogo-zynerone
-        - dovecot-zynerone
+        - sogo
+        - dovecot
       labels:
         ofelia.enabled: "true"
       security_opt:
@@ -599,24 +599,24 @@ services:
           aliases:
             - ofelia
 
-    ipv6nat-zynerone:
+    ipv6nat:
       depends_on:
-        - unbound-zynerone
-        - mariadb-zynerone
-        - redis-zynerone
-        - clamd-zynerone
-        - rspamd-zynerone
-        - php-fpm-zynerone
-        - sogo-zynerone
-        - dovecot-zynerone
-        - postfix-zynerone
-        - memcached-zynerone
-        - nginx-zynerone
-        - acme-zynerone
-        - netfilter-zynerone
-        - watchdog-zynerone
-        - dockerapi-zynerone
-        - solr-zynerone
+        - unbound
+        - mariadb
+        - redis
+        - clamd
+        - rspamd
+        - php-fpm
+        - sogo
+        - dovecot
+        - postfix
+        - memcached
+        - nginx
+        - acme
+        - netfilter
+        - watchdog
+        - dockerapi
+        - solr
       environment:
         - TZ=${TZ}
       image: robbertkl/ipv6nat
@@ -629,7 +629,7 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /lib/modules:/lib/modules:ro
 
-    api-zynerone:
+    api:
       image: zyner/api:1.0
       restart: always
       ports:
@@ -640,8 +640,8 @@ services:
         - MYSQL_DATABASE=${DBNAME}
         - MYSQL_USER=${DBUSER}
         - MYSQL_PASSWORD=${DBPASS}
-        - REDIS_PORT=${REDIS_PORT:-redis-zynerone:7654}
-        - SQL_PORT=${SQL_PORT:-mariadb-zynerone:13306}
+        - REDIS_PORT=${REDIS_PORT:-redis:7654}
+        - SQL_PORT=${SQL_PORT:-mariadb:13306}
         - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-zynerone}
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro

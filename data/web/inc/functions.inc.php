@@ -429,7 +429,7 @@ function sys_mail($_data)
       )
     );
     $mail->isSMTP();
-    $mail->Host = 'dovecot-zynerone';
+    $mail->Host = 'dovecot';
     $mail->SMTPAuth = false;
     $mail->Port = 24;
     $mail->setFrom($mass_from);
@@ -2137,7 +2137,7 @@ function rspamd_ui($action, $data = null)
         );
         return false;
       }
-      $docker_return = docker('post', 'rspamd-zynerone', 'exec', array('cmd' => 'rspamd', 'task' => 'worker_password', 'raw' => $rspamd_ui_pass), array('Content-Type: application/json'));
+      $docker_return = docker('post', 'rspamd', 'exec', array('cmd' => 'rspamd', 'task' => 'worker_password', 'raw' => $rspamd_ui_pass), array('Content-Type: application/json'));
       if ($docker_return_array = json_decode($docker_return, true)) {
         if ($docker_return_array['type'] == 'success') {
           $_SESSION['return'][] = array(
@@ -2351,7 +2351,7 @@ function get_logs($application, $lines = false)
     }
   }
   // Redis
-  if ($application == "dovecot-zynerone") {
+  if ($application == "dovecot") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('DOVECOT_MAILLOG', $from - 1, $to - 1);
     } else {
@@ -2364,7 +2364,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "postfix-zynerone") {
+  if ($application == "postfix") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('POSTFIX_MAILLOG', $from - 1, $to - 1);
     } else {
@@ -2377,7 +2377,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "sogo-zynerone") {
+  if ($application == "sogo") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('SOGO_LOG', $from - 1, $to - 1);
     } else {
@@ -2390,7 +2390,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "watchdog-zynerone") {
+  if ($application == "watchdog") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('WATCHDOG_LOG', $from - 1, $to - 1);
     } else {
@@ -2403,7 +2403,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "acme-zynerone") {
+  if ($application == "acme") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('ACME_LOG', $from - 1, $to - 1);
     } else {
@@ -2429,7 +2429,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "api-zynerone") {
+  if ($application == "api") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('API_LOG', $from - 1, $to - 1);
     } else {
@@ -2442,7 +2442,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "netfilter-zynerone") {
+  if ($application == "netfilter") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('NETFILTER_LOG', $from - 1, $to - 1);
     } else {
@@ -2455,7 +2455,7 @@ function get_logs($application, $lines = false)
       return $data_array;
     }
   }
-  if ($application == "autodiscover-zynerone") {
+  if ($application == "autodiscover") {
     if (isset($from) && isset($to)) {
       $data = $redis->lRange('AUTODISCOVER_LOG', $from - 1, $to - 1);
     } else {

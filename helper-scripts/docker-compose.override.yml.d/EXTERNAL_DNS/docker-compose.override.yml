@@ -1,48 +1,48 @@
 version: '2.1'
 services:
 
-    clamd-zynerone:
+    clamd:
       dns:
         - my.resolvers.ip.addr
 
-    rspamd-zynerone:
+    rspamd:
       dns:
         - my.resolvers.ip.addr
 
-    php-fpm-zynerone:
+    php-fpm:
       dns:
         - my.resolvers.ip.addr
 
-    sogo-zynerone:
+    sogo:
       dns:
         - my.resolvers.ip.addr
 
-    dovecot-zynerone:
+    dovecot:
       dns:
         - my.resolvers.ip.addr
 
-    postfix-zynerone:
+    postfix:
       dns:
         - my.resolvers.ip.addr
 
-    nginx-zynerone:
+    nginx:
       dns:
         - my.resolvers.ip.addr
 
-    acme-zynerone:
+    acme:
       dns:
         - my.resolvers.ip.addr
 
-    watchdog-zynerone:
+    watchdog:
       environment:
         - CHECK_UNBOUND=0
       dns:
         - my.resolvers.ip.addr
 
-    dockerapi-zynerone:
+    dockerapi:
       dns:
         - my.resolvers.ip.addr
 
-    api-zynerone:
+    api:
       dns:
         - my.resolvers.ip.addr

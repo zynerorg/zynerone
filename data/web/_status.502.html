@@ -13,9 +13,9 @@
     Please check the logs or contact support if the error persists.</p>
     <h2>Quick debugging</h2>
     <p>Check Nginx and PHP logs:</p>
-    <pre>docker compose logs --tail=200 php-fpm-zynerone nginx-zynerone</pre>
+    <pre>docker compose logs --tail=200 php-fpm nginx</pre>
     <p>Make sure your SQL credentials in zynerone.conf (a link to .env) do fit your initialized SQL volume. If you see an access denied, you might have the wrong zynerone.conf:</p>
-    <pre>source zynerone.conf ; docker compose exec mariadb-zynerone mysql -u${DBUSER} -p${DBPASS} ${DBNAME}</pre>
+    <pre>source zynerone.conf ; docker compose exec mariadb mysql -u${DBUSER} -p${DBPASS} ${DBNAME}</pre>
     <p>In case of a previous failed installation, create a backup of your existing data, followed by removing all volumes and starting over (<b>NEVER</b> do this with a production system, it will remove <b>ALL</b> data):</p>
     <pre>BACKUP_LOCATION=/tmp/ ./helper-scripts/backup_and_restore.sh backup all</pre>
     <pre>docker compose down --volumes ; docker compose up -d</pre>

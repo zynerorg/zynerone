@@ -66,7 +66,7 @@ try {
   if (!empty(getenv('REDIS_SLAVEOF_IP'))) {
     $redis->connect(getenv('REDIS_SLAVEOF_IP'), getenv('REDIS_SLAVEOF_PORT'));
   } else {
-    $redis->connect('redis-zynerone', 6379);
+    $redis->connect('redis', 6379);
   }
 } catch (Exception $e) {
   ?>

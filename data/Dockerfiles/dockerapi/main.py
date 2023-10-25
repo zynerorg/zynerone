@@ -33,35 +33,6 @@ async def get_host_update_stats():
   stats = json.loads(await dockerapi.redis_client.get('host_stats'))
   return Response(content=json.dumps(stats, indent=4), media_type="application/json")
 
-@app.get("/containers/{container_id}/json")
-async def get_container(container_id : str):
-  global dockerapi
-
-  if container_id and container_id.isalnum():
-    try:
-      for container in (await dockerapi.async_docker_client.containers.list()):
-        if container._id == container_id:
-          container_info = await container.show()
-          return Response(content=json.dumps(container_info, indent=4), media_type="application/json")
-     
-      res = {
-        "type": "danger",
-        "msg": "no container found"
-      }
-      return Response(content=json.dumps(res, indent=4), media_type="application/json")
-    except Exception as e:
-      res = {
-        "type": "danger",
-        "msg": str(e)
-      }
-      return Response(content=json.dumps(res, indent=4), media_type="application/json")
-  else:
-    res = {
-      "type": "danger",
-      "msg": "no or invalid id defined"
-    }
-    return Response(content=json.dumps(res, indent=4), media_type="application/json")
-
 @app.post("/containers/{container_id}/{post_action}")
 async def post_containers(container_id : str, post_action : str, request: Request):
   global dockerapi
@@ -149,7 +120,7 @@ async def startup_event():
   if os.environ['REDIS_SLAVEOF_IP'] != "":
     redis_client = redis = await aioredis.from_url(f"redis://{os.environ['REDIS_SLAVEOF_IP']}:{os.environ['REDIS_SLAVEOF_PORT']}/0")
   else:
-    redis_client = redis = await aioredis.from_url("redis://redis-zynerone:6379/0")
+    redis_client = redis = await aioredis.from_url("redis://redis:6379/0")
 
   # Init docker clients
   sync_docker_client = docker.DockerClient(base_url='unix://var/run/docker.sock', version='auto')
