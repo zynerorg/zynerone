@@ -17,7 +17,7 @@ struct DiskReq {
   dir: String
 }
 
-#[post("/<container>/disk", format = "application/json", data = "<req_json>")]
+#[get("/<container>/disk", format = "application/json", data = "<req_json>")]
 async fn disk(data: &State<Data>, container: &str, req_json: Json<DiskReq>) -> String {
     let dir = &req_json.dir.as_str().replace("'", "'\\''");
     let mut command = r#"/bin/sh -c"#;

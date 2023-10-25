@@ -1,47 +1,47 @@
 version: '2.1'
 services:
-  unbound-zynerone:
+  unbound:
     build: ./data/Dockerfiles/unbound
 
-  clamd-zynerone:
+  clamd:
     build: ./data/Dockerfiles/clamd
 
-  rspamd-zynerone:
+  rspamd:
     build: ./data/Dockerfiles/rspamd
 
-  php-fpm-zynerone:
+  php-fpm:
     build: ./data/Dockerfiles/phpfpm
 
-  sogo-zynerone:
+  sogo:
     build:
       context: ./data/Dockerfiles/sogo
       dockerfile: Dockerfile
       args:
         - SOGO_DEBIAN_REPOSITORY=http://packages.inverse.ca/SOGo/nightly/5/debian/
 
-  dovecot-zynerone:
+  dovecot:
     build: ./data/Dockerfiles/dovecot
 
-  postfix-zynerone:
+  postfix:
     build: ./data/Dockerfiles/postfix
 
-  acme-zynerone:
+  acme:
     build: ./data/Dockerfiles/acme
 
-  netfilter-zynerone:
+  netfilter:
     build: ./data/Dockerfiles/netfilter
 
-  watchdog-zynerone:
+  watchdog:
     build: ./data/Dockerfiles/watchdog
 
-  dockerapi-zynerone:
+  dockerapi:
     build: ./data/Dockerfiles/dockerapi
 
-  solr-zynerone:
+  solr:
     build: ./data/Dockerfiles/solr
 
-  olefy-zynerone:
+  olefy:
     build: ./data/Dockerfiles/olefy
 
-  api-zynerone:
+  api:
     build: ./data/Dockerfiles/api

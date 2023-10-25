@@ -7,7 +7,7 @@ while ! mysqladmin status --socket=/var/run/mysqld/mysqld.sock -u${DBUSER} -p${D
 done
 
 # Wait until port becomes free and send sig
-until ! nc -z sogo-zynerone 20000;
+until ! nc -z sogo 20000;
 do
   killall -TERM sogod
   sleep 3

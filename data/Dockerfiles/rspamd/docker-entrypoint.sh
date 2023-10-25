@@ -58,25 +58,25 @@ read_servers = "redis:6379";
 write_servers = "${REDIS_SLAVEOF_IP}:${REDIS_SLAVEOF_PORT}";
 timeout = 10;
 EOF
-  until [[ $(redis-cli -h redis-zynerone PING) == "PONG" ]]; do
-    echo "Waiting for Redis @redis-zynerone..."
+  until [[ $(redis-cli -h redis PING) == "PONG" ]]; do
+    echo "Waiting for Redis @redis..."
     sleep 2
   done
   until [[ $(redis-cli -h ${REDIS_SLAVEOF_IP} -p ${REDIS_SLAVEOF_PORT} PING) == "PONG" ]]; do
     echo "Waiting for Redis @${REDIS_SLAVEOF_IP}..."
     sleep 2
   done
-  redis-cli -h redis-zynerone SLAVEOF ${REDIS_SLAVEOF_IP} ${REDIS_SLAVEOF_PORT}
+  redis-cli -h redis SLAVEOF ${REDIS_SLAVEOF_IP} ${REDIS_SLAVEOF_PORT}
 else
   cat <<EOF > /etc/rspamd/local.d/redis.conf
 servers = "redis:6379";
 timeout = 10;
 EOF
-  until [[ $(redis-cli -h redis-zynerone PING) == "PONG" ]]; do
+  until [[ $(redis-cli -h redis PING) == "PONG" ]]; do
     echo "Waiting for Redis slave..."
     sleep 2
   done
-  redis-cli -h redis-zynerone SLAVEOF NO ONE
+  redis-cli -h redis SLAVEOF NO ONE
 fi
 
 chown -R _rspamd:_rspamd /var/lib/rspamd \

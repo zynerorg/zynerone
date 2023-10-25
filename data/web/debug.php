@@ -18,14 +18,38 @@ if (!isset($_SESSION['gal']) && $license_cache = $redis->Get('LICENSE_STATUS_CAC
 
 $js_minifier->add('/web/js/site/debug.js');
 
+
+// Initialize cURL session
+$ch = curl_init();
+
+// Set cURL options
+$dockerUrl = 'http://api:8080/api/v1/system/containers/zynerone-dovecot-1/disk'; // Replace with the actual URL you want to request
+$exec_fields = array('dir' => '/var/vmail'); // Replace with your request data
+
+// Set cURL options
+curl_setopt($ch, CURLOPT_URL, $dockerUrl);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($exec_fields));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+// Execute the cURL request
+$response = curl_exec($ch);
+
+// Close cURL session
+curl_close($ch);
+
+// Now, you can explode the response
+$vmail_df = explode(',', (string) $response);
+
+
 // vmail df
-$exec_fields = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
-$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot-zynerone', 'exec', $exec_fields), true));
+//$exec_fields = array('cmd' => 'system', 'task' => 'df', 'dir' => '/var/vmail');
+//$vmail_df = explode(',', (string)json_decode(docker('post', 'dovecot', 'exec', $exec_fields), true));
 
 // containers
 $containers = (array) docker('info');
-if ($clamd_status === false) unset($containers['clamd-zynerone']);
-if ($solr_status === false) unset($containers['solr-zynerone']);
+if ($clamd_status === false) unset($containers['clamd']);
+if ($solr_status === false) unset($containers['solr']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
   date_default_timezone_set('UTC');

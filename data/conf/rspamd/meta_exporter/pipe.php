@@ -23,7 +23,7 @@ catch (PDOException $e) {
 }
 // Init Redis
 $redis = new Redis();
-$redis->connect('redis-zynerone', 6379);
+$redis->connect('redis', 6379);
 
 // Functions
 function parse_email($email) {

@@ -348,7 +348,7 @@ ADDITIONAL_SAN=
 
 ADDITIONAL_SERVER_NAMES=
 
-# Skip running ACME (acme-zynerone, Let's Encrypt certs) - y/n
+# Skip running ACME (acme, Let's Encrypt certs) - y/n
 
 SKIP_LETS_ENCRYPT=n
 
@@ -365,7 +365,7 @@ SKIP_IP_CHECK=n
 
 SKIP_HTTP_VERIFICATION=n
 
-# Skip ClamAV (clamd-zynerone) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
+# Skip ClamAV (clamd) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
 
 SKIP_CLAMD=${SKIP_CLAMD}
 
@@ -386,7 +386,7 @@ SOLR_HEAP=1024
 
 ALLOW_ADMIN_EMAIL_LOGIN=n
 
-# Enable watchdog (watchdog-zynerone) to restart unhealthy containers
+# Enable watchdog (watchdog) to restart unhealthy containers
 
 USE_WATCHDOG=y
 

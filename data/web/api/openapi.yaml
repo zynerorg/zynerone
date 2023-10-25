@@ -4519,7 +4519,7 @@ paths:
                   value:
                     - message: >-
                         [109]:
-                        zynerone_watchdog-zynerone_1.zynerone_zynerone-network
+                        zynerone_watchdog_1.zynerone_zynerone-network
                         "GET /SOGo.index/ HTTP/1.1" 200 2531/0 0.005 - - 0
                       priority: notice
                       program: sogod
@@ -5165,110 +5165,110 @@ paths:
               examples:
                 response:
                   value:
-                    acme-zynerone:
-                      container: acme-zynerone
+                    acme:
+                      container: acme
                       image: "zynerone/acme:1.63"
                       started_at: "2019-12-22T21:00:08.270660275Z"
                       state: running
                       type: info
-                    clamd-zynerone:
-                      container: clamd-zynerone
+                    clamd:
+                      container: clamd
                       image: "zynerone/clamd:1.35"
                       started_at: "2019-12-22T21:00:01.622856172Z"
                       state: running
                       type: info
-                    dockerapi-zynerone:
-                      container: dockerapi-zynerone
+                    dockerapi:
+                      container: dockerapi
                       image: "zynerone/dockerapi:1.36"
                       started_at: "2019-12-22T20:59:59.984797808Z"
                       state: running
                       type: info
-                    dovecot-zynerone:
-                      container: dovecot-zynerone
+                    dovecot:
+                      container: dovecot
                       image: "zynerone/dovecot:1.104"
                       started_at: "2019-12-22T21:00:08.988680259Z"
                       state: running
                       type: info
-                    ipv6nat-zynerone:
-                      container: ipv6nat-zynerone
+                    ipv6nat:
+                      container: ipv6nat
                       image: robbertkl/ipv6nat
                       started_at: "2019-12-22T21:06:37.273225445Z"
                       state: running
                       type: info
-                    memcached-zynerone:
-                      container: memcached-zynerone
+                    memcached:
+                      container: memcached
                       image: "memcached:alpine"
                       started_at: "2019-12-22T20:59:58.0907785Z"
                       state: running
                       type: info
-                    mariadb-zynerone:
-                      container: mariadb-zynerone
+                    mariadb:
+                      container: mariadb
                       image: "mariadb:10.3"
                       started_at: "2019-12-22T21:00:02.201937528Z"
                       state: running
                       type: info
-                    netfilter-zynerone:
-                      container: netfilter-zynerone
+                    netfilter:
+                      container: netfilter
                       image: "zynerone/netfilter:1.31"
                       started_at: "2019-12-22T21:00:09.851559297Z"
                       state: running
                       type: info
-                    nginx-zynerone:
-                      container: nginx-zynerone
+                    nginx:
+                      container: nginx
                       image: "nginx:mainline-alpine"
                       started_at: "2019-12-22T21:00:12.9843038Z"
                       state: running
                       type: info
-                    olefy-zynerone:
-                      container: olefy-zynerone
+                    olefy:
+                      container: olefy
                       image: "zynerone/olefy:1.2"
                       started_at: "2019-12-22T20:59:59.676259274Z"
                       state: running
                       type: info
-                    php-fpm-zynerone:
-                      container: php-fpm-zynerone
+                    php-fpm:
+                      container: php-fpm
                       image: "zynerone/phpfpm:1.55"
                       started_at: "2019-12-22T21:00:00.955808957Z"
                       state: running
                       type: info
-                    postfix-zynerone:
-                      container: postfix-zynerone
+                    postfix:
+                      container: postfix
                       image: "zynerone/postfix:1.44"
                       started_at: "2019-12-22T21:00:07.186717617Z"
                       state: running
                       type: info
-                    redis-zynerone:
-                      container: redis-zynerone
+                    redis:
+                      container: redis
                       image: "redis:5-alpine"
                       started_at: "2019-12-22T20:59:56.827166834Z"
                       state: running
                       type: info
-                    rspamd-zynerone:
-                      container: rspamd-zynerone
+                    rspamd:
+                      container: rspamd
                       image: "zynerone/rspamd:1.56"
                       started_at: "2019-12-22T21:00:12.456075355Z"
                       state: running
                       type: info
-                    sogo-zynerone:
-                      container: sogo-zynerone
+                    sogo:
+                      container: sogo
                       image: "zynerone/sogo:1.65"
                       started_at: "2019-12-22T20:59:58.382274592Z"
                       state: running
                       type: info
-                    solr-zynerone:
-                      container: solr-zynerone
+                    solr:
+                      container: solr
                       image: "zynerone/solr:1.7"
                       started_at: "2019-12-22T20:59:59.635413798Z"
                       state: running
                       type: info
-                    unbound-zynerone:
-                      container: unbound-zynerone
+                    unbound:
+                      container: unbound
                       image: "zynerone/unbound:1.10"
                       started_at: "2019-12-22T20:59:58.760595825Z"
                       state: running
                       type: info
-                    watchdog-zynerone:
-                      container: watchdog-zynerone
+                    watchdog:
+                      container: watchdog
                       image: "zynerone/watchdog:1.65"
                       started_at: "2019-12-22T20:59:56.028660382Z"
                       state: running

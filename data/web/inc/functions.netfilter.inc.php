@@ -102,7 +102,7 @@ function netfilter($_action, $_data = null)
             return false;
           }
           // Rules will also be recreated on log events, but rules may seem empty for a second in the UI
-          docker('post', 'netfilter-zynerone', 'restart');
+          docker('post', 'netfilter', 'restart');
           $fail_count = 0;
           $regex_result = json_decode($redis->Get('NETFILTER_REGEX'), true);
           while (empty($regex_result) && $fail_count < 10) {
@@ -202,7 +202,7 @@ function netfilter($_action, $_data = null)
                 try {
                   $redis->hSet('NETFILTER_BLACKLIST', $network, 1);
                   $redis->hDel('NETFILTER_WHITELIST', $network, 1);
-                  //$response = docker('post', 'netfilter-zynerone', 'restart');
+                  //$response = docker('post', 'netfilter', 'restart');
                 } catch (RedisException $e) {
                   $_SESSION['return'][] = array(
                     'type' => 'danger',
