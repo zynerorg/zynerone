@@ -172,7 +172,7 @@ get_container_ip() {
       CONTAINER_ID=($(printf "%s\n" "${CONTAINER_ID[@]}" | shuf))
       if [[ ! -z ${CONTAINER_ID} ]]; then
         for matched_container in "${CONTAINER_ID[@]}"; do
-          CONTAINER_IPS=($(curl --silent --insecure https://dockerapi/containers/${matched_container}/json | jq -r '.NetworkSettings.Networks[].IPAddress'))
+          CONTAINER_IPS=($(curl --silent --insecure http://api:8080/api/v1/system/containers/${matched_container} | jq -r '.NetworkSettings.Networks[].IPAddress'))
           for ip_match in "${CONTAINER_IPS[@]}"; do
             # grep will do nothing if one of these vars is empty
             [[ -z ${ip_match} ]] && continue
@@ -956,15 +956,15 @@ while true; do
 done
 ) &
 
-# Monitor dockerapi
+# Monitor api
 (
 while true; do
-  while nc -z dockerapi 443; do
+  while nc -z api 8080; do
     sleep 3
   done
-  log_msg "Cannot find dockerapi, waiting to recover..."
+  log_msg "Cannot find api, waiting to recover..."
   kill -STOP ${BACKGROUND_TASKS[*]}
-  until nc -z dockerapi 443; do
+  until nc -z api 8080; do
     sleep 3
   done
   kill -CONT ${BACKGROUND_TASKS[*]}
@@ -1025,7 +1025,7 @@ while true; do
       if [[ "${com_pipe_answer}" == "php-fpm" ]]; then
         HAS_INITDB=$(curl --silent --insecure -XPOST https://dockerapi/containers/${CONTAINER_ID}/top | jq '.msg.Processes[] | contains(["php -c /usr/local/etc/php -f /web/inc/init_db.inc.php"])' | grep true)
       fi
-      S_RUNNING=$(($(date +%s) - $(curl --silent --insecure https://dockerapi/containers/${CONTAINER_ID}/json | jq .State.StartedAt | xargs -n1 date +%s -d)))
+      S_RUNNING=$(($(date +%s) - $(curl --silent --insecure http://api:8080/api/v1/system/containers/${CONTAINER_ID} | jq .State.StartedAt | xargs -n1 date +%s -d)))
       if [ ${S_RUNNING} -lt 360 ]; then
         log_msg "Container is running for less than 360 seconds, skipping action..."
       elif [[ ! -z ${HAS_INITDB} ]]; then
@@ -1033,7 +1033,7 @@ while true; do
         sleep 60
       else
         log_msg "Sending restart command to ${CONTAINER_ID}..."
-        curl --silent --insecure -XPOST https://dockerapi/containers/${CONTAINER_ID}/restart
+        curl --silent --insecure -XPOST http://api:8080/api/v1/system/containers/${CONTAINER_ID}/restart
         [[ ! -z ${WATCHDOG_NOTIFY_EMAIL} ]] && mail_error "${com_pipe_answer}"
         log_msg "Wait for restarted container to settle and continue watching..."
         sleep 35
