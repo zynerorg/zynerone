@@ -64,7 +64,7 @@ if [ ${SQL_CHANGED} -eq 1 ]; then
     echo "Could not determine Postfix container ID, skipping Postfix restart."
   else
     echo "Restarting Postfix"
-    curl -X POST --silent --insecure https://dockerapi/containers/${POSTFIX}/restart | jq -r '.msg'
+    curl -X POST --silent --insecure http://api:8080/api/v1/system/containers/${POSTFIX}/restart | jq -r '.msg'
     echo "Sleeping 5 seconds..."
     sleep 5
   fi
