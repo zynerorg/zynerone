@@ -27,7 +27,7 @@ reload_postfix(){
 restart_container(){
   for container in $*; do
     echo "Restarting ${container}..."
-    C_REST_OUT=$(curl -X POST --insecure https://dockerapi/containers/${container}/restart --silent | jq -r '.msg')
+    C_REST_OUT=$(curl -X POST --insecure http://api:8080/api/v1/system/containers/${container}/restart --silent | jq -r '.msg')
     echo "${C_REST_OUT}"
   done
 }
