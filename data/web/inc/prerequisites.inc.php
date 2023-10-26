@@ -103,10 +103,10 @@ try {
   <?php
   exit;
 }
-// Stop when dockerapi is not available
-if (fsockopen("tcp://dockerapi", 443, $errno, $errstr) === false) {
+// Stop when api is not available
+if (fsockopen("tcp://api", 8080, $errno, $errstr) === false) {
   ?>
-  <center style='font-family:sans-serif;'>Connection to dockerapi container failed.<br /><br />The following error was
+  <center style='font-family:sans-serif;'>Connection to api container failed.<br /><br />The following error was
     reported:<br />
     <?= $errno; ?> -
     <?= $errstr; ?>
