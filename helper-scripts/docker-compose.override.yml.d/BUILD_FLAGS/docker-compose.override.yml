@@ -45,3 +45,6 @@ services:
 
   api:
     build: ./data/Dockerfiles/api
+
+  frontend:
+    build: ./data/Dockerfiles/frontend

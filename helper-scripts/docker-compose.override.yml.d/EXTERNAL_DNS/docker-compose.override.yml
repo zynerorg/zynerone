@@ -46,3 +46,7 @@ services:
     api:
       dns:
         - my.resolvers.ip.addr
+
+    frontend:
+      dns:
+        - my.resolvers.ip.addr

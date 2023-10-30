@@ -289,6 +289,7 @@ SQL_PORT=127.0.0.1:13306
 SOLR_PORT=127.0.0.1:18983
 REDIS_PORT=127.0.0.1:7654
 API_PORT=127.0.0.1:8080
+FRONTEND_PORT=127.0.0.1:9090
 
 # Your timezone
 # See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for a list of timezones
