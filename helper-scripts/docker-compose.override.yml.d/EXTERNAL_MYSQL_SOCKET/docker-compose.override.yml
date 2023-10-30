@@ -29,6 +29,10 @@ services:
       volumes:
         - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
 
+    frontend:
+      volumes:
+        - /var/run/mysqld/mysqld.sock:/var/run/mysqld/mysqld.sock
+
     mysql:
       image: alpine:3.18
       command: /bin/true

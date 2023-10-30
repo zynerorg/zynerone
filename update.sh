@@ -551,6 +551,12 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo '# Bind API to 127.0.0.1 on port 8080' >> zynerone.conf
       echo "API_PORT=127.0.0.1:8080" >> zynerone.conf
     fi
+  elif [[ ${option} == "FRONTEND_PORT" ]]; then
+    if ! grep -q ${option} zynerone.conf; then
+      echo "Adding new option \"${option}\" to zynerone.conf"
+      echo '# Bind FRONTEND to 127.0.0.1 on port 9090' >> zynerone.conf
+      echo "FRONTEND_PORT=127.0.0.1:9090" >> zynerone.conf
+    fi
   elif [[ ${option} == "API_KEY" ]]; then
     if ! grep -q ${option} zynerone.conf; then
       echo "Adding new option \"${option}\" to zynerone.conf"

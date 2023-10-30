@@ -50,6 +50,13 @@ until ping dockerapi -c1 > /dev/null; do
 done
 log_f "Docker API OK"
 
+
+log_f "Waiting for API..."
+until ping api -c1 > /dev/null; do
+  sleep 1
+done
+log_f "API OK"
+
 log_f "Waiting for Postfix..."
 until ping postfix -c1 > /dev/null; do
   sleep 1
