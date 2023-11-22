@@ -2,7 +2,7 @@ version: '2.1'
 services:
 
     unbound:
-      image: zyner/unbound:1.19
+      image: zyner/unbound:2023.11.0
       environment:
         - TZ=${TZ}
       volumes:
@@ -59,7 +59,7 @@ services:
             - redis
 
     clamd:
-      image: zyner/clamd:1.64
+      image: zyner/clamd:2023.11.0
       restart: always
       depends_on:
         unbound:
@@ -78,7 +78,7 @@ services:
             - clamd
 
     rspamd:
-      image: zyner/rspamd:1.93
+      image: zyner/rspamd:2023.11.0
       stop_grace_period: 30s
       depends_on:
         - dovecot
@@ -108,7 +108,7 @@ services:
             - rspamd
 
     php-fpm:
-      image: zyner/phpfpm:1.86
+      image: zyner/phpfpm:2023.11.0
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
         - redis
@@ -172,7 +172,7 @@ services:
             - phpfpm
 
     sogo:
-      image: zyner/sogo:1.120
+      image: zyner/sogo:2023.11.0
       environment:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
@@ -219,7 +219,7 @@ services:
             - sogo
 
     dovecot:
-      image: zyner/dovecot:1.26
+      image: zyner/dovecot:2023.11.0
       depends_on:
         - mariadb
       dns:
@@ -299,7 +299,7 @@ services:
             - dovecot
 
     postfix:
-      image: zyner/postfix:1.73
+      image: zyner/postfix:2023.11.0
       depends_on:
         mariadb:
           condition: service_started
@@ -399,7 +399,7 @@ services:
           condition: service_started
         unbound:
           condition: service_healthy
-      image: zyner/acme:1.86
+      image: zyner/acme:2023.11.0
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
@@ -435,7 +435,7 @@ services:
             - acme
 
     netfilter:
-      image: zyner/netfilter:1.53
+      image: zyner/netfilter:2023.11.0
       stop_grace_period: 30s
       depends_on:
         - dovecot
@@ -527,7 +527,7 @@ services:
             - watchdog
 
     dockerapi:
-      image: zyner/dockerapi:2.06
+      image: zyner/dockerapi:2023.11.0
       security_opt:
         - label=disable
       restart: always
@@ -562,7 +562,7 @@ services:
             - solr
 
     olefy:
-      image: zyner/olefy:1.12
+      image: zyner/olefy:2023.11.0
       restart: always
       environment:
         - TZ=${TZ}
@@ -630,7 +630,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
     api:
-      image: zyner/api:1.0
+      image: zyner/api:2023.11.0
       restart: always
       ports:
         - "${API_PORT:-127.0.0.1:8080}:8080"
@@ -651,7 +651,7 @@ services:
             - api
 
     frontend:
-      image: zyner/frontend:1.0
+      image: zyner/frontend:2023.11.0
       restart: always
       ports:
         - "${FRONTEND_PORT:-127.0.0.1:9090}:8080"
