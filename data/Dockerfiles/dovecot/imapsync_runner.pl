@@ -118,6 +118,8 @@ while ($row = $sth->fetchrow_arrayref()) {
   my $passfile1 = File::Temp->new(TEMPLATE => $template);
   my $passfile2 = File::Temp->new(TEMPLATE => $template);
 
+  binmode( $passfile1, ":utf8" );
+
   print $passfile1 "$password1\n";
   print $passfile2 trim($master_pass) . "\n";
 
