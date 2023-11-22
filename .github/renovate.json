@@ -6,27 +6,22 @@
   "commitBody": "Signed-off-by: Zyner <contact@zyner.net>",
   "rebaseWhen": "auto",
   "labels": ["renovate"],
-  "assignees": [
-    "@VermiumSifell",
-    "@ZervoTheProtogen"
-  ],
+  "assignees": ["@VermiumSifell", "@ZervoTheProtogen"],
   "baseBranches": ["staging"],
   "enabledManagers": ["github-actions", "regex", "docker-compose"],
-  "ignorePaths": [
-    "data\/web\/inc\/lib\/vendor\/matthiasmullie\/minify\/**"
-  ],
+  "ignorePaths": ["data/web/inc/lib/vendor/**"],
   "regexManagers": [
     {
-      "fileMatch": ["^helper-scripts\/nextcloud.sh$"],
+      "fileMatch": ["^helper-scripts/nextcloud.sh$"],
       "matchStrings": [
         "#\\srenovate:\\sdatasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?\\s.*?_VERSION=(?<currentValue>.*)"
-       ]
+      ]
     },
     {
       "fileMatch": ["(^|/)Dockerfile[^/]*$"],
       "matchStrings": [
         "#\\srenovate:\\sdatasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?\\s(ENV|ARG) .*?_VERSION=(?<currentValue>.*)\\s"
-       ]
+      ]
     }
   ]
 }
