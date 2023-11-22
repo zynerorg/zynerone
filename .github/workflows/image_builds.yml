@@ -27,6 +27,7 @@ jobs:
           - "unbound"
           - "watchdog"
           - "api"
+          - "frontend"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
