@@ -399,7 +399,7 @@ services:
           condition: service_started
         unbound:
           condition: service_healthy
-      image: zyner/acme:2023.11.0
+      image: zyner/acme:2024.02.0
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
