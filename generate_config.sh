@@ -230,7 +230,7 @@ cat << EOF > zynerone.conf
 # ------------------------------
 # example.org is _not_ a valid hostname, use a fqdn here.
 # Default admin user is "admin"
-# Default password is "moohoo"
+# Default password is "zynerone"
 
 ZYNERONE_HOSTNAME=${ZYNERONE_HOSTNAME}
 
