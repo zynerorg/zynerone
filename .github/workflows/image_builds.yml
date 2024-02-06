@@ -23,7 +23,6 @@ jobs:
           - "postfix"
           - "rspamd"
           - "sogo"
-          - "solr"
           - "unbound"
           - "watchdog"
           - "api"

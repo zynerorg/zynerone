@@ -164,26 +164,6 @@ else
   SKIP_CLAMD=n
 fi
 
-if [ ${MEM_TOTAL} -le "2097152" ]; then
-  echo "Disabling Solr on low-memory system."
-  SKIP_SOLR=y
-elif [ ${MEM_TOTAL} -le "3670016" ]; then
-  echo "Installed memory is <= 3.5 GiB. It is recommended to disable Solr to prevent out-of-memory situations."
-  echo "Solr is a prone to run OOM and should be monitored. The default Solr heap size is 1024 MiB and should be set in zynerone.conf according to your expected load."
-  echo "Solr can be re-enabled by setting SKIP_SOLR=n in zynerone.conf but will refuse to start with less than 2 GB total memory."
-  read -r -p  "Do you want to disable Solr now? [Y/n] " response
-  case $response in
-    [nN][oO]|[nN])
-      SKIP_SOLR=n
-      ;;
-    *)
-      SKIP_SOLR=y
-    ;;
-  esac
-else
-  SKIP_SOLR=n
-fi
-
 if [[ ${SKIP_BRANCH} != y ]]; then
   echo "Which branch of zynerone do you want to use?"
   echo ""
@@ -286,7 +266,6 @@ POPS_PORT=995
 SIEVE_PORT=4190
 DOVEADM_PORT=127.0.0.1:19991
 SQL_PORT=127.0.0.1:13306
-SOLR_PORT=127.0.0.1:18983
 REDIS_PORT=127.0.0.1:7654
 API_PORT=127.0.0.1:8080
 FRONTEND_PORT=127.0.0.1:9090
@@ -373,15 +352,6 @@ SKIP_CLAMD=${SKIP_CLAMD}
 # Skip SOGo: Will disable SOGo integration and therefore webmail, DAV protocols and ActiveSync support (experimental, unsupported, not fully implemented) - y/n
 
 SKIP_SOGO=n
-
-# Skip Solr on low-memory systems or if you do not want to store a readable index of your mails in solr-vol-1.
-
-SKIP_SOLR=${SKIP_SOLR}
-
-# Solr heap size in MB, there is no recommendation, please see Solr docs.
-# Solr is a prone to run OOM and should be monitored. Unmonitored Solr setups are not recommended.
-
-SOLR_HEAP=1024
 
 # Allow admins to log into SOGo as email user (without any password)
 

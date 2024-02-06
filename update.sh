@@ -469,8 +469,6 @@ CONFIG_ARRAY=(
   "MAILDIR_GC_TIME"
   "MAILDIR_SUB"
   "ACL_ANYONE"
-  "SOLR_HEAP"
-  "SKIP_SOLR"
   "ENABLE_SSL_SNI"
   "ALLOW_ADMIN_EMAIL_LOGIN"
   "SKIP_HTTP_VERIFICATION"
@@ -605,21 +603,6 @@ for option in ${CONFIG_ARRAY[@]}; do
       echo '# This should probably only be activated on mail hosts, that are used exclusivly by one organisation.' >> zynerone.conf
       echo '# Otherwise a user might share data with too many other users.' >> zynerone.conf
       echo 'ACL_ANYONE=disallow' >> zynerone.conf
-    fi
-  elif [[ ${option} == "SOLR_HEAP" ]]; then
-    if ! grep -q ${option} zynerone.conf; then
-      echo "Adding new option \"${option}\" to zynerone.conf"
-      echo '# Solr heap size, there is no recommendation, please see Solr docs.' >> zynerone.conf
-      echo '# Solr is a prone to run OOM on large systems and should be monitored. Unmonitored Solr setups are not recommended.' >> zynerone.conf
-      echo '# Solr will refuse to start with total system memory below or equal to 2 GB.' >> zynerone.conf
-      echo "SOLR_HEAP=1024" >> zynerone.conf
-    fi
-  elif [[ ${option} == "SKIP_SOLR" ]]; then
-    if ! grep -q ${option} zynerone.conf; then
-      echo "Adding new option \"${option}\" to zynerone.conf"
-      echo '# Solr is disabled by default after upgrading from non-Solr to Solr-enabled zynerone.' >> zynerone.conf
-      echo '# Disable Solr or if you do not want to store a readable index of your mails in solr-vol-1.' >> zynerone.conf
-      echo "SKIP_SOLR=y" >> zynerone.conf
     fi
   elif [[ ${option} == "ENABLE_SSL_SNI" ]]; then
     if ! grep -q ${option} zynerone.conf; then

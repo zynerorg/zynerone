@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:edge
 LABEL maintainer "The Infrastructure Company GmbH GmbH <info@servercow.de>"
 
 # renovate: datasource=github-releases depName=tianon/gosu versioning=semver-coerced extractVersion=^(?<version>.*)$
@@ -101,31 +101,15 @@ RUN addgroup -g 5000 vmail \
   dovecot-mysql \
   dovecot-sql \
   dovecot-submissiond \
-  dovecot-pigeonhole-plugin \
   dovecot-pop3d \
-  dovecot-fts-solr \
+  dovecot-pigeonhole-plugin \
+  dovecot-fts-flatcurve \
   && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
   && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$arch" \
   && chmod +x /usr/local/bin/gosu \
   && gosu nobody true
 
 # RUN cpan LockFile::Simple
-
-RUN apk add git autoconf automake libtool make gcc wget \
-		make gettext-dev bison flex icu-dev rpcgen \
-	  gcc g++ bash libstemmer-dev \
-		libexttextcat-dev xapian-core-dev
-
-
-RUN mkdir /flatcurve \
-  && cd /flatcurve \
-  && git clone https://github.com/slusarz/dovecot-fts-flatcurve.git \ 
-  && cd dovecot-fts-flatcurve \
-  && ./autogen.sh \
-  && ./configure --with-dovecot=/usr/lib/dovecot \
-  && make \
-  && make install
-
 
 COPY trim_logs.sh /usr/local/bin/trim_logs.sh
 COPY clean_q_aged.sh /usr/local/bin/clean_q_aged.sh

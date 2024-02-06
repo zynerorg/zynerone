@@ -8,7 +8,6 @@ if (!isset($_SESSION['zynerone_cc_role']) || $_SESSION['zynerone_cc_role'] != "a
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/header.inc.php';
 $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
-$solr_status = (preg_match("/^([yY][eE][sS]|[yY])+$/", $_ENV["SKIP_SOLR"])) ? false : solr_status();
 $clamd_status = (preg_match("/^([yY][eE][sS]|[yY])+$/", $_ENV["SKIP_CLAMD"])) ? false : true;
 
 
@@ -49,7 +48,6 @@ $vmail_df = explode(',', (string) $response);
 // containers
 $containers = (array) docker('info');
 if ($clamd_status === false) unset($containers['clamd']);
-if ($solr_status === false) unset($containers['solr']);
 ksort($containers);
 foreach ($containers as $container => $container_info) {
   date_default_timezone_set('UTC');
@@ -84,8 +82,6 @@ $template_data = [
   'hostname' => $hostname,
   'timezone' => $timezone,
   'gal' => @$_SESSION['gal'],
-  'solr_status' => $solr_status,
-  'solr_uptime' => round($solr_status['status']['dovecot-fts']['uptime'] / 1000 / 60 / 60),
   'clamd_status' => $clamd_status,
   'containers' => $containers,
   'ip_check' => customize('get', 'ip_check'),
