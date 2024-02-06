@@ -630,7 +630,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
     api:
-      image: zyner/api:2023.11.0
+      image: zyner/api:2024.02.0
       restart: always
       ports:
         - "${API_PORT:-127.0.0.1:8080}:8080"
