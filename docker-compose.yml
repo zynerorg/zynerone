@@ -2,7 +2,7 @@ version: '2.1'
 services:
 
     unbound:
-      image: zyner/unbound:2023.11.0
+      image: zyner/unbound:2024.02.0
       environment:
         - TZ=${TZ}
       volumes:
@@ -59,7 +59,7 @@ services:
             - redis
 
     clamd:
-      image: zyner/clamd:2023.11.0
+      image: zyner/clamd:2024.02.0
       restart: always
       depends_on:
         unbound:
@@ -78,7 +78,7 @@ services:
             - clamd
 
     rspamd:
-      image: zyner/rspamd:2023.11.0
+      image: zyner/rspamd:2024.02.0
       stop_grace_period: 30s
       depends_on:
         - dovecot
@@ -108,7 +108,7 @@ services:
             - rspamd
 
     php-fpm:
-      image: zyner/phpfpm:2023.11.0
+      image: zyner/phpfpm:2024.02.0
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
         - redis
@@ -171,7 +171,7 @@ services:
             - phpfpm
 
     sogo:
-      image: zyner/sogo:2023.11.0
+      image: zyner/sogo:2024.02.0
       environment:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
@@ -218,7 +218,7 @@ services:
             - sogo
 
     dovecot:
-      image: zyner/dovecot:2023.11.0
+      image: zyner/dovecot:2024.02.0
       depends_on:
         - mariadb
       dns:
@@ -295,7 +295,7 @@ services:
             - dovecot
 
     postfix:
-      image: zyner/postfix:2023.11.0
+      image: zyner/postfix:2024.02.0
       depends_on:
         mariadb:
           condition: service_started
@@ -395,7 +395,7 @@ services:
           condition: service_started
         unbound:
           condition: service_healthy
-      image: zyner/acme:2023.11.0
+      image: zyner/acme:2024.02.0
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
@@ -431,7 +431,7 @@ services:
             - acme
 
     netfilter:
-      image: zyner/netfilter:2023.11.0
+      image: zyner/netfilter:2024.02.0
       stop_grace_period: 30s
       depends_on:
         - dovecot
@@ -523,7 +523,7 @@ services:
             - watchdog
 
     dockerapi:
-      image: zyner/dockerapi:2023.11.0
+      image: zyner/dockerapi:2024.02.0
       security_opt:
         - label=disable
       restart: always
@@ -542,7 +542,7 @@ services:
             - dockerapi
 
     olefy:
-      image: zyner/olefy:2023.11.0
+      image: zyner/olefy:2024.02.0
       restart: always
       environment:
         - TZ=${TZ}
@@ -609,7 +609,7 @@ services:
         - /lib/modules:/lib/modules:ro
 
     api:
-      image: zyner/api:2023.11.0
+      image: zyner/api:2024.02.0
       restart: always
       ports:
         - "${API_PORT:-127.0.0.1:8080}:8080"
@@ -630,7 +630,7 @@ services:
             - api
 
     frontend:
-      image: zyner/frontend:2023.11.0
+      image: zyner/frontend:2024.02.0
       restart: always
       ports:
         - "${FRONTEND_PORT:-127.0.0.1:9090}:8080"
