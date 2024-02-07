@@ -59,7 +59,7 @@ services:
             - redis
 
     clamd:
-      image: zyner/clamd:2023.11.0
+      image: zyner/clamd:2024.02.0
       restart: always
       depends_on:
         unbound:
