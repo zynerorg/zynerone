@@ -311,7 +311,7 @@
         "username": "Brugernavn",
         "verify": "Verificere",
         "yes": "&#10003;",
-        "ip_check_opt_in": "Opt-In for brug af tredjepartstjeneste <strong>ipv4.zyner.one</strong> og <strong>ipv6.zyner.one</strong> til at finde eksterne IP-adresser.",
+        "ip_check_opt_in": "Opt-In for brug af tredjepartstjeneste <strong>v4.ipv4.gg</strong> og <strong>v6.ipv6.gg</strong> til at finde eksterne IP-adresser.",
         "queue_unban": "unban",
         "admins": "Administratorer"
     },

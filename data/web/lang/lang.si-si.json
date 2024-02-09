@@ -196,7 +196,7 @@
         "includes": "Vključi te prejemnike",
         "ip_check": "Kontrola IP",
         "ip_check_disabled": "Kontrola IP je onemogočena. Lahko jo omogočite pod <br/> <strong>Sistem > Konfiguracija > Možnosti > Prilagodi</strong>",
-        "ip_check_opt_in": "Opt-in za uporabo zunanje storitve <strong>ipv4.zyner.one</strong> in <strong>ipv6.zyner.one</strong> za razreševanje zunanjih IP.",
+        "ip_check_opt_in": "Opt-in za uporabo zunanje storitve <strong>v4.ipv4.gg</strong> in <strong>v6.ipv6.gg</strong> za razreševanje zunanjih IP.",
         "is_mx_based": "Glede na MX",
         "last_applied": "Nazadnje aplicirano",
         "link": "Povezava",

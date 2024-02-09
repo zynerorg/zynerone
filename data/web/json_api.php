@@ -1554,9 +1554,9 @@ if (isset($_GET['query'])) {
                     curl_setopt($curl, CURLOPT_POST, 0);
                     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
                     curl_setopt($curl, CURLOPT_TIMEOUT, 15);
-                    curl_setopt($curl, CURLOPT_URL, 'http://ipv4.zyner.one');
+                    curl_setopt($curl, CURLOPT_URL, 'https://v4.ipv4.gg/flat');
                     $ipv4 = curl_exec($curl);
-                    curl_setopt($curl, CURLOPT_URL, 'http://ipv6.zyner.one');
+                    curl_setopt($curl, CURLOPT_URL, 'https://v6.ipv6.gg/flat');
                     $ipv6 = curl_exec($curl);
                     $ips = array(
                       "ipv4" => $ipv4,

@@ -207,7 +207,7 @@
         "includes": "Diese Empfänger einschließen",
         "ip_check": "IP Check",
         "ip_check_disabled": "IP check ist deaktiviert. Unter dem angegebenen Pfad kann es aktiviert werden<br> <strong>System > Konfiguration > Einstellungen > UI-Anpassung</strong>",
-        "ip_check_opt_in": "Opt-In für die Nutzung der Drittanbieter-Dienste <strong>ipv4.zyner.one</strong> und <strong>ipv6.zyner.one</strong> zur Auflösung externer IP-Adressen.",
+        "ip_check_opt_in": "Opt-In für die Nutzung der Drittanbieter-Dienste <strong>v4.ipv4.gg</strong> und <strong>v6.ipv6.gg</strong> zur Auflösung externer IP-Adressen.",
         "is_mx_based": "MX-basiert",
         "last_applied": "Zuletzt angewendet",
         "link": "Link",

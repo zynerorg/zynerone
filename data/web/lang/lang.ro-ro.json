@@ -337,7 +337,7 @@
         "netfilter_max_ban_time": "Max. timp de blocare (s)",
         "ip_check": "Verificaţie IP",
         "ip_check_disabled": "Verificarea IP este dezactivată. Puteţi activa la<br> <strong>Sistem > Configuraţie > Opţiuni > Personalizează</strong>",
-        "ip_check_opt_in": "Alegeţi să folosiţi servicile <strong>ipv4.zyner.one</strong> şi <strong>ipv6.zyner.one</strong> să rezolvaţi addrese IP externale.",
+        "ip_check_opt_in": "Alegeţi să folosiţi servicile <strong>v4.ipv4.gg</strong> şi <strong>v6.ipv6.gg</strong> să rezolvaţi addrese IP externale.",
         "options": "Opţiuni",
         "queue_unban": "retractează interzicere"
     },

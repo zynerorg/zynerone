@@ -340,7 +340,7 @@
         "allowed_methods": "Access-Control-Allow-Methods",
         "ip_check": "Проверить IP",
         "ip_check_disabled": "Проверка IP отключена. Вы можете включить его в разделе <br> <strong>Система > Конфигурация > Параметры > Настроить</strong>.",
-        "ip_check_opt_in": "Согласие на использование сторонних служб <strong>ipv4.zyner.one</strong> и <strong>ipv6.zyner.one</strong> для разрешения внешних IP-адресов."
+        "ip_check_opt_in": "Согласие на использование сторонних служб <strong>v4.ipv4.gg</strong> и <strong>v6.ipv6.gg</strong> для разрешения внешних IP-адресов."
     },
     "danger": {
         "access_denied": "Доступ запрещён, или указаны неверные данные",

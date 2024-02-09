@@ -340,7 +340,7 @@
         "cors_settings": "Налаштування CORS",
         "ip_check": "Перевірка IP",
         "ip_check_disabled": "Перевірка IP вимкнена. Ви можете ввімкнути його в меню<br> <strong>Система > Конфігурація > Параметри > Налаштувати</strong>",
-        "ip_check_opt_in": "Згода на використання сторонніх служб <strong>ipv4.zyner.one</strong> і <strong>ipv6.zyner.one</strong> для визначення зовнішніх IP-адрес.",
+        "ip_check_opt_in": "Згода на використання сторонніх служб <strong>v4.ipv4.gg</strong> і <strong>v6.ipv6.gg</strong> для визначення зовнішніх IP-адрес.",
         "options": "Параметри",
         "queue_unban": "розблокувати"
     },

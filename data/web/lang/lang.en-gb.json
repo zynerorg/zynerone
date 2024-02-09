@@ -213,7 +213,7 @@
         "includes": "Include these recipients",
         "ip_check": "IP Check",
         "ip_check_disabled": "IP check is disabled. You can enable it under<br> <strong>System > Configuration > Options > Customize</strong>",
-        "ip_check_opt_in": "Opt-In for using third party service <strong>ipv4.zyner.one</strong> and <strong>ipv6.zyner.one</strong> to resolve external IP addresses.",
+        "ip_check_opt_in": "Opt-In for using third party service <strong>v4.ipv4.gg</strong> and <strong>v6.ipv6.gg</strong> to resolve external IP addresses.",
         "is_mx_based": "MX based",
         "last_applied": "Last applied",
         "link": "Link",
