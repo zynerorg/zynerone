@@ -29,7 +29,7 @@ function check_ping() {
 
 # General DNS Resolve Check against Unbound Resolver himself
 function check_dns() {
-    declare -a domains=("mailcow.email" "github.com" "hub.docker.com")
+    declare -a domains=("ipv4.gg" "ipv6.gg" "mailcow.email" "github.com" "hub.docker.com")
 
     for domain in "${domains[@]}" ; do
         for ((i=1; i<=3; i++)); do
