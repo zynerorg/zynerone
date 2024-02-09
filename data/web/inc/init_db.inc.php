@@ -1271,7 +1271,7 @@ function init_db_schema()
     $num_results = count($stmt->fetchAll(PDO::FETCH_ASSOC));
     if ($num_results == 0) {
       $pdo->query("INSERT INTO `admin` (`username`, `password`, `superadmin`, `created`, `modified`, `active`)
-      VALUES ('admin', '{BLF-CRYPT}$2y$10$WtaencwOg/sy18GtoGlh..d7mJnWf5mPbgsp6HJI0xHVJPVlxGd9e', 1, NOW(), NOW(), 1)");
+      VALUES ('admin', '{BLF-CRYPT}$2y$10$Kz6y18c8t22YHHi7Ty4k0eQ7pdJ5CYDz6psATT/3kI2fU3AFGKajG', 1, NOW(), NOW(), 1)");
       $pdo->query("INSERT INTO `domain_admins` (`username`, `domain`, `created`, `active`)
         SELECT `username`, 'ALL', NOW(), 1 FROM `admin`
           WHERE superadmin='1' AND `username` NOT IN (SELECT `username` FROM `domain_admins`);");
