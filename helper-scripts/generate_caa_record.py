@@ -102,9 +102,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent("""\
-            Generate a CAA record for Mailcow.
+            Generate a CAA record for Zyner One.
 
-            Example Usage: python mailcow_gencaa.py --account-key data/assets/ssl/acme/account.pem
+            Example Usage: python zynerone_gencaa.py --account-key data/assets/ssl/acme/account.pem
             """)
     )
     parser.add_argument("--account-key", required=True, help="path to your Let's Encrypt account private key")
