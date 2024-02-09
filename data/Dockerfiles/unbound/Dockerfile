@@ -1,6 +1,6 @@
 FROM alpine:3.18
 
-LABEL maintainer "The Infrastructure Company GmbH GmbH <info@servercow.de>"
+LABEL maintainer "Zyner <contact@zyner.net>"
 
 RUN apk add --update --no-cache \
 	curl \
