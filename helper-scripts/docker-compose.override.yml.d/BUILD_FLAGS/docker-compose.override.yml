@@ -37,9 +37,6 @@ services:
   dockerapi:
     build: ./data/Dockerfiles/dockerapi
 
-  solr:
-    build: ./data/Dockerfiles/solr
-
   olefy:
     build: ./data/Dockerfiles/olefy
 
